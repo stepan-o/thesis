@@ -1,0 +1,319 @@
+%! Author = Stepan Oskin
+%! Date = 2019-07-19
+
+% Preamble
+\documentclass[11pt]{article}
+
+% Packages
+\usepackage{color, colortbl}
+
+% Document
+\begin{document}
+
+    \title{GTHA housing market database \\
+    OSEMN methodology \\
+    Step 1: Obtain data \\
+    Description of data sources \\
+    to be used in the proposed housing market \\
+    database based on Teranet records}
+
+    \author{Stepan Oskin}
+
+    \maketitle
+
+    \begin{abstract}
+
+        Teranet dataset presents an extensive historical record of real estate transactions recorded in the Province of Ontario since the beginning of the XIX century.
+        The dataset holds a wealth of information on the housing market of Ontario, but is at the same time very limited in the number of features that describe each transaction, which makes any meaningful analysis and modelling based on Teranet data difficult.
+        To address this gap, additional attributes, such as land use information and demographics of Dissimination Areas, can be joined from various data sources based on spatial and/or temporal relationships.
+        These relationships are best organized in the form of a relational database based on a database management system, such as PostgreSQL .
+        This document covers \textit{Step 1: Obtain} of OSEMN methodology for data science projects and includes the detailed description of various data sources that will be organized into a relational database in the following sections of this Master Thesis.
+
+    \end{abstract}
+
+    \section{Introduction} \label{sec:intro}
+
+    This section describes the systems of registration for land and real estate sales utilized in Canada and the Province of Ontario, brief history of their development, overview of their main features, and the role played by the Teranet Enterprises Inc. in maintaining and providing access to land registry in Ontario.
+
+    \subsection{System of land registration in Canada} \label{subsec:land_reg_system_canada}
+
+    According to Chapter 6 of the \textit{International Comparative Legal Guide to Real Estate} published by the Global Legal Group in 2015\cite{McKean2015}, all land owned in Canada is registered in a public land registry through either a registry system, a land titles system or a combination of both in the applicable province.
+    The registry system is a public record of documents evidencing transactions affecting land.
+    In the land titles system, the applicable provincial government determines the quality of the title, and essentially guarantees (within certain important statutory limits) the title to, and interests in, the property.
+    As of 2015, most common law provinces and territories were using the land titles system or were in the process of converting title from a registry system to a land titles system.
+
+    On the purchase and sale of real estate and land, ownership is generally transferred to the buyer when the deed or transfer is registered in the applicable land registry office.
+    An agreement of purchase and sale must be in writing to be enforceable.
+    A transfer of ownership is actualised by registering, either physically or electronically (depending on the applicable land registry system), a deed or transfer with the applicable land registry office or land registrar, copies of which can be obtained from the relevant registry office, often electronically.
+
+    Once registration is complete, a copy of the transfer (if in the land titles system) or deed (if in the registry system) or a copy of a certificate of title is issued to the owner to confirm the registration and status of title.
+
+    \subsection{POLARIS: Land registration system of Ontario} \label{subsec:lang_reg_operating_canada}
+
+    Each province and territory in Canada has its own land registry system, whether it is a land titles system, a registry system or a combination of both, with each system having its own rules.
+    As of 2015, the Province of Ontario has largely converted from registry systems to a land titles system.
+
+    In 1985, the Government of Ontario initiated the \textbf{Province of Ontario Land Registration Information System (POLARIS)} pilot project for the purposes of records automation and the conversion from the Registry System to the Land Titles System.
+    The \textit{Land Registration Reform Act (Ontario)}\cite{TheGovernmentofOntario1990} was introduced in 1990 to facilitate electronic search and registration of properties and the automation of paper-based records.
+    POLARIS was built by the Province to house and process electronic land records.
+
+    Today, POLARIS is the search/registration and property maintenance system for all automated land records in Ontario.
+    The way the title data is stored in POLARIS enables it to be accessed and exported by other applications in sophisticated ways.
+    This web interface allows Land Registry Office staff to create, maintain and update Official Data, which can then be retrieved via Teranet's products, such as Teraview and ROSCO .
+
+    \vspace{5mm}
+
+    Features of POLARIS\cite{TeranetEnterprisesInc.2019}:
+
+    \begin{itemize}
+        \item The data contained in POLARIS is the official land registration data of the Province of Ontario
+        \item All title data in the POLARIS database is digital, allowing Teraview customers (Teraview is a one-stop solution to accessing data in the Government of Ontario's land records database provided by Teranet) to:
+        \begin{itemize}
+            \item Benefit from pre-population of title related information when creating electronic documents
+            \item Submit documents for registration remotely.
+            As part of that process, the system automatically validates relevant statutory and business requirements and abstracts essential title details from the electronic document into the POLARIS database
+            \item Obtain a receipt/registration number that is issued by the system as part of the successful remote submission in POLARIS and is returned to the Teraview customer to complete the submission process.
+            This ensures that both the notice of the registration, as well as registration priority, is maintained
+        \end{itemize}
+        \item The POLARIS Title database is complemented by the Mapping database that is maintained by Teranet.
+        The Mapping Database, which is kept consistent with the Title database, serves as an index to find property and to provide further property details.
+    \end{itemize}
+
+    \subsection{The Teranet-Ontario Partnership} \label{subsec:teranet_ontario}
+
+    According to \textit{Teranet Enterprises Inc.'s website}\cite{TeranetEnterprisesInc.2019}, in 1991, the Government of Ontario established a partnership with Teranet, a Toronto-based organization, founded the same year, which provides e-services to legal, real estate, government, financial, and healthcare markets.
+    The partnership was established to convert Ontario's land registration system to a more modernized electronic title system.
+    The project involved taking a 200-year-old paper-based system and creating a database with electronic records for more than five million parcels of land.
+
+    Teranet converted all qualified Registry properties in Ontario to the Land Titles system and automated existing paper Land Titles parcels.
+    As a result, 99.9\% of property in Ontario was parcelized and administered under the Land Titles system, which affords a property ownership guarantee by the province.
+    Teranet fully automated the conversion of millions of paper-based documents and records into the Ontario Electronic Land Registration System (ELRS).
+    Teranet's agreement with the Government of Ontario stipulates that while Teranet owns the ELRS, the \textbf{government retains ownership of the data}.
+    In December 2010, the Government of Ontario extended its exclusive relationship with Teranet by 50 years, reflecting the confidence it has in the company's ability to fulfill integral elements of the statutory responsibilities of the Ministry of Government Services and the Ministry of the Attorney General.
+
+    Today, Teranet is the exclusive provider of Ontario's online property search and registration;
+    it developed, owns and operates the ELRS, and also provides online access to Ontario's Writs System.
+    Teranet is owned by OMERS Infrastructure, a leading global infrastructure investment manager and the infrastructure arm of the Ontario Municipal Employee Retirement System.
+
+    \vspace{5mm}
+
+    Teranet's electronic land registry system lies at the intersection of two domains of responsibility:
+
+    \vspace{5mm}
+
+    \textbf{Government}
+
+    \begin{itemize}
+        \item Guarantee of Title
+        \item Registration Process and Title Examination
+        \item Control, Ownership and Use of Official Data
+        \item Application of Legislation
+        \item Fee Structure \& Regulation
+    \end{itemize}
+
+    \vspace{5mm}
+
+    \newpage
+
+    \textbf{Teranet}
+
+    \begin{itemize}
+        \item Operating the Electronic Land Registration System
+        \item Ongoing Maintenance and Upgrades to the System
+        \item Systems Performance and Disaster Recovery
+        \item Exclusive (or Preferential) License to the Data
+        \item Funds the Modernization of the System on Behalf of the Government
+    \end{itemize}
+
+    \section{Teranet dataset} \label{sec:teranet_dataset}
+
+    This section includes the description of the base dataset for the proposed housing market dataset \textemdash Teranet dataset of real estate transactions recorded in the province of Ontario since the beginning of XIX century and to the end of 2017.
+
+    \subsection{Product overview} \label{subsec:teranet_product_overview}
+
+    According to the \textit{Ownership Property Report} provided by Teranet as the description of their dataset\cite{TeranetEnterprisesInc.2011}, the Province of Ontario Land Registration Information System (POLARIS) is the computerized system that stores and manages ownership data for each property in Ontario which have been automated into the Electronic Land Registration System (ELRS).
+    All of the information in the POLARIS databases is compiled from the actual Land Registry Office (''LRO'') records.
+    The second generation of this system is known as POLARIS II .
+
+    \vspace{5mm}
+
+    The ELRS system is comprised of two databases:
+
+    \begin{itemize}
+        \item The Title Index Database (which replaces the paper abstract indexes and parcel registers); and
+        \item The Property Index Map Database (which provides a visual index map to properties).
+    \end{itemize}
+
+    The Title Index Database is updated on a transactional basis as new documents are registered.
+    The Property Index Map Database is updated periodically on the basis of source documents provided by Ministry of Government Services (MGS).
+
+    The Teranet title reports, including the Ownership Property Report, are created from a replica database, which is updated periodically with data extracted from the Title Index Database.
+
+    Teranet's Ownership Property Report Product contains certain property based information such as address and legal description.
+    For data to be included in this Product, the following condition must be true:
+    \begin{itemize}
+        \item PIN is active (not retired).
+        \item This Product does not include data for inactive PINs in POLARIS, or example, PINs that have been retired as the result of a property split or consolidation.
+    \end{itemize}
+
+    \subsection{Product description} \label{subsec:teranet_product_description}
+
+    The Ownership Property Report contains property-based attributes, as listed in Table~\ref{tab:ownership_property_report}, for properties in the defined geographic coverage.
+    The POLARIS Property Identification Number (PIN) is the key for each record.
+    One record per active PIN will be provided.
+    The following fields are found within each record in the Ownership Property Report.
+    This table also lists characteristics and example for each field.
+    Several value added options are available for an additional fee (presented in table~\ref{tab:ownership_property_report} after a double horizontal line).
+    Attributes available in this version of the Teranet dataset are highlighted with light cyan color.
+
+    \definecolor{Gray}{gray}{0.9}
+    \definecolor{LightCyan}{rgb}{0.88,1,1}
+
+    \begin{table}[h!]
+        \centering
+        \begin{tabular}{||c | c | c | c | c ||}
+            \hline
+            \rowcolor{Gray}
+            \textbf{Field} & \textbf{Type} & \textbf{Nulls allowed?} & \textbf{Description} & \textbf{Example} \\
+            \hline
+            \hline
+            \multicolumn{5}{||c||}{Property attributes} \\
+            \hline
+            \hline
+            \rowcolor{LightCyan}
+            LRO\_NUMBER & Text (2) & No & Land Registry Office Number & 4 \\
+            \hline
+            \rowcolor{LightCyan}
+            PIN & Text (9) & No & Property Identification Number & 280400020 \\
+            \hline
+            \rowcolor{LightCyan}
+            STREET\_NUMBER & Text (6) & Yes & Street Number & 4545 \\
+            \hline
+            \rowcolor{LightCyan}
+            STREET\_NAME & Text (34) & Yes & Street Name & Main Street West \\
+            \hline
+            \rowcolor{LightCyan}
+            STREET\_SUFFIX & Text (6) & Yes & Street Suffix & A \\
+            \hline
+            UNIT\_TYPE & Text (6) & Yes & Unit Type (see Table 2) & S \\
+            \hline
+            \rowcolor{LightCyan}
+            UNIT\_NUMBER & Text (6) & Yes & Unit Number & 10 \\
+            \hline
+            \rowcolor{LightCyan}
+            MUNICIPALITY\_NAME & Text (24) & Yes & Municipality & Vaughan \\
+            \hline
+            DESCRIPTION & Memo & No & Legal Description of the Property LOT & LOT 35, PLAN 65M3411, VAUGHAN \\
+            \hline
+            \hline
+            \multicolumn{5}{||c||}{Enhanced address information} \\
+            \hline
+            \hline
+            \rowcolor{LightCyan}
+            STREET\_NUMBER & Text (6) & Yes & Street Number & 6159 \\
+            \hline
+            \rowcolor{LightCyan}
+            STREET\_NAME & Text (34) & Yes & Street Name & Woodland \\
+            \hline
+            STREET\_TYPE & Text (6) & Yes & Street Type & PL \\
+            \hline
+            \rowcolor{LightCyan}
+            STREET\_DIRECTION & Text (6) & Yes & Street Direction & W \\
+            \hline
+            \rowcolor{LightCyan}
+            UNIT\_NUMBER & Text (6) & Yes & Unit Number & 402 \\
+            \hline
+            CITY & Text (34) & Yes & City & Nepean \\
+            \hline
+            \rowcolor{LightCyan}
+            POSTAL\_CODE & Text (6) & Yes & Postal Code & K2H9M5 \\
+            \hline
+            \hline
+            \multicolumn{5}{||c||}{Party of interest} \\
+            \hline
+            \hline
+            INSTRUMENT\_NUMBER & Text (12) & Yes & Instrument Number & LT472633 \\
+            \hline
+            \rowcolor{LightCyan}
+            CONSIDERATION\_AMOUNT & Currency & Yes & Consideration Amount & \$136,000.00 \\
+            \hline
+            \rowcolor{LightCyan}
+            REGISTRATION\_DATE & Date & Yes & Registration date of instrument & 01/31/2000 \\
+            \hline
+            \hline
+            \multicolumn{5}{||c||}{Map Data} \\
+            \hline
+            \hline
+            MAP\_PIN & Text (9) & Yes & Property Identification Number (Mapping) & 280400020 \\
+            \hline
+            \rowcolor{LightCyan}
+            X & Number & Yes & X-Coordinate of PIN Centroid~* & 5486071.0716 \\
+            \hline
+            \rowcolor{LightCyan}
+            Y & Number & Yes & Y-Coordinate of PIN Centroid~* & 1349428.7776 \\
+            \hline
+            \hline
+        \end{tabular}
+        \caption{Data Characteristics, Ownership Property Report \textemdash Property Attributes \\
+        ~* Specific projection and datum information will be specified in Product Sheet.}
+        \label{tab:ownership_property_report}
+    \end{table}
+
+    When Enhanced Address Data is provided, the address elements in Table~\ref{tab:ownership_property_report} listed above the double horizontal line, specifically the fields (\texttt{STREET\_NAME}, \texttt{STREET\_NUM}, \texttt{STREET\_SUFFIX}, \texttt{UNIT\_TYPE\_CODE}, \texttt{UNIT\_NUM}, \texttt{MUNICIPALITY\_NAME}) are removed and appended to the enhanced address data where the enhanced address data is not populated.
+    See product constraints section for details.
+
+    \vspace{5mm}
+
+    For the list of codes that may be found in the \texttt{UNIT\_TYPE} field (not included with the current version of the Teranet dataset), see Table 2 of Ownership Property Report\cite{TeranetEnterprisesInc.2011}.
+
+    \vspace{5mm}
+
+    For a list of LRO codes and names, see the General Description of Title Data document.
+
+    \vspace{5mm}
+
+    For available Owner Information fields (none of which are included with the current version of the Teranet dataset), see Table 4 of Ownership Property Report\cite{TeranetEnterprisesInc.2011}.
+
+    \vspace{5mm}
+
+    For all available Party of Interest fields (only \texttt{consideration\_amount} and \texttt{registration\_date} are included with the current version of the Teranet dataset), see Tables 5 and 6 of Ownership Property Report\cite{TeranetEnterprisesInc.2011}.
+
+    \subsection{Product constraints} \label{subsec:teranet_product_constraints}
+
+    This Product does not include data for inactive PINs in POLARIS, or example, PINs that have been retired as the result of a property split or consolidation.
+
+    Teranet's title reports are not an official government record or title search and may not reflect the current status of interests in land as shown in the Land Registry System.
+    Official records can be obtained by visiting the appropriate Land Registry Office or using the Teraview software.
+
+    Street address information and municipality information may not be populated in the POLARIS Title Index Database.
+    These fields are not mandatory fields and are not validated through the POLARIS data entry process.
+
+    The POLARIS databases reflect only data relating to instruments and plans registered in the Land Registry System.
+    Therefore, data for unregistered instruments and plans are not contained within the Ownership Property Report.
+
+    For the Value Added Option \textemdash Enhanced Address, the following product constraints apply:
+    \begin{itemize}
+        \item To infill records, which are missing address data, different processes and sources of address data have been used to provide Enhanced Address data.
+        As there is no central authority of address data for the Province of Ontario certain records may have an incorrect address associated with the property.
+        \item Address information delivered in this report may be derived and modified from the source data used to create the data record.
+        Teranet has proprietary data processes to standardize the address information and validate the information against the Canada Post standards.
+        This process may modify as well as append new fields of information to the record to format information as described in Table~\ref{tab:ownership_property_report}.
+        \item Postal Code and City data are derived fields.
+        The same street number and street name may appear within an LRO more than once.
+        In some cases, the Postal Code and City provided may actually be that of one of the other locations.
+    \end{itemize}
+
+    \subsection{Limitations of the Teranet dataset} \label{subsec:teranet_limitations}
+
+    Teranet dataset presents an extensive historical record of real estate transactions recorded in the Province of Ontario since the beginning of XIX century.
+    The dataset holds a wealth of information on Ontario housing market, but is at the same time very limited in the number of features present that describe each transaction, which makes any meaningful analysis and modelling based on Teranet data difficult
+    For example, there is no distinction being made between transactions recorded for residential, commercial, and industrial property types;
+    transaction amounts can vary from several dollars to several million dollars.
+    To address this gap, additional attributes can be joined from various data sources based on spatial or temporal relationships.
+    Given the size of the dataset, it would be beneficial to organize various data sources into a relational database, which is one of the aims of this Master Thesis.
+    This document covers Step 1: Obtain of OSEMN methodology for data science projects and includes the detailed description of various data sources to be later organized into a relational database.
+
+    \bibliography{obtain}
+    \bibliographystyle{ieeetr}
+
+\end{document}
