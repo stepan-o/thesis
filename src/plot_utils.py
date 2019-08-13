@@ -1,8 +1,112 @@
 import contextily as ctx
 import geopandas as gpd
+import matplotlib
 import matplotlib.pyplot as plt
 import pandas as pd
 from pysal.lib.cg import alpha_shape_auto
+
+
+def plot_count_mean_median(s, group_col, plot_col, figsize=(8, 8), tick_label_size=16,
+                           ax1_leg_label='count', ax2_leg_label1='median', ax2_leg_label2='mean',
+                           cust_xticks=False, xticks_rot=45, x_ticks_lab_size=16,
+                           ax1_color='darkblue', ax2_color1='mediumspringgreen', ax2_color2='deeppink',
+                           ax1_yticks_sep=True, ax2_yticks_sep=True,
+                           ax1_ylabel="count", ax1_xlabel="x", ax2_ylabel="mean and median",
+                           ylabel_size=16, xlabel_size=16,
+                           plot_title="Count, mean, and median", title_size=20,
+                           ax1_leg_loc='upper left', ax2_legend_loc='center right',
+                           ax1_leg_size=16, ax2_leg_size=16,
+                           save_path=None, save_dpi=300):
+    """
+    plot count, mean, and median from groups by group_col of values in plot_col
+    :param s: pandas DataFrame
+        subset to plot
+    :param group_col: string
+        name of column to group subset by
+    :param plot_col: string
+        name of column to plot
+    :param figsize: (int or float, int or float)
+        tuple with figure dimensions
+    :param tick_label_size: int
+        font size for tick labels
+    :param ax1_leg_label: string
+        legend label for left y axis
+    :param ax2_leg_label1: string
+        legend label for line 1 on right y axis
+    :param ax2_leg_label2: string
+        legend label for line 2 on right y axis
+    :param cust_xticks: boolean
+        whether to use x ticks with rotation and custom font size
+    :param xticks_rot: int
+        rotation (degrees) for custom x ticks
+    :param x_ticks_lab_size: int
+        font size for custom x ticks
+    :param ax1_color: string
+        line color on left y axis
+    :param ax2_color1: string
+        line 1 color on right y axis
+    :param ax2_color2: string
+        line 2 color on right y axis
+    :param ax1_yticks_sep: boolean
+        format y ticks on left y axis to include thousands separator (e.g., 1'045'543)
+    :param ax2_yticks_sep: boolean
+        format y ticks on right y axis to include thousands separator (e.g., 1'045'543)
+    :param ax1_ylabel: string
+        label for left y axis
+    :param ax1_xlabel: string
+        label for x axis
+    :param ax2_ylabel: string
+        label for right y axis
+    :param ylabel_size: int
+        y label size
+    :param xlabel_size: int
+        x label size
+    :param plot_title: string
+        title of the plot
+    :param title_size: int
+        font size for plot title
+    :param ax1_leg_loc: string
+        location of legend for left y axis
+    :param ax2_legend_loc: string
+        location of legend for right y axis
+    :param ax1_leg_size: int
+        size of legend font for left y axis
+    :param ax2_leg_size: int
+        size of legend font for right y axis
+    :param save_path: string
+        path to save figure (default=None results in plt.show)
+    :param save_dpi: int
+        DPI to use for saved figure
+    :return: None
+        plots and optionally saves the figure to file
+    """
+    plt.rcParams['xtick.labelsize'] = tick_label_size
+    plt.rcParams['ytick.labelsize'] = tick_label_size
+
+    ax = s.groupby(group_col)[plot_col].count().plot(figsize=figsize, label=ax1_leg_label, color=ax1_color)
+    if cust_xticks:
+        plt.xticks(rotation=xticks_rot, fontsize=x_ticks_lab_size)
+    ax2 = ax.twinx()
+    s.groupby(group_col)[plot_col].median().plot(ax=ax2, color=ax2_color1, label=ax2_leg_label1)
+    s.groupby(group_col)[plot_col].mean().plot(ax=ax2, color=ax2_color2, label=ax2_leg_label2)
+
+    if ax1_yticks_sep:
+        ax.get_yaxis().set_major_formatter(
+            matplotlib.ticker.FuncFormatter(lambda x, p: format(int(x), ',')))
+    if ax2_yticks_sep:
+        ax2.get_yaxis().set_major_formatter(
+            matplotlib.ticker.FuncFormatter(lambda x, p: format(int(x), ',')))
+    ax2.grid(False)
+    ax.set_ylabel(ax1_ylabel, fontsize=ylabel_size)
+    ax.set_xlabel(ax1_xlabel, fontsize=xlabel_size)
+    ax2.set_ylabel(ax2_ylabel, fontsize=ylabel_size)
+    ax2.set_title(plot_title, fontsize=title_size)
+    ax.legend(loc=ax1_leg_loc, fontsize=ax1_leg_size)
+    ax2.legend(loc=ax2_legend_loc, fontsize=ax2_leg_size)
+    if save_path:
+        plt.savefig(save_path, dpi=save_dpi, bbox_inches='tight')
+    else:
+        plt.show()
 
 
 def plot_subset(df_full, plot_focus_id, focus_col, x_col, y_col1,
