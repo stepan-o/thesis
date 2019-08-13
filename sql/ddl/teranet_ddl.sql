@@ -17,15 +17,19 @@ create table teranet
     street_number             integer,
     x                         numeric,
     y                         numeric,
-    objectid                  integer,
+    da_objectid               integer,
     dauid                     integer
-        constraint teranet_da_census_profiles_income_dauid_fk
+        constraint "3_Teranet_nonan_new_cols_da_census_profiles_income_dauid_fk"
             references da_census_profiles_income,
+    csduid                    integer,
     csdname                   varchar(22),
+    taz_objectid              numeric,
+    taz_o                     numeric,
     street_name_raw           varchar(50),
     date_disp                 date,
-    price_disp                text,
+    price_disp                varchar(17),
     year                      integer,
+    year_month                char(7),
     year3                     varchar(9),
     year5                     varchar(9),
     year10                    varchar(9),
@@ -48,10 +52,11 @@ create table teranet
     pin_sale_next_3y          boolean,
     xy_sale_next_6m           boolean,
     xy_sale_next_1y           boolean,
-    xy_sale_next_3y           boolean
+    xy_sale_next_3y           boolean,
+    price_2016                numeric
 );
 
-comment on table teranet is 'Teranet dataset filtered for GTHA records with price over 10''000 CAD';
+comment on table teranet is 'Teranet dataset filtered for GTHA records with price > 10''000 CAD, with new columns and keys';
 
 alter table teranet
     owner to teranet;
