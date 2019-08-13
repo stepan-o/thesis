@@ -399,6 +399,9 @@ tags
 .idea/**/dictionaries
 .idea/**/shelf
 
+# .idea folder
+.idea/
+
 # Sensitive or high-churn files
 .idea/**/dataSources/
 .idea/**/dataSources.ids
