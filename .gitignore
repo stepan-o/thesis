@@ -455,3 +455,6 @@ postgresql_logs/
 
 # LibreOffice temporary files
 .~*.odp#
+presentations/\.~eda_results\.pptx
+
+presentations/\.~Teranet_meeting_Aug16_2019\.pptx
