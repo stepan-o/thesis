@@ -17,14 +17,16 @@ create table teranet
     street_number             integer,
     x                         numeric,
     y                         numeric,
-    da_objectid               integer,
     dauid                     integer
-        constraint "3_Teranet_nonan_new_cols_da_census_profiles_income_dauid_fk"
+        constraint teranet_da_census_dauid_fk
+            references da_census_select
+        constraint teranet_da_census_profiles_income_dauid_fk
             references da_census_profiles_income,
     csduid                    integer,
     csdname                   varchar(22),
-    taz_objectid              numeric,
-    taz_o                     numeric,
+    taz_id                    integer
+        constraint teranet_tts_num_jobs_taz_id_fk
+            references tts_num_jobs,
     street_name_raw           varchar(50),
     date_disp                 date,
     price_disp                varchar(17),
