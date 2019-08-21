@@ -18,15 +18,22 @@ create table teranet
     x                         numeric,
     y                         numeric,
     dauid                     integer
-        constraint teranet_da_census_dauid_fk
-            references da_census_select
         constraint teranet_da_census_profiles_income_dauid_fk
-            references da_census_profiles_income,
+            references da_census_profiles_income
+        constraint teranet_da_census_select_dauid_fk
+            references da_census_select,
     csduid                    integer,
     csdname                   varchar(22),
-    taz_id                    integer
+    taz_o                     integer
+        constraint teranet_taz_info_taz_o_fk
+            references taz_info
         constraint teranet_tts_num_jobs_taz_id_fk
             references tts_num_jobs,
+    pin_lu                    integer
+        constraint teranet_lu_gtha_pin_fk
+            references lu_gtha,
+    landuse                   integer,
+    prop_code                 integer,
     street_name_raw           varchar(50),
     date_disp                 date,
     price_disp                varchar(17),
@@ -58,7 +65,7 @@ create table teranet
     price_2016                numeric
 );
 
-comment on table teranet is 'Teranet dataset filtered for GTHA records with price > 10''000 CAD, with new columns and keys';
+comment on table teranet is 'Teranet records, with new foreign keys, cleaned and filtered (>10''000CAD)';
 
 alter table teranet
     owner to teranet;
