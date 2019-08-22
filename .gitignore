@@ -449,6 +449,7 @@ fabric.properties
 # data directories
 data/teranet/
 data/old/
+data/dmti/
 
 #PostgreSQL logs
 postgresql_logs/
@@ -458,3 +459,4 @@ postgresql_logs/
 presentations/\.~eda_results\.pptx
 
 presentations/\.~Teranet_meeting_Aug16_2019\.pptx
+
