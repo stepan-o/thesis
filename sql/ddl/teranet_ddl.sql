@@ -29,6 +29,15 @@ create table teranet
             references taz_info
         constraint teranet_tts_num_jobs_taz_id_fk
             references tts_num_jobs,
+    fsa                       char(3)
+        constraint teranet_dmti_canfsa_fsa_fk
+            references dmti_canfsa,
+    pca_id                    integer
+        constraint teranet_dmti_onldu_nodup_pca_id_fk
+            references dmti_onldu_nodup,
+    postal_code_dmti          char(6),
+    maf_id                    integer,
+    del_m_id                  char(6),
     pin_lu                    integer
         constraint teranet_lu_gtha_pin_fk
             references lu_gtha,
@@ -65,7 +74,7 @@ create table teranet
     price_2016                numeric
 );
 
-comment on table teranet is 'Teranet records, with new foreign keys, cleaned and filtered (>10''000CAD)';
+comment on table teranet is 'Teranet records, with new foreign keys, cleaned and filtered for GTHA and price >10''''000CAD';
 
 alter table teranet
     owner to teranet;
