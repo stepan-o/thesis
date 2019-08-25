@@ -1,0 +1,1 @@
+ in database design, you have to strike a balance between modeling overhead, desired data consistency, and usability for queries
