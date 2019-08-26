@@ -1,17 +1,39 @@
-\chapter[Background]{Background information on the land registration system in Ontario} \label{ch:background}
+\chapter[Background]{Background information} \label{ch:background}
 
-\section{Transportation, urban form, and real estate market} \label{sec:intro}
+\section{Role of data in urban studies} \label{sec:role_of_data_in_urban_studies}
+
+\subsection{Transportation, urban form, and real estate market data} \label{subsec:transportation_urban_form_real_estate_data}
 
 There is a fundamental link between transportation and urban form;
 thus, the nature of development of urban areas directly determines such aspects as travel needs, viability of alternative modes, etc.
 Transportation, in turn, influences land development and location choices of people and firms.\textbf{cite?}
-
 As such, the study of interaction between real estate, urban form, and transportation presents opportunities in uncovering the dynamics of urban processes.
-However, when it comes to interpreting real estate market data, drawing conclusions can be more of an art than a science.\cite{Brett2009}
-As such, to study the interaction between land development, urban form, and transportation, it would be beneficial to have a system that is both comprehensive and easy to access by a wide range of researchers.
-The focus of this master thesis is the organization and implementation of such knowledge management system to facilitate future research activities conducted by the University of Toronto Transportation Research Institute (UTTRI).
+One of the possible ways of studying these dynamics is empirical, aiming to infer the mechanics of a system from the information produced by this system.
 
-\section{Real estate market} \label{sec:real_estate_market}
+An increasing amount of aspects of human life can be traced back through diverse digital footprints and, when aggregated, can reveal emerging patterns.\cite{Arribas-Bel2014}
+As such forms of human activity as transactions of land and real estate ownership become digitized\cite{TeranetEnterprisesInc.}, a wealth of data becomes captured and available for analysis.
+However, when it comes to interpreting real estate market dynamics, drawing conclusions from data can be more of an art than a science.\cite{Brett2009}
+Therefore, to study the interaction between land development, urban form, and transportation, it would be beneficial to have a system that can facilitate efficient access for researchers to linked information describing these urban phenomena.
+
+\subsection{Complexity of urban systems and "wicked" problems} \label{subsec:complexity_and_wicked_problems}
+
+Complexity of a system can be defined as a state or quality of being intricate or complicated.
+For a system to be complex is not necessarily the same as to be complicated;
+complex systems can be simple, i.e.\ governed by a single equation.
+Complexity of a system has to do with the intrinsic ability of a system to surprise us with its behaviour;
+that the system is hard to understand, despite the mechanics of it being relatively simple.
+
+Jane Jacobs has famously described a city as "a problem in organized complexity"\cite{Jacobs1961a}.
+A little over a decade after Jacobs, Rittel and Webber presented a path-breaking conceptualization of planning problems as "wicked" problems: problems which cannot be definitively described and for which it makes no sense to talk of "optimal solutions"\cite{Rittel1973}.
+More than 40 years after their original publication, Rittel and Webber's ideas remain relevant to the policy sciences today.
+There is an intense interest in the nature of wicked problems and the complex tasks of identifying their scope, viable responses, and appropriate mechanisms and pathways to improvement\cite{Crowley2017}.
+Particularly, Ritter and Webber stated that the "problems" are never "solved", the focus instead becomes on iteratively "re-solving" the problems over and over.
+Such approach resembles the methodologies typically employed for data science projects, where the sequence of steps is iterated to produce a more meaningful solution on each next iteration of the cycle, as can be seen in such process models as CRISP-DM\cite{Shearer2000}.
+This makes data science methodologies a natural fit when trying to get a deeper understanding of the nature of "wicked" urban problems, such as the interaction between land development, urban form, and transportation.
+
+\section{Housing market studies} \label{sec:housing_market_studies}
+
+\subsection{Real estate market} \label{subsec:real_estate_market}
 
 There are many ways to approach the definition of the real estate market: it could refer to various grouping of customers, as often done in marketing context, while terms supply and demand employed by economists characterize the market in terms of by analyzing behaviour of buyers and sellers.
 In real estate, product usually refers to property type, and is distinguished by the property type (apartment buildings, offices, warehouses, etc.), interior features (size, layout, quality of design, amenities/services), location attributes (walkability, access to transit, distance to the city centre, etc.), and prices and rents.
@@ -22,7 +44,7 @@ This task, which involves the collection of data, design, and implementation of 
 
 TODO: fuzzy diagram of price
 
-\section{ILUTE model system} \label{sec:ilute}
+\subsection{ILUTE model system} \label{subsec:ilute}
 
 \textit{ILUTE is a comprehensive, integrated model system designed to project the evolution of demographics, land use and travel within an urban region over time.
 The ILUTE (Integrated Land Use, Transportation, Environment) model system is an agent-based microsimulation model for the Greater Toronto-Hamilton Area (GTHA) in which disaggregate, process-based models of spatial socio-economic processes are used to evolve the GTHA system state from a known base case to a predicted future year end state in one-year time steps.
@@ -30,3 +52,18 @@ The system state is defined in terms of the individual persons, households, dwel
 that collectively define the urban region being modeled.
 The housing market component of ILUTE evolves the residential location of households over time.
 It includes the endogenous supply of housing by type and location, as well as the endogenous determination of sales prices and rents.}\cite{Miller2010}
+
+\section{Information system for housing market data} \label{sec:information_system_for_housing_market_data}
+
+\subsection{Requirements to the information system for housing market data} \label{subsec:requirements_to_information_system}
+
+On one hand, for such information-handling system to be comprehensive, it needs to combine a wide range of data sources describing these systems while maintaining semantic interoperability between these sources.
+In the case of land use, transportation, demographic, and real estate data, it means to take into account the varying spatial and temporal scale and resolution between these data sources when joining them together.
+At the same time, the system needs to be easily accessible to a wide range of researchers and students;
+it also needs to have powerful data processing capacity, to allow working with and performing calculations on large datasets related to real estate and land use.
+In addition to that, the system should have a modular structure, have a workflow that is reproducible and modifiable, so that new data sources and new relationships can be added to the system, while maintaining the existing part intact.
+
+All of the requirements listed above present a strong case for the housing market information system to be implemented in a form of a relational database.
+Given the size of the datasets and the current research needs, PostgreSQL presents a good option for the database management system that fits all the discussed criteria.
+The focus of this master thesis is the organization and implementation of the GTHA housing market database to facilitate future research activities focused on the Longitudinal Analysis of housing sales in the Greater Toronto-Hamilton Area conducted by the University of Toronto Transportation Research Institute (UTTRI).
+
