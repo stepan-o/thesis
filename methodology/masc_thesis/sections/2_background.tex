@@ -106,17 +106,3 @@ This task, which involves the collection of data, design, and implementation of 
 
 TODO: fuzzy diagram of price
 
-\section{Information system for housing market data} \label{sec:information_system_for_housing_market_data}
-
-\subsection{Requirements to the information system for housing market data} \label{subsec:requirements_to_information_system}
-
-On one hand, for such information-handling system to be comprehensive, it needs to combine a wide range of data sources describing these systems while maintaining semantic interoperability between these sources.
-In the case of land use, transportation, demographic, and real estate data, it means to take into account the varying spatial and temporal scale and resolution between these data sources when joining them together.
-At the same time, the system needs to be easily accessible to a wide range of researchers and students;
-it also needs to have powerful data processing capacity, to allow working with and performing calculations on large datasets related to real estate and land use.
-In addition to that, the system should have a modular structure, have a workflow that is reproducible and modifiable, so that new data sources and new relationships can be added to the system, while maintaining the existing part intact.
-
-All of the requirements listed above present a strong case for the housing market information system to be implemented in a form of a relational database.
-Given the size of the datasets and the current research needs, PostgreSQL presents a good option for the database management system that fits all the discussed criteria.
-The focus of this master thesis is the organization and implementation of the GTHA housing market database to facilitate future research activities focused on the Longitudinal Analysis of housing sales in the Greater Toronto-Hamilton Area conducted by the University of Toronto Transportation Research Institute (UTTRI).
-
