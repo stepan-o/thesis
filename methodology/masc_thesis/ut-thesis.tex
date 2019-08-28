@@ -132,7 +132,10 @@ Part of a Longitudinal Analysis of housing sales in the Greater Toronto-Hamilton
 \begin{abstract}
 %% *** Put your Abstract here. ***
 %% (At most 150 words for M.Sc. or 350 words for Ph.D.)
-
+    Teranet dataset of real estate transactions recorded in the Province of Ontario holds a wealth of information on the housing market of Ontario, but is very limited in the number of available attributes.
+    The dataset can be augmented by joining additional attributes from various data sources, such as Census or TTS survey, based on spatial and/or temporal relationships.
+    These relationships are best organized in the form of a relational database based on a database management system, such as PostgreSQL .
+    Primary focus of this master's thesis is design and implementation of the proposed GTHA housing market database.
 \end{abstract}
 
 %% Anything placed between the abstract and table of contents will
@@ -193,7 +196,9 @@ Part of a Longitudinal Analysis of housing sales in the Greater Toronto-Hamilton
 %% *** Include chapter files here. ***
 \include{sections/1_introduction}
 \include{sections/2_background}
-\include{sections/3_rdbms_design}
+\include{sections/3_teranet}
+\include{sections/4_data_sources}
+\include{sections/5_rdbms_design}
 
 
 %% This adds a line for the Bibliography in the Table of Contents.
