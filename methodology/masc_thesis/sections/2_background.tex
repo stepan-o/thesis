@@ -1,5 +1,9 @@
 \chapter[Background information]{Background information} \label{ch:background}
 
+\section{Introduction} \label{sec:intro_background}
+
+%TODO add chapter introduction
+
 \section{Complexity of urban systems, "wicked" problems and data} \label{sec:complexity_and_wicked_problems_and_data}
 
 In her famous 1961 book, Jane Jacobs\cite{Jacobs1961} described a city as "a problem in organized complexity";
@@ -22,8 +26,8 @@ This makes data science methodologies a natural fit when trying to get a deeper 
 In addition to that, an increasing amount of aspects of human life becomes digitalized, producing a wealth of data that can be used to model and analyze dynamics of urban systems\cite{Arribas-Bel2014, Chen2016}.
 An example of such digitalization of human activity is the introduction of the Province of Ontario Land Registration Information System (POLARIS) in 1985 by the Government of Ontario\cite{TeranetEnterprisesInc.}.
 This lead to the creation of an extensive dataset of real estate transactions by Teranet Enterprises Inc.
-that offers a very fine resolution of housing market data across both time and space.
-This dataset is used as the core of the GTHA housing market database which is introduced with this master's thesis.
+that offers a very fine resolution of housing market data across both time and space, but also presents challenges discussed in section~\ref{sec:challenges}.
+To address these challenges, an efficient and modular Python workflow and a relational database for GTHA housing market are introduced with this master's thesis.
 
 \section{Land Use and Transport (LUT) models} \label{sec:evolution_of_models_of_urban_systems}
 
@@ -86,44 +90,75 @@ However, when studying the relationship between transportation facilities and pr
 To simulate the changes in accessibility, metropolitan regions are usually broken down into a set of small geographic zones, similar (or in many cases identical) to the set of zones used for regional travel forecasting.
 Changes to relative accessibility of a location can thus be estimated as changes in zone-to-zone travel times in a travel network\cite{Iacono2008}.
 
-\subsection{Breakdown of an urban region} \label{subsec:breakdown_of_urban_region}
+\section{System of land registration in Canada, POLARIS and Teranet} \label{sec:system_of_land_registration_polaris_teranet}
 
-Most urban areas are divided into zones or planning areas on the basis of maintaining similar population sizes and following built or natural boundaries like roads or rivers.
-For some research purposes, it could be beneficial to use multiple data sources, such data collected by different surveys, and the smallest spatial scales at which different survey data is available.
-For example for census data, a dissemination area is the smallest standard geographic area for which all census data are disseminated.
+\subsection{System of land registration in Canada} \label{subsec:land_reg_system_canada}
 
-One of the major sources of demographic and statistical data in Canada are the datasets collected under the national Census program.
-Statistics Canada collects every five years the national Census of Canada and disseminates the information by a range of geographic units, also referred to as "Census geography"\cite{MapandDataLibrary2019}.
-Census geography follows a certain hierarchy defined by Statistics Canada, with the largest top-level divisions being provinces and territories, lowest-tier divisions to which census data is disseminated are Dissemination Areas (DAs)\cite{StatisticsCanada2018}.
-Statistics Canada defines a dissemination area as a small area composed of one or more neighbouring dissemination blocks, roughly uniform in population size targeted from 400 to 700 persons to avoid data suppression\cite{StatisticsCanada2015}.
+According to Chapter 6 of the International Comparative Legal Guide to Real Estate published by the Global Legal Group in 2015\cite{McKean2015}, all land owned in Canada is registered in a public land registry through either a registry system, a land titles system or a combination of both in the applicable province.
+The registry system is a public record of documents evidencing transactions affecting land.
+In the land titles system, the applicable provincial government determines the quality of the title, and essentially guarantees (within certain important statutory limits) the title to, and interests in, the property.
+As of 2015, most common law provinces and territories were using the land titles system or were in the process of converting title from a registry system to a land titles system.
 
-Another major source of information for most transportation planning studies concerned with Southern Ontario is the Transportation Tomorrow Survey (TTS)\cite{DataManagementGroup2014}, an origin destination travel survey.
-The Transportation Tomorrow Survey (TTS), undertaken every five years since 1986, is a cooperative effort by local and provincial government agencies to collect information about urban travel in southern Ontario.
-TTS represents a retrospective survey of travel taken by every member (age 11 or over) of the household during the day previous to the telephone or web contact.
-The information collected and the method of collection has remained relatively consistent over the seven surveys and includes characteristics of the household, characteristics of each person in the household, and details of the trips taken by each member of the household, including details on any trips taken by transit\cite{Ashby2018}.
+On the purchase and sale of real estate and land, ownership is generally transferred to the buyer when the deed or transfer is registered in the applicable land registry office.
+An agreement of purchase and sale must be in writing to be enforceable.
+A transfer of ownership is actualised by registering, either physically or electronically (depending on the applicable land registry system), a deed or transfer with the applicable land registry office or land registrar, copies of which can be obtained from the relevant registry office, often electronically.
 
-The finest level of spatial aggregation available through iDRS is that of the Traffic Zone also referred to as Traffic Analysis Zone (TAZ).
-TTS data has been collected for changing TAZ boundaries or in other words, different zone systems due to growing population and expanding extents of the survey in the GTHA region over the years.
-To make the TTS data consistent for comparing over all years from 1986 to 2016, the data management group (DMG), the custodian of the dataset derived from TTS, made all surveys available in the 2001 zone system, for convenience of researchers.
-Any zone system could have been chosen for that matter.
-Not as a rule, but the TAZs roughly follow census tract boundaries, which are slightly bigger than DA boundaries.
-Overview of the traffic zones and their boundaries: http://dmg.utoronto.ca/survey-boundary-files#tts
+\subsection{POLARIS: Land registration system of Ontario} \label{subsec:lang_reg_operating_canada}
 
-We used the 2001 zone system to model travel times for the GTHA on EMME for all TTS years based on the origin-destination trip data collected in the survey. The travel time data was used to create further transportation accessibility variables.
-%TODO add more info about breakdown of an urban region
+Each province and territory in Canada has its own land registry system, whether it is a land titles system, a registry system or a combination of both, with each system having its own rules.
+As of 2015, the Province of Ontario has largely converted from registry systems to a land titles system.
 
+In 1985, the Government of Ontario initiated the Province of Ontario Land Registration Information System (POLARIS) pilot project for the purposes of records automation and the conversion from the Registry System to the Land Titles System.
+The Land Registration Reform Act (Ontario)\cite{TheGovernmentofOntario1990} was introduced in 1990 to facilitate electronic search and registration of properties and the automation of paper-based records.
 
-\section{Challenges of using Teranet's data} \label{sec:challenges}
-However, when it comes to using these data sources in social studies, along with opportunities there are also challenges present.
-For example, these data sources can have issues with the quality of the data, might require a specific set of skills to take advantage of these data sources, or might not be suitable for traditional methods meant for traditional data\cite{Arribas-Bel2014}.
-All of these are true in the case of Teranet's dataset of real estate transactions.
-In addition, when it comes to interpreting real estate market dynamics, drawing conclusions from data can be more of an art than a science.\cite{Brett2009}
-Therefore, to study the interaction between land development, urban form, and transportation, it would be beneficial to have a system that can facilitate efficient access to linked information describing these phenomena to researchers from a wide range of disciplines and backgrounds.
+POLARIS was built by the Province to house and process electronic land records, which in turn lead to the creation of an extensive dataset of land registration records managed by Teranet Enterprises Inc.
+Today, POLARIS is the search/registration and property maintenance system for all automated land records in Ontario.
+
+\subsection{The Teranet-Ontario Partnership} \label{subsec:teranet_ontario}
+
+In 1991, the Government of Ontario established a partnership with Teranet\cite{TeranetEnterprisesInc.2019}, a Toronto-based organization, founded the same year, which provides e-services to legal, real estate, government, financial, and healthcare markets.
+The partnership was established to convert Ontario's land registration system to a more modernized electronic title system.
+The project involved taking a 200-year-old paper-based system and creating a database with electronic records for more than five million parcels of land.
+
+Teranet converted all qualified Registry properties in Ontario to the Land Titles system and automated existing paper Land Titles parcels.
+As a result, 99.9\% of property in Ontario was parcelized and administered under the Land Titles system, which affords a property ownership guarantee by the province.
+Teranet fully automated the conversion of millions of paper-based documents and records into the Ontario Electronic Land Registration System (ELRS).
+
+In December 2010, the Government of Ontario extended its exclusive relationship with Teranet by 50 years.
+Today, Teranet is the exclusive provider of Ontario's online property search and registration;
+it developed, owns and operates the ELRS, and also provides online access to Ontario's Writs System.
+
+\section{Challenges of using Teranet's data and proposed solution} \label{sec:challenges}
+
+\subsection{Data quality, skill requirements and lack of features} \label{subsec:challenges_quality_skills_features}
+
+Teranet dataset presents an extensive historical record of real estate transactions recorded in the Province of Ontario since the beginning of XIX century.
+However, when it comes to using new data sources in social studies, along with opportunities there are also challenges present.
+For example, these data sources can have issues with the quality of the data, might require a specific set of skills to take advantage of these data sources, or might not be suitable for traditional methods meant for traditional data\cite{Arribas-Bel2014}, all of which are true in the case of Teranet's dataset.
 
 On top of the issues with Teranet's data mentioned above, the most significant challenge lies in the amount of features provided for each record.
 Despite capturing effectively the complete population of real estate transactions recorded in Ontario since 1985, the available version of the dataset includes no information describing anything about each transaction, other than its location in the form of address and coordinates, the registration date, and the consideration amount.
-Moreover, the dataset includes records of transactions for all kinds of real estate property with an extremely high variance of prices, and no attributes that would allow transactions to be filtered for meaningful analysis and modeling.
+Since is no distinction being made between transactions recorded for residential, commercial, and industrial property types, transaction amounts can vary from several dollars to billions of dollars.
+There are no attributes that would allow transactions to be filtered for meaningful analysis and modeling.
+
+\subsection{Size of datasets and file formats} \label{subsec:challenges_size_and_formats}
+
+To address this gap, additional attributes can be joined from various data sources, such as Census, TTS or land use data, based on spatial or temporal relationships.
+However, Teranet's dataset has a number of records on the order of $10^6$.
+Such data sources as Census tables have the number of fields on the order of $10^2$.
+Overall, the number of attributes that could be joined between the various available data sources will probably be on the order of $10^3$.
+This fact makes it increasingly impractical to store all the data in one table, due to the memory requirements for storage and processing.
+
+In addition, datasets coming from different sources arrive in different file formats, such as text files, Excel spreadsheets, .csv files, or shapefiles.
+Combined with the size of the datasets and the computational requirements of such processing techniques as spatial joins, the facts mentioned above make working with Teranet's difficult due to the hardware and special skill requirements.
+
+\subsection{Proposed solution: Python-SQL back-end} \label{subsec:proposed_solution_python_sql_backend}
+
+To address this challenge, this master's thesis establishes an organized modular data preparation workflow for Teranet's dataset and other related data sources and organized them into a relational database.
+A Relational Database Management System (RDBMS), such as PostgreSQL, will deliver the benefit of organized and optimized data storage, access, and processing;
+it is also capable of facilitating the flexibility and modular structure that is dictated by the nature of the data sources and the scope of research activities undertaken by UTTRI .
+The data preparation workflow is facilitated via Python in a series of jupyter notebooks described in section \textbf{cite}
 
 \section{Chapter summary} \label{sec:background_summary}
-There is a bunch of different data that can help urban research efforts, but its tricky to work with and disorganized, so we need a database.
+There is a bunch of different data that can help urban research efforts, but it requires special spatial and temporal joining and organization, so we need a database.
 %TODO finish chapter summary
