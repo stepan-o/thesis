@@ -34,7 +34,7 @@ create table teranet
             references dmti_canfsa,
     pca_id                    integer
         constraint teranet_dmti_onldu_nodup_pca_id_fk
-            references dmti_onldu_nodup,
+            references dmti_postal_geography,
     postal_code_dmti          char(6),
     maf_id                    integer,
     del_m_id                  char(6),
@@ -46,7 +46,9 @@ create table teranet
     street_name_raw           varchar(50),
     date_disp                 date,
     price_disp                varchar(17),
-    year                      integer,
+    year                      integer
+        constraint teranet_temporal_spans_year_fk
+            references temporal_spans,
     year_month                char(7),
     year3                     varchar(9),
     year5                     varchar(9),
