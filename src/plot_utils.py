@@ -6,6 +6,41 @@ import pandas as pd
 from pysal.lib.cg import alpha_shape_auto
 
 
+def grouped_boxplot(df, year, max_price, plot_col='price_2016', group_col='csdname',
+                   title=None, output='show'):
+    """
+    plot a grouped boxplot of column 'plot_col' in DataFrame 'df' gouped by column 'group_col' 
+    :param df: pandas DataFrame
+    DataFrame with variables to be plotted
+    :param year: int
+    year to take the subset by
+    :param max_price: 
+    :param plot_col: 
+    :param group_col: 
+    :param title: 
+    :param output: 
+    :return: 
+    """
+    f, ax = plt.subplots(1, figsize=(12, 12))
+    df.query('year == {0}'.format(year)).query('price_2016 < {0}'.format(max_price))\
+        .boxplot(column=plot_col, by=group_col, vert=False, ax=ax)
+    ax.set_ylabel("Municipality", fontsize=18)
+    ax.set_xlabel("Consideration amount (in 2016 CAD)", fontsize=18)
+    ax.get_xaxis().set_major_formatter(matplotlib.ticker.FuncFormatter(lambda x, p: format(int(x), ',')))
+    ax.set_xlim(0, max_price)
+    plt.yticks(fontsize=14)
+    plt.xticks(fontsize=14)
+    if title:
+        ax.set_title(title, fontsize=18)
+    if output == 'show':
+        plt.show()
+    elif output == 'save':
+        f.savefig('results/plots/boxplots/teranet_{0}_{1}_by_{2}.png'
+                    .format(year, plot_col, group_col), dpi=200, bbox_inches='tight')
+    else:
+        raise ValueError("parameter 'output' for function 'grouped_boxplot' must be either 'show' or 'save'")
+    plt.close(f)
+
 def plot_count_mean_median(s, group_col, plot_col, figsize=(8, 8), tick_label_size=16,
                            ax1_leg_label='count', ax2_leg_label1='median', ax2_leg_label2='mean',
                            cust_xticks=False, xticks_rot=45, x_ticks_lab_size=16,
