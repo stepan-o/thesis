@@ -28,3 +28,33 @@ Any zone system could have been chosen for that matter.
 Not as a rule, but the TAZs roughly follow census tract boundaries, which are slightly bigger than DA boundaries.
 Overview of the traffic zones and their boundaries: http://dmg.utoronto.ca/survey-boundary-files#tts
 
+\section{Spatial relationships between datasets} \label{sec:spatial_relationships}
+
+This section introduces the spatial relationships between the datasets used in the GTHA housing market database.
+
+\subsection{Breakdown of an urban region} \label{subsec:breakdown_of_urban_region}
+
+Most urban areas are divided into zones or planning areas on the basis of maintaining similar population sizes and following built or natural boundaries like roads or rivers.
+For some research purposes, it could be beneficial to use multiple data sources, such data collected by different surveys, and the smallest spatial scales at which different survey data is available.
+For example for census data, a dissemination area is the smallest standard geographic area for which all census data are disseminated.
+
+One of the major sources of demographic and statistical data in Canada are the datasets collected under the national Census program.
+Statistics Canada collects every five years the national Census of Canada and disseminates the information by a range of geographic units, also referred to as "Census geography"\cite{MapandDataLibrary2019}.
+Census geography follows a certain hierarchy defined by Statistics Canada, with the largest top-level divisions being provinces and territories, lowest-tier divisions to which census data is disseminated are Dissemination Areas (DAs)\cite{StatisticsCanada2018}.
+Statistics Canada defines a dissemination area as a small area composed of one or more neighbouring dissemination blocks, roughly uniform in population size targeted from 400 to 700 persons to avoid data suppression\cite{StatisticsCanada2015}.
+
+Another major source of information for most transportation planning studies concerned with Southern Ontario is the Transportation Tomorrow Survey (TTS)\cite{DataManagementGroup2014}, an origin destination travel survey.
+The Transportation Tomorrow Survey (TTS), undertaken every five years since 1986, is a cooperative effort by local and provincial government agencies to collect information about urban travel in southern Ontario.
+TTS represents a retrospective survey of travel taken by every member (age 11 or over) of the household during the day previous to the telephone or web contact.
+The information collected and the method of collection has remained relatively consistent over the seven surveys and includes characteristics of the household, characteristics of each person in the household, and details of the trips taken by each member of the household, including details on any trips taken by transit\cite{Ashby2018}.
+
+The finest level of spatial aggregation available through iDRS is that of the Traffic Zone also referred to as Traffic Analysis Zone (TAZ).
+TTS data has been collected for changing TAZ boundaries or in other words, different zone systems due to growing population and expanding extents of the survey in the GTHA region over the years.
+To make the TTS data consistent for comparing over all years from 1986 to 2016, the data management group (DMG), the custodian of the dataset derived from TTS, made all surveys available in the 2001 zone system, for convenience of researchers.
+Any zone system could have been chosen for that matter.
+Not as a rule, but the TAZs roughly follow census tract boundaries, which are slightly bigger than DA boundaries.
+Overview of the traffic zones and their boundaries: http://dmg.utoronto.ca/survey-boundary-files#tts
+
+We used the 2001 zone system to model travel times for the GTHA on EMME for all TTS years based on the origin-destination trip data collected in the survey.
+The travel time data was used to create further transportation accessibility variables.
+%TODO add more info about breakdown of an urban region
