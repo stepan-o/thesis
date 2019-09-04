@@ -356,10 +356,9 @@ def get_plot_title(counts, minrecords, id_lab):
 
 def map_alpha(gdf, start, stop,
               color_col, idx_col, min_counts,
-              dfd=None, action='show',
+              dfd=None, action='show', cont=True,
               x_col='x', y_col='y', crs='+init=epsg:4326',
-              save_path_noctx='img/gen/noctx/',
-              save_path_ctx='img/gen/ctx/',
+              save_path='',
               set_fixed_limits=True,
               record_counts=True):
     """
@@ -372,11 +371,11 @@ def map_alpha(gdf, start, stop,
     :param min_counts:
     :param dfd:
     :param action:
+    :param cont:
     :param x_col:
     :param y_col:
     :param crs:
-    :param save_path_noctx:
-    :param save_path_ctx:
+    :param save_path:
     :param set_fixed_limits:
     :param record_counts:
     :return:
@@ -408,21 +407,13 @@ def map_alpha(gdf, start, stop,
         if cont:
             ctx.add_basemap(ax=ax, url=ctx.sources.ST_TONER_HYBRID,
                             alpha=0.5)
-            if act == 'show':
-                plt.show()
-            elif act == 'save':
-                plt.savefig(save_path_ctx +
-                            str(min_idx)[:10]
-                            + '_' +
-                            str(max_idx)[:10])
-        else:
-            if act == 'show':
-                plt.show()
-            elif act == 'save':
-                plt.savefig(save_path_noctx +
-                            str(min_idx)[:10]
-                            + '_' +
-                            str(max_idx)[:10])
+        if act == 'show':
+            plt.show()
+        elif act == 'save':
+            plt.savefig(save_path +
+                        str(min_idx)[:10]
+                        + '_' +
+                        str(max_idx)[:10])
 
     # create subset from provided GeoDataFrame
     s = gdf.loc[start:stop].reset_index()
@@ -446,6 +437,5 @@ def map_alpha(gdf, start, stop,
         .apply(lambda tab: alpha_shape_auto(tab.values))
     alpha = gpd.GeoDataFrame({'geometry': alpha}, crs=crs)
     alpha = alpha.to_crs(epsg=3857)
-    plot_map(cont=False, act=action)
-    plot_map(cont=True, act=action)
+    plot_map(cont=cont, act=action)
     return dfd
