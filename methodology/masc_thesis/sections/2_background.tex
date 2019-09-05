@@ -1,11 +1,14 @@
 \chapter[Background information]{Background information} \label{ch:background}
 
-\section{Introduction} \label{sec:intro_background}
+\section{Introduction: transportation and land use, land registration in Canada and Teranet} \label{sec:intro_background}
 
 %TODO add chapter introduction
 
-\section{Complexity of urban systems, "wicked" problems and data} \label{sec:complexity_and_wicked_problems_and_data}
+\section{Land Use and Transport (LUT) models} \label{sec:evolution_of_models_of_urban_systems}
 
+\subsection{Complexity of urban systems, "wicked" problems and data} \label{subsec:complexity_and_wicked_problems_and_data}
+
+%TODO: shorten paragraph
 In her famous 1961 book, Jane Jacobs\cite{Jacobs1961} described a city as "a problem in organized complexity";
 since then, many other researchers have remarked that urban systems exhibit complex behaviour\cite{Batty2008, Bettencourt2013}.
 Complexity of a system can be defined as a state or quality of being intricate or complicated.
@@ -19,7 +22,6 @@ this conceptualization characterized urban planning problems as "wicked" problem
 More than 40 years after their original publication, Rittel and Webber's ideas remain relevant to the policy sciences today: there is an intense interest in the nature of "wicked" problems and the complex tasks of identifying their scope, viable responses, and appropriate mechanisms and pathways to improvement\cite{Crowley2017}.
 In their paper, Rittel and Webber stated that such "wicked" problems are never "solved", and that the focus instead becomes on iteratively "re-solving" the problems over and over.
 
-%TODO: rewrite paragraph
 This approach resembles the methodologies typically employed for data science projects, where the sequence of steps is iterated over, producing a more meaningful solution on each iteration of the cycle, as defined by such process models as CRISP-DM\cite{Shearer2000}.
 This makes data science methodologies a natural fit when trying to get a deeper understanding of the nature of "wicked" urban problems, such as the interaction between land development, urban form, and transportation.
 
@@ -28,8 +30,6 @@ An example of such digitalization of human activity is the introduction of the P
 This lead to the creation of an extensive dataset of real estate transactions by Teranet Enterprises Inc.
 that offers a very fine resolution of housing market data across both time and space, but also presents challenges discussed in section~\ref{sec:challenges}.
 To address these challenges, an efficient and modular Python workflow and a relational database for GTHA housing market are introduced with this master's thesis.
-
-\section{Land Use and Transport (LUT) models} \label{sec:evolution_of_models_of_urban_systems}
 
 \subsection{Transportation-land use cycle} \label{subsec:transportation_urban_form_real_estate_data}
 
@@ -152,12 +152,17 @@ This fact makes it increasingly impractical to store all the data in one table, 
 In addition, datasets coming from different sources arrive in different file formats, such as text files, Excel spreadsheets, .csv files, or shapefiles.
 Combined with the size of the datasets and the computational requirements of such processing techniques as spatial joins, the facts mentioned above make working with Teranet's difficult due to the hardware and special skill requirements.
 
+\subsection{Complex spatial and temporal relationships between urban data sources} \label{subsec:complex_spatio-temporal_relationships_between_urban_data_sources}
+
+%TODO write subsection
+
 \subsection{Proposed solution: Python-SQL back-end} \label{subsec:proposed_solution_python_sql_backend}
 
 To address this challenge, this master's thesis establishes an organized modular data preparation workflow for Teranet's dataset and other related data sources and organized them into a relational database.
 A Relational Database Management System (RDBMS), such as PostgreSQL, will deliver the benefit of organized and optimized data storage, access, and processing;
 it is also capable of facilitating the flexibility and modular structure that is dictated by the nature of the data sources and the scope of research activities undertaken by UTTRI .
 The data preparation workflow is facilitated via Python in a series of jupyter notebooks described in section \textbf{cite}
+%TODO finish the description of the proposed solution
 
 \section{Chapter summary} \label{sec:background_summary}
 There is a bunch of different data that can help urban research efforts, but it requires special spatial and temporal joining and organization, so we need a database.

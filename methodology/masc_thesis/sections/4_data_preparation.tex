@@ -1,6 +1,142 @@
-\chapter{Spatial relationships between data sources used in the GTHA housing market database} \label{ch:spatial_relationships}
+\chapter{Data preparation} \label{ch:data_preparation}
 
-\section{Introducing spatial relationships to the GTHA housing market database} \label{sec:intro_spatial_relationships}
+\section{Introduction} \label{sec:data_preparation_intro}
 
-%TODO add chapter introduction
+Data preparation plays a critical role in research projects:
 
+\begin{itemize}
+    \item it can determine the success of applications of machine learning algorithms
+    \item it is a prerequisite for any meaningful analysis
+    \item it is often required to allow the introduction of constraints necessary for implementation of an RDBMS .
+\end{itemize}
+
+Data preparation can be followed in a linear manner, but is very likely to be iterative in nature\cite{Brownlee2013}.
+This was indeed the case during the preparation of all the input data for the GTHA housing market database, especially in the case of Teranet dataset.
+As new data sources will be added to the database, new foreign keys might need to be introduced to Teranet data.
+It might also be necessary to introduce additional features, modify existing cleanup steps (change criteria for filtering records, for example), or add new preparation steps, such as removal of duplicates (not currently performed).
+
+To make this process efficient, modular, reproducible, easy to inspect and to modify, a streamlined workflow has been established using Python via a series of jupyter notebooks as a part of this master's thesis.
+This section describes the concept of ''Tidy Data'' and database normalization and lists the steps taken in preparing all the input data before it can be entered into the housing market database.
+
+\section{Tidy data and database normalization} \label{sec:db_norm_tidy_data}
+
+This section describes the concept of ''Tidy Data'', as defined by Hadley Wickham.
+The concept of ''Tidy Data'' presents the basic ideas of normalization of a database, as defined by Edgar F. Codd, reformulated in statistical language.
+
+\subsection{Tidy data} \label{subsec:tidy_data}
+
+Hadley Wickham in his paper ''Tidy Data''\cite{Wickham2014} formalized the way how a shape of the data can be described and what goal should be pursued when formatting data.
+The principles of tidy data provide a standard way to organize data values within a dataset.
+The tidy data standard has been designed to facilitate initial exploration and analysis of the data, and to simplify the development of data analysis tools that work well together.
+The principles of tidy data are closely tied to those of relational databases and Codd's relational algebra\cite{Codd1990}.
+
+\subsection{Normalization of a database according to Codd} \label{subsec:db_norm}
+
+As an integral part of his relational model, Codd proposed a process of database normalization, or restructuring of a relational database in accordance with a series of so-called normal forms in order to reduce data redundancy and improve data integrity.
+Normalization entails organizing the columns (attributes) and tables (relations) of a database to ensure that their dependencies are properly enforced by database integrity constraints.
+As defined by Codd (\cite{Codd1990}, section 17.5.1), the basic ideas in normalization are to organize the information in a database as follows:
+
+\begin{enumerate}
+    \item Each distinct type of object has a distinct type identifier, which becomes the name of a base relation.
+    \item Every distinct object of a given type must have an instance identifier that is unique within the object type;
+    this is called its primary-key value.
+    \item Every fact in the database is a fact about the object identified by the primary key.
+    \item Each such fact contains nothing other than the single-valued immediate properties of the object.
+    \item Such facts are collected together in a single relation, if they are about objects of the same type.
+    The result is a collection of facts, all of the same type.
+\end{enumerate}
+
+\subsection{Teranet dataset in the context of a normalized database} \label{subsec:teranet_db_norm}
+
+Teranet dataset is intended to be used as one of the tables (relations) of the proposed GTHA housing market database that would include other sources of information, such as DA-level demographics, land use information, etc.
+In this context, Codd's basic normalization ideas will take the following form:
+
+\begin{enumerate}
+    \item Each distinct type of object has a distinct type identifier, which becomes the name of a base relation.
+    \begin{itemize}
+        \item The Teranet dataset (filtered to include only GTHA records) presents a single type of object (relation, or table) \textemdash real estate transactions recorded in the GTHA between 1805-01-06 and 2017-10-11.
+        \item This condition is met.
+    \end{itemize}
+    \item Every distinct object (transaction) must have an instance identifier that is unique within the object type, or its primary-key value.
+    \begin{itemize}
+        \item In case of Teranet dataset, all the native columns, including registration date, consideration amount, pin, address information, and $x$ and $y$ coordinates, have duplicated values present.
+        \item These do not necessarily represent duplicated records, as in the case with multiple transactions occurring for the same price, on the same date, at the same address, coordinates, or under the same pin.
+        \item Thus, no combination of Teranet columns constitutes a candidate key (unique identifier to be used in RDBMS).
+        \item As a matter of fact, even all the native columns together do not identify records uniquely.
+        \item For example, this is the case when two same price condo units are being sold on the same day in the same apartment block with no unit number specified for each transaction;
+        the pin can be the same because transactions for some apartment blocks are recorded under a single pin with no regard to units.
+        \item This aspect also complicates the detection of duplicate records using native Teranet columns.
+        \item To address the issue of unique identifier (but not the issue of duplicate detection), a surrogate key (artificial unique identifier for RDBMS) is added to the Teranet dataset via a new attribute transaction\_id.
+        \item It corresponds to the row number of each instance (transaction) in the Teranet dataset (filtered to include only GTHA transactions via a spatial join in Step 2.1, see section~\ref{sec:teranet_da_spatial_join} of this document), ordered from the earliest date to the latest.
+    \end{itemize}
+    \item Every fact in the database is a fact about the object identified by the primary key.
+    \begin{itemize}
+        \item This condition is mostly met, as every transaction in Teranet dataset is described by the values found in columns of a single row.
+        \item However, there are some records in which multiple attributes are recorded into a single column (described below).
+    \end{itemize}
+    \item Each such fact contains nothing other than the single-valued immediate properties of the object, all columns in Teranet dataset contain single-valued immediate properties of each transaction.
+    \begin{itemize}
+        \item For some records, unit number, street number, street designation, street direction, or postal code are recorded as a part of street name.
+        \item This issue is addressed by parsing the other attributes from street name as a part of the data preparation process.
+    \end{itemize}
+    \item Such facts are collected together in a single relation, as they are all objects of the same type (a single table of real estate transactions recorded in Ontario).
+\end{enumerate}
+
+Thus, Teranet dataset fits into a normalized database, with the new attribute \texttt{transaction\_id} as its primary key.
+
+\subsection{Codd's constraints formed in statistical language by Wickham} \label{subsec:teranet_tidy_data}
+
+According to Wickham\cite{Wickham2014}, \textit{tidy data} is a standard way of mapping the meaning of a dataset to its structure.
+A dataset is messy or tidy depending on how rows, columns and tables are matched up with observations,
+variables and types.
+
+\vspace{5mm}
+
+In tidy data:
+\begin{enumerate}
+    \item Each variable forms a column.
+    \item Each observation forms a row.
+    \item Each type of observational unit forms a table.
+\end{enumerate}
+
+This is Codd's 3rd normal form\cite{Codd1990}, but with the constraints framed in statistical
+language, and the focus put on a single dataset rather than the many connected datasets common in relational databases.
+\textit{Messy data} is any other arrangement of the data.
+
+\vspace{5mm}
+
+According to Wickham, the most common problems with messy datasets are:
+\begin{itemize}
+    \item Column headers are values, not variable names.
+    \item Multiple variables are stored in one column.
+    \item Variables are stored in both rows and columns.
+    \item Multiple types of observational units are stored in the same table.
+    \item A single observational unit is stored in multiple tables.
+\end{itemize}
+
+In the Teranet dataset, none of these problems are present, so it presents \textit{tidy data}.
+
+\section{Step 2.1: Spatial join of Teranet points with Dissemination Area polygons} \label{sec:teranet_da_spatial_join}
+
+Step 2.1 of the cleaning process of Teranet data involved the spatial join of Teranet points with the polygons of Dissemination Areas (DA).
+Parameters that were used for the spatial join operation were \texttt{how='inner', op='within'}.
+
+The spatial join was performed to filter out Teranet records whose coordinates fall outside of GTHA .
+
+In addition to that, three new attributes were produced as a results of the spatial join:
+\begin{itemize}
+    \item Dissemination Area attributes \texttt{OBJECTID}, \texttt{DAUID}, and \texttt{CSDNAME} were added to each Teranet record falling within a particular DA polygon.
+    \item The added attributes allow for extra quality control of Teranet data by comparing the column \texttt{MUNICIPALITY} of Teranet records with the column \texttt{CSDNAME} associated with DA geometry.
+    \item New columns \texttt{OBJECTID} and \texttt{DAUID} allow Teranet records to be joined in the future with DA geometry via a regular (non-spatial) join operation (for example, to be aggregated by DAs), or to add any additional DA-level attributes, such as DA-level demographics, to Teranet records.
+    \item These future joins can be performed via regular (non-spatial) join operations, which are much less computationally intensive than a spatial join, and thus can be performed much faster.
+\end{itemize}
+
+\section{Introducing spatial relationships to the GTHA housing market database} \label{sec:introducing_spatial_relationships}
+%TODO describe spatial relationships
+
+\section{Introducing temporal relationships to the GTHA housing market database} \label{sec:introducing_temporal_relationships}
+%TODO describe temporal relationships
+
+\section{Chapter summary} \label{sec:data_preparation_summary}
+All the requirements for Tidy Data and RDBMS constraints have been met by prepping the data.
+%TODO write chapter summary
