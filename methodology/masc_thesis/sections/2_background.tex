@@ -35,8 +35,6 @@ There is a fundamental link between transportation and urban form: the nature of
 Transportation, in turn, influences land development and location choices of people and firms\cite{Miller1999}.
 This relationship is sometimes referred to as the transportation-land use "link" or "cycle", emphasising a feedback relationship\cite{Kelly}.
 
-\vspace{5mm}
-
 Bourne\cite{Bourne1982} defines urban structure as the combination of the following elements:
 \begin{itemize}
     \item urban form, or the spatial configuration of fixed elements within the urban region (including land use, buildings, transportation network, etc.)
@@ -44,13 +42,34 @@ Bourne\cite{Bourne1982} defines urban structure as the combination of the follow
     \item organizing principles, or the relationships between the urban form and interactions (such as travel cost minimization, social status, segregation, planning policy, etc.)
 \end{itemize}
 
+Figure~\ref{fig:transportation_land_use} illustrates the complex interactions between land use and transportation system as summarized by Miller\cite{Miller2019}.
+
+\begin{figure}[hbt!]
+    \centering
+    \begin{subfigure}[t]{.48\textwidth}
+        \centering
+        \includegraphics[width=\columnwidth,trim=4 4 4 4,clip]{urban_activity_transportation_system.png}
+        \caption{The urban activity and transportation systems}
+        \label{fig:urban_activity_tranportation_system}
+    \end{subfigure}
+    ~ %add desired spacing between images, e. g. ~, \quad, \qquad, \hfill etc.
+    %(or a blank line to force the subfigure onto a new line)
+    \begin{subfigure}[t]{.48\textwidth}
+        \centering
+        \includegraphics[width=\columnwidth,trim=4 4 4 4,clip]{long_run_short_run_transportation_interactions.png}
+        \caption{Short-run activity / travel and long-run accessibility interactions between transportation and land use systems.}
+        \label{fig:long_run_short_run_tranportation_in}
+    \end{subfigure}
+    \caption{Interactions between transportation and land development systems summarized by Miller\cite{Miller2019}.}
+    \label{fig:transportation_land_use}
+\end{figure}
+
 One of the possible ways of studying the interaction between the housing market, urban form, and transportation is empirical, such as examining how property values vary with the distance to a transportation facility\cite{Sherry1999}.
 However, this type of research requires fine-scale transportation data to be linked to fine-scale housing market data, which presents a challenge since these data sources use different spatial units (as discussed in section~\ref{sec:spatial_relationships}) and are available at different temporal spans (as discussed in section~\ref{sec:termporal_relationships_between_datasets}).
 The primary focus of this mater's thesis is the introduction of a knowledge system providing researchers at the University of Toronto Transportation Research Institute (UTTRI) access to the information required to investigate the complex relationship between transportation and land use.
 
 \subsection{Models used for transportation and land use} \label{subsec:transportation_land_use_interaction}
 
-The history of treating cities as systems via simulation models of transportation and land use dates back to 1950s\cite{Batty2008}.
 Many different types of models are used in planning, such as demand forecasting models projecting traffic or ridership, or land use models projecting and distributing population and jobs within an area, as well as integrated land use-transportation models.
 Integrated land use-transportation models combine travel demand forecasting and land use forecasting functions and recognize that the distribution of population and jobs depends, in part, on transportation accessibility.
 The reverse is also true, and thus integrated models incorporate feedback relationship between transportation and land use, with economic decisions by households and firms acting as one of the links between the two systems\cite{Miller1999}.
@@ -62,6 +81,11 @@ The frameworks can broadly be broken into two major approaches to modelling inte
 \begin{itemize}
     \item "top-down" modeling frameworks, where interaction between transportation networks and location is specified as a set of aggregate relationships.
     These relationships are based on the behaviour of a representative individual, and are usually taken as a mean calculated from a representative sample of the population.
+    These models include:
+    \begin{itemize}
+        \item aggregate models of spatial interaction
+        \item econometric models
+    \end{itemize}
     \item "bottom-up" microsimulation models, which cover a number of different approaches to representing the dynamics of land use change and travel behaviour through disaggregating the population and simulating the changes.
     These models include:
     \begin{itemize}
@@ -71,8 +95,28 @@ The frameworks can broadly be broken into two major approaches to modelling inte
     \end{itemize}
 \end{itemize}
 
+While transportation research started as an isolated field focusing on mobility, researchers recognized that trips are made to access particular destinations\cite{VanLierop2017}.
+A concept of accessibility, understood as the ease of reaching rather than simply the ease of moving\cite{Preston2007}, was developed to take into account the location of urban opportunities.
+Accessibility is the mediating factor between the location of activities and demand for travel and is discussed further in section~\ref{subsec:accessibility} of the following chapter.
+
 \subsection{Evolution of LUT models} \label{subsec:evolution_of_lut_models}
-%TODO add a section on evolution of LUT models
+
+The history of treating cities as systems via simulation models of transportation and land use dates back to 1950s when General System Theory and Cybernetics came to be applied in the softer social sciences\cite{Batty2008}.
+Figure~\ref{fig:lut_model_evolution} provides the general overview of chronological development of LUT models provided by Iacono\cite{Iacono2008}.
+
+\begin{figure}[hbt!]
+    \centering
+    \includegraphics[width=0.7\linewidth,trim=0 0 0 0,clip]{lut_models_evolution.png}
+    \caption{Chronological development of LUT models provided by Iacono\cite{Iacono2008}.}
+    \label{fig:lut_model_evolution}
+\end{figure}
+
+The first operational land use simulation model was A Model of Metropolis built in 1964 by Ira S. Lowry for the Pittsburgh region\cite{Lowry1964}.
+It was based on theories of spatial interaction, such as the gravity model that was popular in quantitative geography and transportation planning at the time\cite{Bouchard1965}.
+
+
+Models based on spatial interactions framework continued to be developed through mid-1980s, they became largely replaced with models grounded in random utility theory and econometric methods\cite{Iacono2008}.
+
 
 \subsection{ILUTE model system} \label{subsec:ilute}
 
