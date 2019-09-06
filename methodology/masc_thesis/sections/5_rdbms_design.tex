@@ -2,11 +2,12 @@
 
 \section{Intro: databases} \label{sec:intro_database_design}
 
+%TODO write chapter introduction
 Something about Knowledge Discovery in Databases
-%TODO add chapter introduction
 
 \section{Requirements to the information system for housing market data} \label{sec:requirements_to_information_system}
 
+%TODO check requirements
 On one hand, for such information-handling system to be comprehensive, it needs to combine a wide range of data sources describing these systems while maintaining semantic interoperability between these sources.
 In the case of land use, transportation, demographic, and real estate data, it means to take into account the varying spatial and temporal scale and resolution between these data sources when joining them together.
 At the same time, the system needs to be easily accessible to a wide range of researchers and students;
@@ -16,9 +17,27 @@ In addition to that, the system should have a modular structure, have a workflow
 All of the requirements listed above present a strong case for the housing market information system to be implemented in a form of a relational database.
 Given the size of the datasets and the current research needs, PostgreSQL presents a good option for the database management system that fits all the discussed criteria.
 The focus of this master thesis is the organization and implementation of the GTHA housing market database to facilitate future research activities focused on the Longitudinal Analysis of housing sales in the Greater Toronto-Hamilton Area conducted by the University of Toronto Transportation Research Institute (UTTRI).
-%TODO check requirements
 
 \section{Philosophy of the housing market database} \label{sec:housing_market_database_philosophy}
-attribute-based database defined by spatial relationships
-%TODO finish section
 
+%TODO describe the philosophy behind attribute-based spatial and temporal joins
+attribute-based database defined by spatial relationships
+
+\section{Entity relationship diagrams of GTHA housing market database} \label{sec:entity_relationship_diagrams_in_gtha_database}
+
+%TODO include ER diagrams for the database
+
+\section{Attribute and referential integrity constraints} \label{sec:constraints_database}
+
+\subsection{Primary keys used in the database} \label{subsec:primary_keys_in_gtha_database}
+
+%TODO write about primary keys in the database
+
+\subsection{Referential integrity constraints used in the database} \label{subsec:referential_integrity_constraints_in_gtha_database}
+
+%TODO write about referential integrity constraints in the database
+
+\section{Chapter summary} \label{sec:rdbms_design_summary}
+
+All the requirements have been met via appropriate constraints.
+%TODO write chapter summary
