@@ -1,14 +1,8 @@
 \chapter[Background information]{Background information} \label{ch:background}
 
-\section{Introduction: transportation and land use, land registration in Canada and Teranet} \label{sec:intro_background}
+\section{Chapter 2: transportation and land use, land registration in Canada and Teranet} \label{sec:intro_background}
 
-%TODO add chapter introduction
-Since urban systems are complex in nature and require "re-solving" over and over, data science process models present a good fit for this task with their iterative structure.
-The fundamental link between transportation and urban form creates a feedback relationship between land development, travel needs, viability of alternative modes, accessibility, and other important characteristics of the urban transportation system.
-
-
-Increased digitization of human activity, such as introduction of POLARIS land registration system by the Government of Ontario in 1985, produce a wealth of new information that can be used to study interaction between land use and transportation at a fine spatial and temporal scale.
-However, along with the opportunities, the new data sources also present new challenges
+This chapter discusses the complex interaction of land use and transportation, provides a brief overview of the history of development of land use-transportation (LUT) models, presents some legal and historical background for Teranet's dataset of real estate transactions and finishes with discussing challenges of working with Teranet's data and the proposed solution.
 
 \section{Land Use and Transport (LUT) models} \label{sec:evolution_of_models_of_urban_systems}
 
@@ -26,7 +20,7 @@ In 1973, a little over a decade after Jacobs, Rittel and Webber\cite{Rittel1973}
 this conceptualization characterized urban planning problems as "wicked" problems: problems which cannot be definitively described and for which it makes no sense to talk of "optimal solutions".
 In their paper, Rittel and Webber stated that such "wicked" problems are never "solved", and that the focus instead becomes on iteratively "re-solving" the problems over and over.
 More than 40 years after their original publication, Rittel and Webber's ideas remain relevant to the policy sciences today: there is an intense interest in the nature of "wicked" problems and the complex tasks of identifying their scope, viable responses, and appropriate mechanisms and pathways to improvement\cite{Crowley2017}.
-Interaction between land use and transportation which is discussed in the following section presents a prime example of urban complexities and "wicked" problems.
+Interaction between land use and transportation systems which is discussed in the following section presents a prime example of urban complexities and "wicked" problems.
 
 \subsection{Transportation-land use cycle} \label{subsec:transportation_land_use_cycle}
 
@@ -42,26 +36,13 @@ Bourne\cite{Bourne1982} defines urban structure as the combination of the follow
     \item organizing principles, or the relationships between the urban form and interactions (such as travel cost minimization, social status, segregation, planning policy, etc.)
 \end{itemize}
 
-Figure~\ref{fig:transportation_land_use} illustrates the complex interactions between land use and transportation system as summarized by Miller\cite{Miller2019}.
+Figure~\ref{fig:idealized_integrated_urban_model} illustrates the complex interactions between land use and transportation system as summarized by Miller\cite{Miller2018a}.
 
 \begin{figure}[hbt!]
     \centering
-    \begin{subfigure}[t]{.48\textwidth}
-        \centering
-        \includegraphics[width=\columnwidth,trim=4 4 4 4,clip]{urban_activity_transportation_system.png}
-        \caption{The urban activity and transportation systems}
-        \label{fig:urban_activity_tranportation_system}
-    \end{subfigure}
-    ~ %add desired spacing between images, e. g. ~, \quad, \qquad, \hfill etc.
-    %(or a blank line to force the subfigure onto a new line)
-    \begin{subfigure}[t]{.48\textwidth}
-        \centering
-        \includegraphics[width=\columnwidth,trim=4 4 4 4,clip]{long_run_short_run_transportation_interactions.png}
-        \caption{Short-run activity / travel and long-run accessibility interactions between transportation and land use systems.}
-        \label{fig:long_run_short_run_tranportation_in}
-    \end{subfigure}
-    \caption{Interactions between transportation and land development systems summarized by Miller\cite{Miller2019}.}
-    \label{fig:transportation_land_use}
+    \includegraphics[width=0.7\linewidth,trim=0 0 0 0,clip]{miller_idealized_urban_model.png}
+    \caption{An Idealized Integrated Urban Model System\cite{Miller2018a}.}
+    \label{fig:idealized_integrated_urban_model}
 \end{figure}
 
 One of the possible ways of studying the interaction between the housing market, urban form, and transportation is empirical, such as examining how property values vary with the distance to a transportation facility\cite{Sherry1999}.
@@ -107,15 +88,21 @@ Figure~\ref{fig:lut_model_evolution} provides the general overview of chronologi
 \begin{figure}[hbt!]
     \centering
     \includegraphics[width=0.7\linewidth,trim=0 0 0 0,clip]{lut_models_evolution.png}
-    \caption{Chronological development of LUT models provided by Iacono\cite{Iacono2008}.}
+    \caption{Chronological development of LUT models by Iacono\cite{Iacono2008}.}
     \label{fig:lut_model_evolution}
 \end{figure}
 
 The first operational land use simulation model was A Model of Metropolis built in 1964 by Ira S. Lowry for the Pittsburgh region\cite{Lowry1964}.
-It was based on theories of spatial interaction, such as the gravity model that was popular in quantitative geography and transportation planning at the time\cite{Bouchard1965}.
+It was a highly aggregate model based on theories of spatial interaction, such as the gravity model that was popular in quantitative geography and transportation planning at the time\cite{Bouchard1965}.
+Models based on spatial interaction framework continued to be developed through mid-1980s, until developments in random utility theory allowed researchers to describe choices among discrete alternatives, such as the choice of travel mode, and generate models based on the study of disaggregate behaviour.
+Models grounded in random utility theory and econometric methods\cite{Iacono2008}.
 
+The modeling paradigm has changed fundamentally in the early 1990s along with advances in computing power and efficiency of data storage.
+Urban systems used to be viewed as hierarchical and centrally organized equilibrium structures, or "top-down".
+Instead, now they were considered to be structured from the "bottom-up", dynamically retaining their integrity through interactions of numerous microelements\cite{Batty2008}.
+A new broad class of LUT models that could fall under the title of "microsimulation" began to be developed.
+It included such classes of models as activity-based travel, cell-based models, and multi-agent models, and more recently comprehensive urban microsimulation models that fully reflect the dynamics of changes in the population and the urban environment\cite{Iacono2008}.
 
-Models based on spatial interactions framework continued to be developed through mid-1980s, they became largely replaced with models grounded in random utility theory and econometric methods\cite{Iacono2008}.
 
 
 \subsection{ILUTE model system} \label{subsec:ilute}
@@ -212,5 +199,17 @@ The data preparation workflow is facilitated via Python in a series of jupyter n
 %TODO finish the description of the proposed solution
 
 \section{Chapter summary} \label{sec:background_summary}
-There is a bunch of different data that can help urban research efforts, but it requires special spatial and temporal joining and organization, so we need a database.
-%TODO finish chapter summary
+
+The fundamental link between transportation and urban form creates a feedback relationship between land development, travel needs, viability of alternative modes, accessibility, and other important characteristics of the urban transportation system.
+Numerous "top-down" and "bottom-up" models have been designed to analyze and forecast the behaviour of urban regions and interaction of their transportation and land use systems.
+Since urban systems are complex in nature and require "re-solving" over and over, data science process models present a good fit for this task with their iterative structure.
+
+Increased digitization of human activity, such as introduction of POLARIS land registration system by the Government of Ontario in 1985, produce a wealth of new information that can be used to study interaction between land use and transportation at a fine spatial and temporal scale.
+Teranet's dataset of real estate transactions presents a wealth of information on the housing market of Ontario and can be used for empirical studies of transportation-land use interaction.
+However, along with the opportunities, the new data sources also present new challenges.
+Teranet's dataset has some data quality issues that need to be addressed and might require special skills to work with due to its size.
+But most importantly, it is very limited in the number of features available for each transaction.
+
+This issue can be addressed by augmenting Teranet's dataset through joining it with other urban data sources, such as Census data and the Transportation Tomorrow Survey (TTS).
+Since these data sources use different spatial units and are available at different temporal spans, they need to be preprocessed and "aligned" to allow the data from various sources to be joined together based on meaningful relationships.
+This master's thesis establishes a streamlined workflow in Python to preprocess and align all the data sources prior to entering them into the GTHA housing market database implemented via PostgreSQL .
