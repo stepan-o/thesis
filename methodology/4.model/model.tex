@@ -1,0 +1,49 @@
+%! Author = stepan
+%! Date = 2019-07-20
+
+% Preamble
+\documentclass[11pt]{article}
+
+% Packages
+
+% Document
+\begin{document}
+
+    \title{OSEMN methodology \\
+    Step 4: Model \\
+    Overview of basic models}
+
+    \author{Stepan Oskin}
+
+    \maketitle
+
+    \begin{abstract}
+
+    \end{abstract}
+
+    \section{Linear regression model} \label{sec:linear_regression}
+
+    \subsection{Determining the expected value of a continuous random variable} \label{subsec:determining_ev_of_continuous_rv}
+
+    \begin{equation} \label{eq:linear_regression}
+        Y_j = \alpha + \sum \limits_{i=1}^k \beta_i X_{ij} + \varepsilon_j = E(Y_j|X) + \varepsilon_j
+    \end{equation}
+
+    $\beta$ = the partial slope coefficient (also called partial regression coefficient, metric coefficient).
+    It represents the change in $E(Y)$ associated with a one-unit increase in $X_i$ when all other IVs are held constant.
+
+    $\alpha$ = the intercept.
+    Geometrically, it represents the value of $E(Y)$ where the regression surface (or plane) crosses the Y axis.
+    Substantively, it is the expected value of $Y$ when all the IVs equal 0.
+
+    $\varespilon$ = the deviation of the value $Y_j$ from the mean value of the distribution given $X$.
+    This error term may be conceived as representing (1) the effects on $Y$ of variables not explicitly included in the equation, and (2) a residual random element in the dependent variable.
+
+    \subsection{Parameter estimation} \label{subsec:lr_parameter_estimation}
+
+    In most situations, we are not in a position to determine the population parameters direct
+
+    \bibliography{}
+    \bibliographystyle{ieeetr}
+
+\end{document}
