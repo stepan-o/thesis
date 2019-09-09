@@ -3,7 +3,7 @@ import geopandas as gpd
 import matplotlib
 import matplotlib.pyplot as plt
 import pandas as pd
-from pysal.lib.cg import alpha_shape_auto
+import seaborn as sns
 
 
 def grouped_boxplot(df, year, max_price, plot_col='price_2016', group_col='csdname',
@@ -147,6 +147,111 @@ def plot_count_mean_median(s, group_col, plot_col, figsize=(8, 8), tick_label_si
         plt.savefig(save_path, dpi=save_dpi, bbox_inches='tight')
     else:
         plt.show()
+
+
+def plot_hist(ser, form_x=False, form_y=False, figsize=(14, 6), kde=False, x_label=None,
+              plot_mean=True, plot_median=True, mean_xlift=1.1, med_xlift=0.7, sdev=True, sdev_xlift=1.3,
+              title='Distribution', title_size=20,
+              x_tick_size=14, y_tick_size=14, x_lab_size=16, y_lab_size=16, mean_med_size=14,
+              act='show', save_path='distribution.png', dpi=300, save_only=True):
+    """
+    plot distribution of the provided series
+    :param ser: numpy array or pandas Series
+    series from which to plot distributions
+    :param form_x: boolean
+    whether to add thousands separator to the x tick labels
+    :param form_y: boolean
+    whether to add thousands separator to the y tick labels
+    :param figsize: tuple (float, float)
+    size of the figure (width, height)
+    :param kde: boolean
+    whether to plot kernel density estimation (default = histogram)
+    :param x_label: string
+    label to use for x axis
+    :param plot_mean: boolean
+    whether to plot the mean of the series
+    :param plot_median: boolean
+    whether to plot the median of the series
+    :param mean_xlift: float
+    caption lift along the x axis for the mean
+    :param med_xlift: float
+    caption lift along the x axis for the median
+    :param sdev: boolean
+    whether to plot the standard deviation of the series
+    :param sdev_xlift: float
+    caption lift along the x axis for standard deviation
+    :param title: string
+    plot title
+    :param title_size: float
+    fontsize to use for the plot title
+    :param x_tick_size: float
+    fontsize to use for x ticks
+    :param y_tick_size: float
+    fontsize to use for y ticks
+    :param x_lab_size: float
+    fontsize to use for x axis label
+    :param y_lab_size: float
+    fontsize to use for y axis label
+    :param mean_med_size: float
+    fontsize to use for mean, median and standard deviation
+    :param act: string ('show' or 'save')
+    whether to show or save the plot
+    :param save_path: string
+    where to save the plot (relative from script location)
+    :param dpi: int
+    resolution for saving the plot
+    :param save_only: boolean
+    save without displaying
+    :return: None, plots and displays or saves the result
+    """
+    # create figure and axis
+    f, ax = plt.subplots(1, figsize=figsize)
+
+    # plot distribution
+    sns.distplot(ser, kde=kde, ax=ax)
+
+    # plot mean of the series
+    if plot_mean:
+        mean = ser.mean()
+        ax.axvline(mean, linestyle='--', color='deeppink')
+        ax.text(mean * mean_xlift, 0, 'Mean: {0:,.2f}'.format(mean), fontsize=mean_med_size, rotation=90)
+    # plot median of the series
+    if plot_median:
+        median = ser.median()
+        ax.axvline(median, linestyle='--', color='teal')
+        ax.text(median * med_xlift, 0, 'Median: {0:,.2f}'.format(median), fontsize=mean_med_size, rotation=90)
+    # print standard deviation of the series
+    if sdev:
+        ax.text(mean * sdev_xlift, 0, 'StDev: {0:,.2f}'.format(ser.std()), fontsize=mean_med_size, rotation=90)
+
+    # format axes
+    if form_x:
+        ax.get_xaxis().set_major_formatter(
+            matplotlib.ticker.FuncFormatter(lambda x, p: format(int(x), ',')))
+    if form_y:
+        ax.get_yaxis().set_major_formatter(
+            matplotlib.ticker.FuncFormatter(lambda x, p: format(int(x), ',')))
+
+    # configure axes parameters
+    ax.set_title(title, fontsize=title_size)
+    plt.xticks(fontsize=x_tick_size)
+    plt.yticks(fontsize=y_tick_size)
+    if kde:
+        ax.set_ylabel('Kernel density estimation (KDE)', fontsize=y_lab_size)
+    else:
+        ax.set_ylabel('Count of records', fontsize=y_lab_size)
+
+    if x_label:
+        ax.set_xlabel(x_label, fontsize=x_lab_size)
+
+    # save or show results
+    if act == 'show':
+        plt.show()
+    elif act == 'save':
+        plt.savefig(save_path, dpi=dpi, bbox_inches='tight')
+        print("Saved output plot to", save_path)
+        if save_only:
+            plt.close(f)
 
 
 def plot_subset(df_full, plot_focus_id, focus_col, x_col, y_col1,
