@@ -38,7 +38,21 @@ Figure~\ref{fig:idealized_integrated_urban_model} illustrates the complex intera
     \label{fig:idealized_integrated_urban_model}
 \end{figure}
 
-Economic decisions made by the households and firms act as one of the links between the two systems.
+\subsection{Accessibility as a measure of land use-transportation relationship} \label{subsec:accessibility}
+
+While transportation research started as an isolated field focusing on mobility, researchers recognized that trips are made to access particular destinations\cite{VanLierop2017}.
+A concept of accessibility, understood as the ease of reaching rather than simply the ease of moving\cite{Preston2007}, was developed to take into account the location of urban opportunities.
+Accessibility is the mediating factor between the location of activities and demand for travel and is discussed further in section~\ref{subsec:accessibility} of the following chapter.
+
+LUT models (discussed in section~\ref{subsec:transportation_land_use_interaction}) operationalize the transportation-land use relationship by incorporating measures of accessibility with the process of locating activities, typically assuming that households wish to locate in areas with higher accessibility to employment, shopping, or entertainment opportunities.
+Similarly, firms are assumed to locate in areas with higher accessibility to labour markets.
+Land use component is usually integrated into the accessibility measure through congested network travel times.
+However, when studying the relationship between transportation facilities and property values, results may vary based on whether travel time or travel distance is used as a measure of accessibility\cite{Sherry1999}.
+
+Accessibility measures the situation of a location relative to other activities or opportunities (work, shopping, etc.) distributed in space and can be an important determinant of price in LUT models where land and floor space markets are considered explicitly\cite{Iacono2008}.
+When measuring changes in relative accessibility, it is usually approximated by some measure of access to the transportation network, such as travel time or distance.
+
+Economic decisions made by the households and firms act as one of the links between the tranportation and land use systems.
 When choosing a location, households and firms attempt to fulfill as many of their location preferences as possible while facing constraints.
 One of the main constraints is the price or rent of the dwelling, related to the income of the household;
 another important constraint is travel time, with suitable location being restricted by the travel times and transportation expenses\cite{Moeckel2017}.
@@ -70,26 +84,21 @@ The frameworks can broadly be broken into two major approaches to modelling inte
     \end{itemize}
 \end{itemize}
 
-While transportation research started as an isolated field focusing on mobility, researchers recognized that trips are made to access particular destinations\cite{VanLierop2017}.
-A concept of accessibility, understood as the ease of reaching rather than simply the ease of moving\cite{Preston2007}, was developed to take into account the location of urban opportunities.
-Accessibility is the mediating factor between the location of activities and demand for travel and is discussed further in section~\ref{subsec:accessibility} of the following chapter.
-
 \subsection{Evolution of LUT models} \label{subsec:evolution_of_lut_models}
 
 The history of treating cities as systems via simulation models of transportation and land use dates back to 1950s when General System Theory and Cybernetics came to be applied in the softer social sciences\cite{Batty2008}.
-Figure~\ref{fig:lut_model_evolution} provides the general overview of chronological development of LUT models provided by Iacono\cite{Iacono2008}.
+Figure~\ref{fig:lut_model_evolution} provides the general overview of chronological development of LUT models summarized by Iacono\cite{Iacono2008}.
 
 \begin{figure}[hbt!]
     \centering
     \includegraphics[width=0.7\linewidth,trim=0 0 0 0,clip]{lut_models_evolution.png}
-    \caption{Chronological development of LUT models by Iacono\cite{Iacono2008}.}
+    \caption{Chronological development of LUT models summarized by Iacono\cite{Iacono2008}.}
     \label{fig:lut_model_evolution}
 \end{figure}
 
-The operational simulation model that truly integrated land use and transportation was A Model of Metropolis built in 1964 by Ira S. Lowry based on economic base theory for the Pittsburgh region\cite{Lowry1964}.
+The first operational simulation model that truly integrated land use and transportation is considered to be A Model of Metropolis built in 1964 by Ira S. Lowry based on economic base theory for the Pittsburgh region\cite{Lowry1964}.
 It was a highly aggregate model based on theories of spatial interaction, such as the gravity model that was popular in quantitative geography and transportation planning at the time\cite{Bouchard1965}.
-Models based on spatial interaction framework continued to be developed through mid-1980s, until developments in random utility theory allowed researchers to describe choices among discrete alternatives, such as the choice of travel mode, and generate models based on the study of disaggregate behaviour.
-Models grounded in random utility theory and econometric methods\cite{Iacono2008}.
+Models based on spatial interaction framework continued to be developed through mid-1980s, until developments in random utility theory allowed researchers to describe choices among discrete alternatives, such as the choice of travel mode, and generate models based on the study of disaggregate behaviour\cite{Iacono2008}.
 
 The modeling paradigm has changed fundamentally in the early 1990s along with advances in computing power and efficiency of data storage.
 Urban systems used to be viewed as hierarchical and centrally organized equilibrium structures, or "top-down".
@@ -97,25 +106,27 @@ Instead, now they were considered to be structured from the "bottom-up", dynamic
 A new broad class of LUT models that could fall under the title of "microsimulation" began to be developed.
 It included such classes of models as activity-based travel, cell-based models, and multi-agent models, and more recently comprehensive urban microsimulation models that fully reflect the dynamics of changes in the population and the urban environment\cite{Iacono2008}.
 
-
-
 \subsection{ILUTE model system} \label{subsec:ilute}
 
-\textit{ILUTE is a comprehensive, integrated model system designed to project the evolution of demographics, land use and travel within an urban region over time.
-The ILUTE (Integrated Land Use, Transportation, Environment) model system is an agent-based microsimulation model for the Greater Toronto-Hamilton Area (GTHA) in which disaggregate, process-based models of spatial socio-economic processes are used to evolve the GTHA system state from a known base case to a predicted future year end state in one-year time steps.
+The Integrated Land Use, Transportation, Environment (ILUTE) model system is an operational agent-based microsimulation model for greater Toronto-Hamilton area.
+It uses disaggregate models of spatial socioeconomic processes to evolve the state of the greater Toronto\textendash Hamilton area from a known base case to a predicted end state in 1-year time steps.
 The system state is defined in terms of the individual persons, households, dwelling units, firms, etc.
-that collectively define the urban region being modeled.
-The housing market component of ILUTE evolves the residential location of households over time.
-It includes the endogenous supply of housing by type and location, as well as the endogenous determination of sales prices and rents.}\cite{Miller2010}
-%TODO finish description of ILUTE
-
-One of the possible ways of studying the interaction between the housing market, urban form, and transportation is empirical, such as examining how property values vary with the distance to a transportation facility\cite{Sherry1999}.
-However, this type of research requires fine-scale transportation data to be linked to fine-scale housing market data, which presents a challenge since these data sources use different spatial units (as discussed in section~\ref{sec:spatial_relationships}) and are available at different temporal spans (as discussed in section~\ref{sec:termporal_relationships_between_datasets}).
-The primary focus of this mater's thesis is the introduction of a knowledge system providing researchers at the University of Toronto Transportation Research Institute (UTTRI) access to the information required to investigate the complex relationship between transportation and land use.
-
-\subsection{Housing market} \label{subsec:housing_market}
+that collectively define the urban region being modeled\cite{Miller2011}.
+ILUTE model simulates the evolution of an urban region's spatial form, demographics, travel behavior and economic structure over time.
 
 
+The Housing Market Evolutionary System (HoMES) is the updated housing market module for the ILUTE model system.
+HoMES is a disaggregate, agent-based microsimulation of the owner-occupied housing market that evolves the residential location of households over time and includes the endogenous supply of housing by type and location, as well as the endogenous determination of sales prices and rents.
+An overview of the framework of housing market supply, demand and clearing mechanisms utilized in HoMES provided by Rosenfield et al.\cite{Rosenfield2013} is presented on figure~\ref{fig:homes_framework}
+
+\begin{figure}[hbt!]
+    \centering
+    \includegraphics[width=0.99\linewidth,trim=0 0 0 0,clip]{homes_framework.png}
+    \caption{Framework of housing market supply, demand and clearing mechanisms used in HoMES module of ILUTE, as summarized by Rosenfield et al.\cite{Rosenfield2013}.}
+    \label{fig:homes_framework}
+\end{figure}
+
+%TODO transition to housing market data
 
 \section{System of land registration in Canada, POLARIS and Teranet} \label{sec:system_of_land_registration_polaris_teranet}
 
