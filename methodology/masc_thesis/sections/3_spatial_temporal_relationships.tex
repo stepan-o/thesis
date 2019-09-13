@@ -1,10 +1,11 @@
 \chapter{Spatial and temporal relationships between GTHA data sources} \label{ch:spatial_and_temporal_relationships_between_urban_data}
 
 \section{Chapter 3: data sources used in the GTHA housing market database} \label{sec:chapter_3_intro}
-
+%TODO rewrite intro about spatial and temporal relationships (was data sources before)
 Most urban areas are divided into zones or planning areas on the basis of maintaining similar population sizes and following built or natural boundaries like roads or rivers.
 To simulate the changes in accessibility, metropolitan regions are usually broken down into a set of small geographic zones, similar (or in many cases identical) to the set of zones used for regional travel forecasting.
 Changes to relative accessibility of a location can thus be estimated as changes in zone-to-zone travel times in a travel network\cite{Iacono2008}.
+
 
 The proposed GTHA housing market database combines urban data coming from a variety of sources.
 At the heart of it lies Teranet's dataset of real estate transactions (land registration records) recorded in the Province of Ontario since the beginning of XIX century up to October of 2017.
@@ -16,6 +17,25 @@ Therefore, when joining data from these sources, special consideration needs to 
 These spatial and temporal relationships are implemented via the data preparation workflow in Python and a PostgreSQL relational database, design and implementation of which is the primary focus of this master's thesis.
 
 The nature of spatial and temporal relationships between the various data sources used in the proposed GTHA housing market database is discussed in this chapter, implementation of relationships is discussed in chapters~\ref{ch:data_preparation} and~\ref{ch:rdbms_design} of this master's thesis.
+
+\subsection{Accessibility as a measure of land use-transportation relationship} \label{subsec:accessibility}
+
+While transportation research started as an isolated field focusing on mobility, researchers recognized that trips are made to access particular destinations\cite{VanLierop2017}.
+A concept of accessibility, understood as the ease of reaching rather than simply the ease of moving\cite{Preston2007}, was developed to take into account the location of urban opportunities.
+Accessibility is the mediating factor between the location of activities and demand for travel and is discussed further in section~\ref{subsec:accessibility} of the following chapter.
+
+LUT models (discussed in section~\ref{subsec:transportation_land_use_interaction}) operationalize the transportation-land use relationship by incorporating measures of accessibility with the process of locating activities, typically assuming that households wish to locate in areas with higher accessibility to employment, shopping, or entertainment opportunities.
+Similarly, firms are assumed to locate in areas with higher accessibility to labour markets.
+Land use component is usually integrated into the accessibility measure through congested network travel times.
+However, when studying the relationship between transportation facilities and property values, results may vary based on whether travel time or travel distance is used as a measure of accessibility\cite{Sherry1999}.
+
+Accessibility measures the situation of a location relative to other activities or opportunities (work, shopping, etc.) distributed in space and can be an important determinant of price in LUT models where land and floor space markets are considered explicitly\cite{Iacono2008}.
+When measuring changes in relative accessibility, it is usually approximated by some measure of access to the transportation network, such as travel time or distance.
+
+Economic decisions made by the households and firms act as one of the links between the tranportation and land use systems.
+When choosing a location, households and firms attempt to fulfill as many of their location preferences as possible while facing constraints.
+One of the main constraints is the price or rent of the dwelling, related to the income of the household;
+another important constraint is travel time, with suitable location being restricted by the travel times and transportation expenses\cite{Moeckel2017}.
 
 \section{Description of data sources} \label{sec:description_of_data_sources}
 

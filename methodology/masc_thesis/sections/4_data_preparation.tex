@@ -1,6 +1,22 @@
 \chapter{Data preparation} \label{ch:data_preparation}
 
-\section{Introduction} \label{sec:data_preparation_intro}
+\section{Chapter 4: streamlined data preparation workflow in Python} \label{sec:data_preparation_intro}
+
+The "wicked" nature of transportation-land use interaction introduced in chapter~\ref{ch:background} dictates the need to iteratively "re-solve" transportation and land use planning problems instead of focusing on finding some single "optimal solution".
+This approach resembles the methodologies typically employed for data science projects, where the sequence of steps is iterated over, producing a more meaningful solution on each new iteration of the cycle, as defined by such process models as CRISP-DM\cite{Shearer2000}.
+Similarly, data preparation can be followed in a linear manner, but is very likely to be iterative in nature\cite{Brownlee2013}.
+
+This was indeed the case during the preparation of all the input data for the GTHA housing market database, especially in the case of Teranet's dataset.
+Some clean up steps required decisions on the criteria to filter out outliers and duplicates, which can result in removal of millions of records from the dataset;
+addition of new data sources requires modification of preprocessing steps to introduce new foreign keys;
+new features need to be engineered as the needs and understanding of the data evolve.
+
+Since these steps are likely to be revisited in the future, a streamlined workflow has been established using Python via a series of jupyter notebooks as a part of this master's thesis to make this process efficient, modular, reproducible, easy to inspect and to modify.
+This section describes the concept of ''Tidy Data'' and database normalization and lists the steps taken in preparing all the input data before it can be entered into the housing market database.
+
+This section describes the main requirements for structure of the data to be entered into the database, introduction of spatial and temporal relationships to allow joining different sources together, and outlines the data preparation workflow for Teranet's dataset
+
+\section{Tidy data and database normalization} \label{sec:db_norm_tidy_data}
 
 Data preparation plays a critical role in research projects:
 
@@ -9,16 +25,6 @@ Data preparation plays a critical role in research projects:
     \item it is a prerequisite for any meaningful analysis
     \item it is often required to allow the introduction of constraints necessary for implementation of an RDBMS .
 \end{itemize}
-
-Data preparation can be followed in a linear manner, but is very likely to be iterative in nature\cite{Brownlee2013}.
-This was indeed the case during the preparation of all the input data for the GTHA housing market database, especially in the case of Teranet dataset.
-As new data sources will be added to the database, new foreign keys might need to be introduced to Teranet data.
-It might also be necessary to introduce additional features, modify existing cleanup steps (change criteria for filtering records, for example), or add new preparation steps, such as removal of duplicates (not currently performed).
-
-To make this process efficient, modular, reproducible, easy to inspect and to modify, a streamlined workflow has been established using Python via a series of jupyter notebooks as a part of this master's thesis.
-This section describes the concept of ''Tidy Data'' and database normalization and lists the steps taken in preparing all the input data before it can be entered into the housing market database.
-
-\section{Tidy data and database normalization} \label{sec:db_norm_tidy_data}
 
 This section describes the concept of ''Tidy Data'', as defined by Hadley Wickham.
 The concept of ''Tidy Data'' presents the basic ideas of normalization of a database, as defined by Edgar F. Codd, reformulated in statistical language.
@@ -46,9 +52,9 @@ As defined by Codd (\cite{Codd1990}, section 17.5.1), the basic ideas in normali
     The result is a collection of facts, all of the same type.
 \end{enumerate}
 
-\subsection{Teranet dataset in the context of a normalized database} \label{subsec:teranet_db_norm}
+\subsection{Teranet's dataset in the context of a normalized database} \label{subsec:teranet_db_norm}
 
-Teranet dataset is intended to be used as one of the tables (relations) of the proposed GTHA housing market database that would include other sources of information, such as DA-level demographics, land use information, etc.
+Teranet's dataset is intended to be used as one of the tables (relations) of the proposed GTHA housing market database that would include other sources of information, such as DA-level demographics, land use information, etc.
 In this context, Codd's basic normalization ideas will take the following form:
 
 \begin{enumerate}
