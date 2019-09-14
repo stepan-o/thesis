@@ -254,6 +254,30 @@ def plot_hist(ser, form_x=False, form_y=False, figsize=(14, 6), kde=False, x_lab
             plt.close(f)
 
 
+def plot_heatmap(df_to_plot):
+    """
+    a function to plot a heat map from a pandas DataFrame
+    """
+    # create figure and axis
+    fig, ax = plt.subplots(figsize=(20, 20))
+
+    # Generate a custom diverging colormap
+    cmap = sns.diverging_palette(50, 10, as_cmap=True)
+
+    # Draw the heat map with the mask and correct aspect ratio
+    sns.heatmap(df_to_plot,
+                cmap=cmap,
+                vmax=1,
+                center=0,
+                square=True,
+                linewidths=.5,
+                cbar_kws={"shrink": .5},
+                annot=True,
+                ax=ax)
+
+    plt.show()
+
+
 def plot_subset(df_full, plot_focus_id, focus_col, x_col, y_col1,
                 format_axes=True, y_col2=None,
                 p_x_label="x", p_y1_label="y1", p_y2_label="y2",
