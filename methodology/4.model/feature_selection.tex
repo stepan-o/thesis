@@ -1,0 +1,72 @@
+%! Author = Stepan Oskin
+%! Date = 2019-07-20
+
+% Preamble
+\documentclass[11pt]{article}
+
+% Packages
+\usepackage{commath}
+
+% New commands
+\newcommand{\vect}[1]{\boldsymbol{#1}}
+
+% Document
+\begin{document}
+
+    \title{OSEMN methodology \\
+    Step 4: Model \\
+    Feature selection \\
+    Excerpts from Python Machine Learning \\
+    Second Edition \\
+    By Sebastian Raschka and Vahid Mirjalili\cite{RaschkaMirjalili2017} \\
+    and other sources}
+
+    \author{Stepan Oskin}
+
+    \maketitle
+
+    \begin{abstract}
+
+    \end{abstract}
+
+    \section{Selecting meaningful features} \label{sec:selecting_meaningful_features}
+
+    If we notice that a model performs much better on a training dataset than on the test dataset, this observation is a strong indicator of overfitting.
+    Overfitting means the model fits the parameters too closely with regard to the particular observations in the training dataset, but does not generalize well to new data, and we say the model has a high variance.
+    The reason for the overfitting is that our model is too complex for the given training data.
+    Common solutions to reduce the generalization error are listed as follows:
+
+    \begin{itemize}
+        \item Collect more training data
+        \item Introduce a penalty for complexity via regularization
+        \item Choose a simpler model with fewer parameters
+        \item Reduce the dimensionality of the data
+    \end{itemize}
+
+    Collecting more training data is often not applicable.
+    In the following sections, we will look at common ways to reduce overfitting by regularization and dimensionality reduction via feature selection, which leads to simpler models by requiring fewer parameters to be fitted to the data.
+
+    \section{L1 and L2 regularization as penalties against model complexity} \label{sec:l1_l2_regularization}
+
+    L2 regularization is one approach to reduce the complexity of a model by penalizing large individual weights, we define the L2 norm of our weight vector \vect{w} as follows:
+
+    \begin{equation} \label{eq:l2_regularization}
+        L2: \norm{\vect{w}}_2^2 = \sum \limits_{j=1}^m w_j^2
+    \end{equation}
+
+    Another approach to reduce the model complexity is the related L1 regularization:
+
+    \begin{equation}
+        L1: \norm{\vect{w}}_1 = \sum \limits_{j=1}^m \abs{w_j}
+    \end{equation}
+
+    Here, we simply replaced the square of the weights by the sum of the absolute values of the weights.
+    In contrast to L2 regularization, L1 regularization usually yields sparse feature vectors;
+    most feature weights will be zero.
+    Sparsity can be useful in practice if we have a high-dimensional dataset with many features that are irrelevant, especially cases where we have more irrelevant dimensions than samples.
+    In this sense, L1 regularization can be understood as a technique for feature selection.
+
+    \bibliography{model}
+    \bibliographystyle{ieeetr}
+
+\end{document}
