@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 from matplotlib.colors import ListedColormap
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import LogisticRegression, Perceptron
+from sklearn.metrics import accuracy_score
 from sklearn.model_selection import train_test_split
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.preprocessing import StandardScaler, MinMaxScaler
@@ -54,6 +55,34 @@ def plot_decision_regions(X, y, classifier, test_idx=None,
         ax = plt.gca()
         ax.set_xlim(minx, maxx)
         ax.set_ylim(miny, maxy)
+
+
+def fit_model(model, model_name, X_train, y_train, X_test, y_test, X_val1, y_val1, X_val2, y_val2,
+              return_coefs=False):
+    t = time()
+
+    # fit the model
+    model.fit(X_train, y_train)
+
+    # make predictions
+    y_pred_train = model.predict(X_train)
+    y_pred_test = model.predict(X_test)
+    y_pred_val1 = model.predict(X_val1)
+    y_pred_val2 = model.predict(X_val2)
+
+    # score model performance
+    train_score = accuracy_score(y_train, y_pred_train)
+    test_score = accuracy_score(y_test, y_pred_test)
+    val1_score = accuracy_score(y_val1, y_pred_val1)
+    val2_score = accuracy_score(y_val2, y_pred_val2)
+
+    elapsed = time() - t
+    print("\n{0} fit, took {1:,.2f} seconds ({2:,.2f} minutes)".format(model_name, elapsed, elapsed / 60) +
+          "\naccuracy: train={0:.2f}, test={1:.2f}, validation #1={2:.2f}, validation #2={3:.2f}"
+          .format(train_score, test_score, val1_score, val2_score))
+
+    if return_coefs:
+        return model.coef_[0]
 
 
 def fit_class(X, y, test_size=0.3, stratify_y=True, scale=None,
