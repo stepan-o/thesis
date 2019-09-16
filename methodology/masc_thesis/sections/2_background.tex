@@ -150,44 +150,14 @@ In December 2010, the Government of Ontario extended its exclusive relationship 
 Today, Teranet is the exclusive provider of Ontario's online property search and registration;
 it developed, owns and operates the ELRS, and also provides online access to Ontario's Writs System.
 
-\section{Challenges of using Teranet's data and the proposed solution} \label{sec:challenges}
+\subsection{Challenges of using Teranet's data and the proposed solution} \label{subsec:challenges}
 
-To address these challenges, an efficient and modular Python workflow and a relational database for GTHA housing market are introduced with this master's thesis.
-This makes data science methodologies a natural fit when trying to get a deeper understanding of the nature of "wicked" urban problems, such as the interaction between land development, urban form, and transportation.
+%TODO rewrite section: needs to capture this instead
+One of the major attributes missing from the available version of Teranet's dataset is the information about the type of property being transacted, with records of various residential, commercial and industrial properties all being mixed together in the same dataset.
+At the same time, Teranet records have timestamps (dates) and location information (x and y coordinates) and thus can be joined to variety of other urban data sources, such as Census demographics, Transportation Tomorrow Survey (TTS) and parcel-level land use information.
+It is possible to derive this attribute from additional related sources of information, such as detailed land use or Census demographics.
+However, joining these data sources together requires additional considerations, as they use different spatial units and are available at different temporal spans, as will be discussed in chapter~\ref{ch:spatial_and_temporal_relationships_between_urban_data}.
 
-\subsection{Data quality, skill requirements and lack of features} \label{subsec:challenges_quality_skills_features}
-
-Teranet dataset presents an extensive historical record of real estate transactions recorded in the Province of Ontario since the beginning of XIX century.
-However, when it comes to using new data sources in social studies, along with opportunities there are also challenges present.
-For example, these data sources can have issues with the quality of the data, might require a specific set of skills to take advantage of these data sources, or might not be suitable for traditional methods meant for traditional data\cite{Arribas-Bel2014}, all of which are true in the case of Teranet's dataset.
-
-On top of the issues with Teranet's data mentioned above, the most significant challenge lies in the amount of features provided for each record.
-Despite capturing effectively the complete population of real estate transactions recorded in Ontario since 1985, the available version of the dataset includes no information describing anything about each transaction, other than its location in the form of address and coordinates, the registration date, and the consideration amount.
-Since is no distinction being made between transactions recorded for residential, commercial, and industrial property types, transaction amounts can vary from several dollars to billions of dollars.
-There are no attributes that would allow transactions to be filtered for meaningful analysis and modeling.
-
-\subsection{Size of datasets, computational requirements and file formats} \label{subsec:challenges_size_and_formats}
-
-To address this gap, additional attributes can be joined from various data sources, such as Census, TTS or land use data, based on spatial or temporal relationships.
-However, Teranet's dataset has a number of records on the order of $10^6$.
-Such data sources as Census tables have the number of fields on the order of $10^2$.
-Overall, the number of attributes that could be joined between the various available data sources will probably be on the order of $10^3$.
-This fact makes it increasingly impractical to store all the data in one table, due to the memory requirements for storage and processing.
-
-In addition, datasets coming from different sources arrive in different file formats, such as text files, Excel spreadsheets, .csv files, or shapefiles.
-Combined with the size of the datasets and the computational requirements of such processing techniques as spatial joins, the facts mentioned above make working with Teranet's difficult due to the hardware and special skill requirements.
-
-\subsection{Complex spatial and temporal relationships between urban data sources} \label{subsec:complex_spatio-temporal_relationships_between_urban_data_sources}
-
-%TODO write subsection
-
-\subsection{The proposed solution: Python-SQL back-end} \label{subsec:proposed_solution_python_sql_backend}
-
-To address this challenge, this master's thesis establishes an organized modular data preparation workflow for Teranet's dataset and other related data sources and organized them into a relational database.
-A Relational Database Management System (RDBMS), such as PostgreSQL, will deliver the benefit of organized and optimized data storage, access, and processing;
-it is also capable of facilitating the flexibility and modular structure that is dictated by the nature of the data sources and the scope of research activities undertaken by UTTRI .
-The data preparation workflow is facilitated via Python in a series of jupyter notebooks described in section \textbf{cite}
-%TODO finish the description of the proposed solution
 
 \section{Chapter summary} \label{sec:background_summary}
 
@@ -201,6 +171,7 @@ However, along with the opportunities, the new data sources also present new cha
 Teranet's dataset has some data quality issues that need to be addressed and might require special skills to work with due to its size.
 But most importantly, it is very limited in the number of features available for each transaction.
 
-This issue can be addressed by augmenting Teranet's dataset through joining it with other urban data sources, such as Census data and the Transportation Tomorrow Survey (TTS).
-Since these data sources use different spatial units and are available at different temporal spans, they need to be preprocessed and "aligned" to allow the data from various sources to be joined together based on meaningful relationships.
-This master's thesis establishes a streamlined workflow in Python to preprocess and align all the data sources prior to entering them into the GTHA housing market database implemented via PostgreSQL .
+One of the major attributes missing from the available version of Teranet's dataset is the information about the type of property being transacted, with records of various residential, commercial and industrial properties all being mixed together in the same dataset.
+At the same time, Teranet records have timestamps (dates) and location information (x and y coordinates) and thus can be joined to variety of other urban data sources, such as Census demographics, Transportation Tomorrow Survey (TTS) and parcel-level land use information.
+It is possible to derive this attribute from additional related sources of information, such as detailed land use or Census demographics.
+However, joining these data sources together requires additional considerations, as they use different spatial units and are available at different temporal spans, as will be discussed in chapter~\ref{ch:spatial_and_temporal_relationships_between_urban_data}.

@@ -58,3 +58,61 @@ The frameworks can broadly be broken into two major approaches to modelling inte
         \item cell-based models
     \end{itemize}
 \end{itemize}
+
+% old Teranet challenges
+
+To address these challenges, an efficient and modular Python workflow and a relational database for GTHA housing market are introduced with this master's thesis.
+This makes data science methodologies a natural fit when trying to get a deeper understanding of the nature of "wicked" urban problems, such as the interaction between land development, urban form, and transportation.
+
+\subsection{Data quality, skill requirements and lack of features} \label{subsec:challenges_quality_skills_features}
+
+Teranet dataset presents an extensive historical record of real estate transactions recorded in the Province of Ontario since the beginning of XIX century.
+However, when it comes to using new data sources in social studies, along with opportunities there are also challenges present.
+For example, these data sources can have issues with the quality of the data, might require a specific set of skills to take advantage of these data sources, or might not be suitable for traditional methods meant for traditional data\cite{Arribas-Bel2014}, all of which are true in the case of Teranet's dataset.
+
+On top of the issues with Teranet's data mentioned above, the most significant challenge lies in the amount of features provided for each record.
+Despite capturing effectively the complete population of real estate transactions recorded in Ontario since 1985, the available version of the dataset includes no information describing anything about each transaction, other than its location in the form of address and coordinates, the registration date, and the consideration amount.
+Since is no distinction being made between transactions recorded for residential, commercial, and industrial property types, transaction amounts can vary from several dollars to billions of dollars.
+There are no attributes that would allow transactions to be filtered for meaningful analysis and modeling.
+
+\subsection{Size of datasets, computational requirements and file formats} \label{subsec:challenges_size_and_formats}
+
+To address this gap, additional attributes can be joined from various data sources, such as Census, TTS or land use data, based on spatial or temporal relationships.
+However, Teranet's dataset has a number of records on the order of $10^6$.
+Such data sources as Census tables have the number of fields on the order of $10^2$.
+Overall, the number of attributes that could be joined between the various available data sources will probably be on the order of $10^3$.
+This fact makes it increasingly impractical to store all the data in one table, due to the memory requirements for storage and processing.
+
+In addition, datasets coming from different sources arrive in different file formats, such as text files, Excel spreadsheets, .csv files, or shapefiles.
+Combined with the size of the datasets and the computational requirements of such processing techniques as spatial joins, the facts mentioned above make working with Teranet's difficult due to the hardware and special skill requirements.
+
+\subsection{Complex spatial and temporal relationships between urban data sources} \label{subsec:complex_spatio-temporal_relationships_between_urban_data_sources}
+
+%TODO write subsection
+
+\subsection{The proposed solution: Python-SQL back-end} \label{subsec:proposed_solution_python_sql_backend}
+
+To address this challenge, this master's thesis establishes an organized modular data preparation workflow for Teranet's dataset and other related data sources and organized them into a relational database.
+A Relational Database Management System (RDBMS), such as PostgreSQL, will deliver the benefit of organized and optimized data storage, access, and processing;
+it is also capable of facilitating the flexibility and modular structure that is dictated by the nature of the data sources and the scope of research activities undertaken by UTTRI .
+The data preparation workflow is facilitated via Python in a series of jupyter notebooks described in section \textbf{cite}
+%TODO rewrite proposed solution to ML workflow
+
+\subsection{Accessibility as a measure of land use-transportation relationship} \label{subsec:accessibility}
+
+While transportation research started as an isolated field focusing on mobility, researchers recognized that trips are made to access particular destinations\cite{VanLierop2017}.
+A concept of accessibility, understood as the ease of reaching rather than simply the ease of moving\cite{Preston2007}, was developed to take into account the location of urban opportunities.
+Accessibility is the mediating factor between the location of activities and demand for travel and is discussed further in section~\ref{subsec:accessibility} of the following chapter.
+
+LUT models (discussed in section~\ref{subsec:transportation_land_use_interaction}) operationalize the transportation-land use relationship by incorporating measures of accessibility with the process of locating activities, typically assuming that households wish to locate in areas with higher accessibility to employment, shopping, or entertainment opportunities.
+Similarly, firms are assumed to locate in areas with higher accessibility to labour markets.
+Land use component is usually integrated into the accessibility measure through congested network travel times.
+However, when studying the relationship between transportation facilities and property values, results may vary based on whether travel time or travel distance is used as a measure of accessibility\cite{Sherry1999}.
+
+Accessibility measures the situation of a location relative to other activities or opportunities (work, shopping, etc.) distributed in space and can be an important determinant of price in LUT models where land and floor space markets are considered explicitly\cite{Iacono2008}.
+When measuring changes in relative accessibility, it is usually approximated by some measure of access to the transportation network, such as travel time or distance.
+
+Economic decisions made by the households and firms act as one of the links between the tranportation and land use systems.
+When choosing a location, households and firms attempt to fulfill as many of their location preferences as possible while facing constraints.
+One of the main constraints is the price or rent of the dwelling, related to the income of the household;
+another important constraint is travel time, with suitable location being restricted by the travel times and transportation expenses\cite{Moeckel2017}.
