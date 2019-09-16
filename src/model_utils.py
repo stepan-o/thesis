@@ -183,18 +183,6 @@ def fit_class(X, y, test_size=0.3, stratify_y=True, scale=None,
         elapsed = time() - t
         print("\n - took {0:.2f} seconds.".format(elapsed))
 
-#
-# dot_data = export_graphviz(model,
-#                           filled=True,
-#                           rounded=True,
-#                           class_names=['def',
-#                                        'for'],
-#                           feature_names=[xcol1,
-#                                          xcol2],
-#                           out_file=None)
-# graph = graph_from_dot_data(dot_data)
-# graph.write_png('img/tree.png')
-
 
 def fit_norm_dist(series, h_bins='auto',
                   create_figure=True, ax=None,
@@ -204,7 +192,7 @@ def fit_norm_dist(series, h_bins='auto',
                   mean_lift=0.99, std_lift=1.007,
                   sig_lift=0.03, per_lift=0.1, val_lift=0.23,
                   x_between=None, x_min=None, x_max=None,
-                  t_shapiro=True, t_k2=True):
+                  t_shapiro=True, t_k2=True, t_anderson=True, alpha=0.05):
     """
     :param series: pandas Series
         Series to be plotted
@@ -362,6 +350,11 @@ def fit_norm_dist(series, h_bins='auto',
         stat, p = shapiro(series.dropna())
         print("\n----- Shapiro-Wilks normality test results:\nW = {0:.3f}, p-value = {1:.3f}"
               .format(stat, p))
+        # interpret
+        if p > alpha:
+            print('Sample looks Gaussian (fail to reject H0)')
+        else:
+            print('Sample does not look Gaussian (reject H0)')
 
     if t_k2:
         stat, p = normaltest(series.dropna())
@@ -370,5 +363,36 @@ def fit_norm_dist(series, h_bins='auto',
               .format(stat, p) + "\nwhere s is the z-score returned "
                                  "by skewtest and k is the z-score returned by kurtosistest"
                                  "\nand p-value is a 2-sided chi squared probability for the hypothesis test.")
+        # interpret
+        if p > alpha:
+            print('Sample looks Gaussian (fail to reject H0)')
+        else:
+            print('Sample does not look Gaussian (reject H0)')
+
+    if t_anderson:
+        result = anderson(series.dropna())
+        print("\n----- Anderson-Darling Test results:"
+              "\nStatistic: {0:.3f}".format(result.statistic))
+        p = 0
+        print("Sigificance level: critical value")
+        for i in range(len(result.critical_values)):
+            sl, cv = result.significance_level[i], result.critical_values[i]
+            if result.statistic < result.critical_values[i]:
+                print('{0:.3f}: {1:.3f}, data looks normal (fail to reject H0)'.format(sl, cv))
+            else:
+                print('{0:.3f}: {1:.3f}, data does not look normal (reject H0)'.format(sl, cv))
 
     return series.describe()
+
+
+#
+# dot_data = export_graphviz(model,
+#                           filled=True,
+#                           rounded=True,
+#                           class_names=['def',
+#                                        'for'],
+#                           feature_names=[xcol1,
+#                                          xcol2],
+#                           out_file=None)
+# graph = graph_from_dot_data(dot_data)
+# graph.write_png('img/tree.png')
