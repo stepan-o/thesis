@@ -311,6 +311,9 @@ def fit_norm_dist(series, h_bins='auto',
         title = "Histogram of {0}".format(series.name)
     ax.set_title(title)
 
+    ax.grid(False)
+    ax2.grid(False)
+
     if x_min:
         # estimate probability that x > x_min
         p = (1 - nd.cdf(x_min)) * 100
