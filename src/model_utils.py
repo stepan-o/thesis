@@ -10,7 +10,7 @@ from sklearn.neighbors import KNeighborsClassifier
 from sklearn.preprocessing import StandardScaler, MinMaxScaler
 from sklearn.svm import SVC
 from sklearn.tree import DecisionTreeClassifier
-from scipy.stats import norm, shapiro, normaltest
+from scipy.stats import norm, shapiro, normaltest, anderson
 from time import time
 
 
