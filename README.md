@@ -1,2 +1,2 @@
 # thesis
-A repository for my Master Thesis focusing on the organization of the PostgreSQL database for GTHA housing market and exploratory analysis of housing market data.
+A repository for my master's thesis: "A prototype of a machine learning workflow to classify land use from housing market dynamics".
