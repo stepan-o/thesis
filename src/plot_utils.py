@@ -156,7 +156,7 @@ def plot_hist(ser, form_x=False, form_y=False, width=14, height=5,
               skew_kurt=True, plot_mean=True, plot_median=True, sdev=True,
               mean_xlift=1.1, med_xlift=0.7, sdev_xlift=1.3, skew_xlift=2, kurt_xlift=1.3, skew_kurt_rot=30,
               title='Distribution', title_size=20,
-              x_tick_size=14, y_tick_size=14, x_lab_size=16, y_lab_size=16, mean_med_size=14,
+              x_tick_size=16, y_tick_size=16, x_lab_size=20, y_lab_size=20, mean_med_size=18,
               act='show', save_path='distribution.png', dpi=300, save_only=True):
     """
     plot distribution of the provided series
