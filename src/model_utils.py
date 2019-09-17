@@ -58,7 +58,7 @@ def plot_decision_regions(X, y, classifier, test_idx=None,
 
 
 def fit_model(model, model_name, X_train, y_train, X_test, y_test, X_val1, y_val1, X_val2, y_val2,
-              return_coefs=False):
+              return_coefs=False, plot_dec_reg=None):
     t = time()
 
     # fit the model
@@ -80,6 +80,21 @@ def fit_model(model, model_name, X_train, y_train, X_test, y_test, X_val1, y_val
     print("\n{0} fit, took {1:,.2f} seconds ({2:,.2f} minutes)".format(model_name, elapsed, elapsed / 60) +
           "\naccuracy: train={0:.2f}, test={1:.2f}, validation #1={2:.2f}, validation #2={3:.2f}"
           .format(train_score, test_score, val1_score, val2_score))
+
+    if plot_dec_reg == 'train-test':
+        X_combined = np.vstack((X_train, X_test))
+        y_combined = np.hstack((y_train, y_test))
+        plot_decision_regions(X=X_combined,
+                              y=y_combined,
+                              classifier=model)
+    elif plot_dec_reg == 'val1':
+        plot_decision_regions(X=X_val1,
+                              y=y_val1,
+                              classifier=model)
+    elif plot_dec_reg == 'val2':
+        plot_decision_regions(X=X_val2,
+                              y=y_val2,
+                              classifier=model)
 
     if return_coefs:
         return model.coef_[0]
