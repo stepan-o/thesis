@@ -4,6 +4,8 @@ import matplotlib
 import matplotlib.pyplot as plt
 import pandas as pd
 import seaborn as sns
+from scipy.stats import kurtosis, skew
+from time import time
 
 
 def grouped_boxplot(df, year, max_price, plot_col='price_2016', group_col='csdname',
@@ -150,7 +152,8 @@ def plot_count_mean_median(s, group_col, plot_col, figsize=(8, 8), tick_label_si
 
 
 def plot_hist(ser, form_x=False, form_y=False, figsize=(14, 6), kde=False, x_label=None,
-              plot_mean=True, plot_median=True, mean_xlift=1.1, med_xlift=0.7, sdev=True, sdev_xlift=1.3,
+              skew_kurt=True, plot_mean=True, plot_median=True, sdev=True,
+              mean_xlift=1.1, med_xlift=0.7, sdev_xlift=1.3, skew_xlift=2, kurt_xlift=1.3, skew_kurt_rot=30,
               title='Distribution', title_size=20,
               x_tick_size=14, y_tick_size=14, x_lab_size=16, y_lab_size=16, mean_med_size=14,
               act='show', save_path='distribution.png', dpi=300, save_only=True):
@@ -223,6 +226,12 @@ def plot_hist(ser, form_x=False, form_y=False, figsize=(14, 6), kde=False, x_lab
     # print standard deviation of the series
     if sdev:
         ax.text(mean * sdev_xlift, 0, 'StDev: {0:,.2f}'.format(ser.std()), fontsize=mean_med_size, rotation=90)
+    # print excess kurtosis and skewness
+    if skew_kurt:
+        ax.text(mean * skew_xlift * sdev_xlift, 0, 'skewness: {0:.2f}'.format(skew(ser)),
+                fontsize=mean_med_size, rotation=skew_kurt_rot)
+        ax.text(mean * skew_xlift * kurt_xlift * sdev_xlift, 0, 'excess kurtosis : {0:.2f}'.format(kurtosis(ser)),
+                fontsize=mean_med_size, rotation=skew_kurt_rot)
 
     # format axes
     if form_x:
@@ -252,6 +261,68 @@ def plot_hist(ser, form_x=False, form_y=False, figsize=(14, 6), kde=False, x_lab
         print("Saved output plot to", save_path)
         if save_only:
             plt.close(f)
+
+
+def map_points(gdf, color_col=None, target_point_gdf=None, buffer_size=None,
+               caption_idx=None, caption_col=None, caption_size=10,
+               height=12, width=12, basemap=True,
+               title=None, output='show', save_path='points_map.png', dpi=400, save_only=False):
+    t = time()
+
+    # generate figure and axis
+    f, ax = plt.subplots(1, figsize=(width, height))
+
+    # convert CRS to Web Mercator
+    gdf = gdf.to_crs(epsg=3857)
+
+    if color_col:
+        gdf.dropna(subset=[color_col]).plot(ax=ax, column=color_col, categorical=True, legend=True)
+    else:
+        gdf.plot(ax=ax)
+
+    if caption_idx is not None:
+        for idx, row in gdf[caption_idx].iterrows():
+            ax.text(row['geometry'].x, row['geometry'].y, "{0:,.2f}".format(row[caption_col]),
+                    ha='center', fontsize=caption_size)
+
+    # plot the subset, target point and the buffer
+    if target_point_gdf is not None:
+
+        target_point_gdf.to_crs(epsg=3857).plot(ax=ax, color='red', alpha=0.8)
+        ax.text(target_point_gdf.to_crs(epsg=3857).loc[0, 'coordinates'].x,
+                target_point_gdf.to_crs(epsg=3857).loc[0, 'coordinates'].y,
+                "Target point", fontsize=10, ha='center')
+
+        if buffer_size:
+            buffer_gdf = gpd.GeoDataFrame(target_point_gdf.to_crs(epsg=3857).buffer(buffer_size))
+            buffer_gdf = buffer_gdf.rename(columns={0: 'geometry'}).set_geometry('geometry')
+            buffer_gdf.crs = {'init': 'epsg:3857'}
+            buffer_gdf.to_crs(epsg=3857).plot(ax=ax, color='green', alpha=0.1)
+
+    if basemap:
+        # add basemap
+        ctx.add_basemap(ax, url=ctx.sources.ST_TONER_LITE, alpha=0.25)
+
+    # set axis parameters
+    ax.set_axis_off()
+    plt.axis('equal')
+    minX, minY, maxX, maxY = gdf.to_crs(epsg=3857).total_bounds
+    ax.set_xlim(minX - 500, maxX + 500)
+    ax.set_ylim(minY - 500, maxY + 300)
+
+    elapsed = time() - t
+    print("Took {0:,.2f} seconds ({1:,.2f} minutes) to plot".format(elapsed, elapsed / 60))
+
+    if title:
+        ax.set_title(title, fontsize=18)
+    if output == 'show':
+        plt.show()
+    elif output == 'save':
+        f.savefig(save_path, dpi=dpi, bbox_inches='tight')
+        if save_only:
+            plt.close(f)
+    else:
+        raise ValueError("parameter 'output' must be either 'show' or 'save'")
 
 
 def plot_heatmap(df_to_plot):
