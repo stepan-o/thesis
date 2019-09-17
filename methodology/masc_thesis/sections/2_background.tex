@@ -47,6 +47,7 @@ In addition, to accurately assess the costs and benefits of an expensive long-te
 need to be quantified and included in evaluation and decision making.
 Thus, today there is a steadily growing recognition within the urban policy field that the interaction between transportation and land use does exist and does matter\cite{Miller2018b}.
 
+%TODO change the end of 1st sentence
 In the context of models, integrated urban models (IUMs) aim to capture the complex relationship between urban systems such as transportation and land use more accurately.
 Integrated land use-transportation models combine travel demand forecasting and land use forecasting functions and recognize that the distribution of population and jobs depends, in part, on transportation accessibility.
 The reverse is also true, and thus integrated models incorporate feedback relationship between transportation and land use, with economic decisions by households and firms acting as one of the links between the two systems\cite{Miller1998}.
@@ -72,23 +73,26 @@ Urban systems used to be viewed as hierarchical and centrally organized equilibr
 Instead, now they were considered to be structured from the "bottom-up", dynamically retaining their integrity through interactions of numerous microelements\cite{Batty2008}.
 A new broad class of LUT models that could fall under the title of "microsimulation" began to be developed.
 It included such classes of models as activity-based travel, cell-based models, and multi-agent models, and more recently comprehensive urban microsimulation models that fully reflect the dynamics of changes in the population and the urban environment\cite{Iacono2008}.
+%TODO check last sentence
 
 "Micro" in the microsimulation implies that the model must be highly disaggregated spatially, socio-economically and in its representation of processes.
 "Simulation" implies that the model must be numerical, stochastic, have an explicit time dimension, and "evolve" into the end state rather than "solve for it"\cite{Miller2018c}.
-An example of such model, an integrated urban model capable of microsimulating urban demographic evolution, housing markets and travel behaviour over extended periods of time\cite{Miller2018a}, has been developed by the University of Toronto ILUTE team.
-This model system and some of the ways for its future improvement are discussed in the following section.
+An example of such model has been developed by the University of Toronto ILUTE team;
+their product is an integrated urban model capable of microsimulating urban demographic evolution, housing markets and travel behaviour over extended periods of time\cite{Miller2018a}.
+The ILUTE system and some of the ways for its future improvement are discussed in the following section.
 
-\subsection{ILUTE model system} \label{subsec:ilute}
+\subsection{ILUTE and HoMES model systems} \label{subsec:ilute}
 
 The Integrated Land Use, Transportation, Environment (ILUTE) model system is an agent-based microsimulation model for greater Toronto-Hamilton area;
-it includes such components as land use, activity / travel, urban economics, auto ownership, demographics and emissions / energy use.
+it includes such components as land use, activity/travel, urban economics, auto ownership, demographics and emissions/energy use.
 It uses disaggregate models of spatial socioeconomic processes to evolve the state of the greater Toronto\textendash Hamilton area from a known base case to a predicted end state in 1-year time steps.
 The system state is defined in terms of the individual persons, households, dwelling units, firms, etc.
 that collectively define the urban region being modeled\cite{Miller2011}.
 
 ILUTE model simulates the evolution of an urban region's spatial form, demographics, travel behavior and economic structure over time.
-Many market are of interest within ILUTE, such as housing, labour, commercial, real estate, etc.) and are modeled via microsimulation.
-For example, in the housing market component of ILUTE houses are auctioned off one dwelling at a time to interested bidders in a disaggregate implementation of Martinez' Bid Choice theory\cite{Martinez1992}.
+Many markets are of interest within ILUTE, such as housing, labour, commercial, real estate, etc.) and are modeled via microsimulation.
+The model aims to capture the dynamics of these markets through disaggregated representations.
+For example, in the housing market component of ILUTE, houses are auctioned off one dwelling at a time to interested bidders in a disaggregate implementation of Martinez' Bid Choice theory\cite{Martinez1992}.
 
 The Housing Market Evolutionary System (HoMES) is the updated housing market module for the ILUTE model system.
 HoMES is a disaggregate, agent-based microsimulation of the owner-occupied housing market that evolves the residential location of households over time and includes the endogenous supply of housing by type and location, as well as the endogenous determination of sales prices and rents.
@@ -104,55 +108,48 @@ An overview of the framework of housing market supply, demand and clearing mecha
 
 Among the major barriers to implementation of integrated urban models since their introduction were such aspects as data hungriness and computational requirements\cite{Miller1998}.
 However, continuing methodological advances, such as cost-effective High Performance Computing (HPC), detailed GIS-based datasets and machine learning methods, mean that former barriers now represent opportunities for model system development.
-In the case of ILUTE, one of the possibilities for further improvement is the use of new data sources to update the housing market model.
+In the case of ILUTE and HoMES, one of the possibilities for further improvement is the use of new data sources to update the housing market model.
+One of these new data sources, Teranet's dataset of land registry records, and main challenges of working with it are discussed in section~\ref{sec:new_data_sources_and_their_challgenges}.
+
+\section{New data sources and their challenges} \label{sec:new_data_sources_and_their_challgenges}
+
+\subsection{Further improvement of integrated urban models} \label{subsec:further_improvement_of_iums}
+
 
 As an increasing amount of aspects of human life becomes digitalized, a wealth of new data is produced and can be used to model and analyze dynamics of urban systems\cite{Arribas-Bel2014, Chen2016}.
 An example of such digitalization of human activity is the introduction of the Province of Ontario Land Registration Information System (POLARIS) in 1985 by the Government of Ontario\cite{TeranetEnterprisesInc.} that will be discussed in the following section.
-Introduction of POLARIS lead to the creation of an extensive dataset of real estate transactions (land registration records) by Teranet Enterprises Inc.
-This dataset offers a very fine resolution of housing market data across both time and space, which can be beneficial for updating and testing microsimulation models, but it also presents challenges to work with that will be discussed in section~\ref{sec:challenges} of this chapter;
-this chapter concludes with the proposed solution to address the challenges.
+Introduction of POLARIS lead to the creation of an extensive dataset of real estate transactions (land registration records) by the Teranet Enterprises Inc.
+This dataset offers a very fine resolution of housing market dynamics across both time and space, which can be beneficial for updating and testing microsimulation models, but it also presents challenges to work with that will be discussed in section~\ref{subsec:teranet_ontario} of this chapter;
+the chapter concludes with the proposed solution to address one of the main challenges of working with Teranet's data.
 
-\section{System of land registration in Canada, POLARIS and Teranet} \label{sec:system_of_land_registration_polaris_teranet}
+\subsection{POLARIS: electronic system of land registration in Ontario} \label{subsec:land_reg_system_canada}
 
-\subsection{System of land registration in Canada} \label{subsec:land_reg_system_canada}
-
-According to Chapter 6 of the International Comparative Legal Guide to Real Estate published by the Global Legal Group in 2015\cite{McKean2015}, all land owned in Canada is registered in a public land registry through either a registry system, a land titles system or a combination of both in the applicable province.
-The registry system is a public record of documents evidencing transactions affecting land.
-In the land titles system, the applicable provincial government determines the quality of the title, and essentially guarantees (within certain important statutory limits) the title to, and interests in, the property.
-As of 2015, most common law provinces and territories were using the land titles system or were in the process of converting title from a registry system to a land titles system.
-
-On the purchase and sale of real estate and land, ownership is generally transferred to the buyer when the deed or transfer is registered in the applicable land registry office.
-An agreement of purchase and sale must be in writing to be enforceable.
-A transfer of ownership is actualised by registering, either physically or electronically (depending on the applicable land registry system), a deed or transfer with the applicable land registry office or land registrar, copies of which can be obtained from the relevant registry office, often electronically.
-
-\subsection{POLARIS: Land registration system of Ontario} \label{subsec:polaris}
-
+All land owned in Canada is registered in a public land registry in the applicable province.
 Each province and territory in Canada has its own land registry system, whether it is a land titles system, a registry system or a combination of both, with each system having its own rules.
+The registry system is a public record of documents evidencing transactions affecting land.
+In the land titles system, the applicable provincial government determines the quality of the title, and essentially guarantees (within certain statutory limits) the title to, and interests in, the property.
+As of 2015, most common law provinces and territories in Canada were using the land titles system or were in the process of converting from a registry system to a land titles system\cite{McKean2015}.
+
 As of 2015, the Province of Ontario has largely converted from registry systems to a land titles system.
-
-In 1985, the Government of Ontario initiated the Province of Ontario Land Registration Information System (POLARIS) pilot project for the purposes of records automation and the conversion from the Registry System to the Land Titles System.
+In 1985, the Government of Ontario initiated the Province of Ontario Land Registration Information System (POLARIS) pilot project for the purposes of the conversion between systems and records automation.
 The Land Registration Reform Act (Ontario)\cite{TheGovernmentofOntario1990} was introduced in 1990 to facilitate electronic search and registration of properties and the automation of paper-based records.
-
 POLARIS was built by the Province to house and process electronic land records, which in turn lead to the creation of an extensive dataset of land registration records managed by Teranet Enterprises Inc.
 Today, POLARIS is the search/registration and property maintenance system for all automated land records in Ontario.
 
-\subsection{The Teranet-Ontario Partnership} \label{subsec:teranet_ontario}
+\subsection{The Teranet-Ontario Partnership, Teranet's data and its challenges} \label{subsec:teranet_ontario}
 
-In 1991, the Government of Ontario established a partnership with Teranet\cite{TeranetEnterprisesInc.2019}, a Toronto-based organization, founded the same year, which provides e-services to legal, real estate, government, financial, and healthcare markets.
+In 1991, the Government of Ontario established a partnership with Teranet, a Toronto-based organization, founded the same year, which provides e-services to legal, real estate, government, financial, and healthcare markets.
 The partnership was established to convert Ontario's land registration system to a more modernized electronic title system.
 The project involved taking a 200-year-old paper-based system and creating a database with electronic records for more than five million parcels of land.
-
 Teranet converted all qualified Registry properties in Ontario to the Land Titles system and automated existing paper Land Titles parcels.
-As a result, 99.9\% of property in Ontario was parcelized and administered under the Land Titles system, which affords a property ownership guarantee by the province.
-Teranet fully automated the conversion of millions of paper-based documents and records into the Ontario Electronic Land Registration System (ELRS).
+As a result, 99.9\% of property in Ontario was parcelized and administered under the Land Titles system.
+Teranet fully automated the conversion of millions of paper-based documents and records into the Ontario Electronic Land Registration System (ELRS)\cite{TeranetEnterprisesInc.2019}.
 
-In December 2010, the Government of Ontario extended its exclusive relationship with Teranet by 50 years.
-Today, Teranet is the exclusive provider of Ontario's online property search and registration;
-it developed, owns and operates the ELRS, and also provides online access to Ontario's Writs System.
 
-\subsection{Challenges of using Teranet's data and the proposed solution} \label{subsec:challenges}
+Teranet dataset presents an extensive historical record of real estate transactions recorded in the Province of Ontario since the beginning of XIX century.
+However, when it comes to using new data sources in social studies, along with opportunities there are also challenges present.
+For example, these data sources can have issues with the quality of the data, might require a specific set of skills to take advantage of these data sources, or might not be suitable for traditional methods meant for traditional data\cite{Arribas-Bel2014}, all of which are true in the case of Teranet's dataset.
 
-%TODO rewrite section: needs to capture this instead
 One of the major attributes missing from the available version of Teranet's dataset is the information about the type of property being transacted, with records of various residential, commercial and industrial properties all being mixed together in the same dataset.
 At the same time, Teranet records have timestamps (dates) and location information (x and y coordinates) and thus can be joined to variety of other urban data sources, such as Census demographics, Transportation Tomorrow Survey (TTS) and parcel-level land use information.
 It is possible to derive this attribute from additional related sources of information, such as detailed land use or Census demographics.
