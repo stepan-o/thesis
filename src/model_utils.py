@@ -97,7 +97,7 @@ def fit_model(model, model_name, X_train, y_train, X_test, y_test, X_val1, y_val
                               classifier=model)
 
     if return_coefs:
-        return model.coef_[0]
+        return model.coef_
 
 
 def fit_class(X, y, test_size=0.3, stratify_y=True, scale=None,
