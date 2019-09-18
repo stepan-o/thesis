@@ -4,10 +4,10 @@ from shapely.geometry import Point
 from time import time
 
 
-def df_from_csv(csv_path, parse_dates=None):
+def df_from_csv(csv_path, parse_dates=None, low_memory=False):
     # load DataFrame with Teranet records
     t = time()
-    df = pd.read_csv(csv_path, parse_dates=parse_dates)
+    df = pd.read_csv(csv_path, parse_dates=parse_dates, low_memory=low_memory)
     elapsed = time() - t
     print("----- DataFrame loaded"
           "\nin {0:.2f} seconds".format(elapsed) +
