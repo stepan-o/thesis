@@ -71,7 +71,7 @@ class SBS():
 
 
 def fit_sbs(classifier, k_features, X, y, y_min=None, y_max=None, height=4, width=4,
-            title="SBS", output='show', save_path='sbs.png'):
+            title="SBS", output='show', save_path='sbs.png', return_feats=True):
     t = time()
 
     sbs = SBS(classifier, k_features=k_features)
@@ -95,6 +95,8 @@ def fit_sbs(classifier, k_features, X, y, y_min=None, y_max=None, height=4, widt
         plt.show()
     elif output == 'save':
         f.savefig(save_path, dpi=300, bbox_inches='tight')
+    if return_feats:
+        return sbs.subsets_
 
 
 def plot_decision_regions(X, y, classifier, test_idx=None,
