@@ -400,14 +400,10 @@ def fit_norm_dist(series, h_bins='auto',
     return series.describe()
 
 
-#
-# dot_data = export_graphviz(model,
-#                           filled=True,
-#                           rounded=True,
-#                           class_names=['def',
-#                                        'for'],
-#                           feature_names=[xcol1,
-#                                          xcol2],
-#                           out_file=None)
+
+# dot_data = export_graphviz(model, filled=True, rounded=True,
+#                            class_names=['def', 'for'],
+#                            feature_names=[xcol1, xcol2],
+#                            out_file=None)
 # graph = graph_from_dot_data(dot_data)
 # graph.write_png('img/tree.png')
