@@ -70,6 +70,28 @@ class SBS():
         return score
 
 
+def fit_sbs(classifier, k_features, X, y, y_min=None, y_max=None, height=4, width=4):
+    t = time()
+
+    sbs = SBS(classifier, k_features=k_features)
+
+    sbs.fit(X, y)
+
+    elapsed = time() - t
+    print("Sequential Backwards Selection algortihm was applied. Took {0:,.2f} seconds, ({1:,.2f} minutes)."
+          .format(elapsed, elapsed / 60))
+
+    k_feat = [len(k) for k in sbs.subsets_]
+
+    f, ax = plt.subplots(1, figsize=(width, height))
+    plt.plot(k_feat, sbs.scores_, marker='o')
+    ax.set_ylim(bottom=y_min, top=y_max)
+    plt.ylabel('Accuracy')
+    plt.xlabel('Number of features')
+    plt.grid()
+    plt.show()
+
+
 def plot_decision_regions(X, y, classifier, test_idx=None,
                           resolution=0.02, limits=False, alpha=0.05,
                           minx=-0.5, maxx=1, miny=-0.8, maxy=2):
