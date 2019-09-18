@@ -151,8 +151,8 @@ def plot_count_mean_median(s, group_col, plot_col, figsize=(8, 8), tick_label_si
         plt.show()
 
 
-def plot_hist(ser, form_x=False, form_y=False, width=14, height=5,
-              kde=False, x_label=None,
+def plot_hist(ser, form_x=False, form_y=False, width=14, height=5, min_x=None, max_x=None,
+              kde=False, rug=False, x_label=None, bins=None,
               skew_kurt=True, plot_mean=True, plot_median=True, sdev=True,
               mean_xlift=1.1, med_xlift=0.7, sdev_xlift=1.3, skew_xlift=2, kurt_xlift=1.3, skew_kurt_rot=30,
               title='Distribution', title_size=20,
@@ -212,7 +212,7 @@ def plot_hist(ser, form_x=False, form_y=False, width=14, height=5,
     f, ax = plt.subplots(1, figsize=(width, height))
 
     # plot distribution
-    sns.distplot(ser, kde=kde, ax=ax)
+    sns.distplot(ser, kde=kde, rug=rug, bins=bins, ax=ax)
 
     # plot mean of the series
     if plot_mean:
@@ -253,6 +253,9 @@ def plot_hist(ser, form_x=False, form_y=False, width=14, height=5,
 
     if x_label:
         ax.set_xlabel(x_label, fontsize=x_lab_size)
+
+    if min_x or max_x:
+        ax.set_xlim(left=min_x, right=max_x)
 
     # save or show results
     if act == 'show':
