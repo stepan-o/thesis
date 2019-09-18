@@ -78,7 +78,7 @@ def fit_sbs(classifier, k_features, X, y, y_min=None, y_max=None, height=4, widt
     sbs.fit(X, y)
 
     elapsed = time() - t
-    print("Sequential Backwards Selection algortihm was applied. Took {0:,.2f} seconds, ({1:,.2f} minutes)."
+    print("Sequential Backwards Selection algorithm was applied. Took {0:,.2f} seconds, ({1:,.2f} minutes)."
           .format(elapsed, elapsed / 60))
 
     k_feat = [len(k) for k in sbs.subsets_]
