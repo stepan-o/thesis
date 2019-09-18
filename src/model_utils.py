@@ -70,7 +70,8 @@ class SBS():
         return score
 
 
-def fit_sbs(classifier, k_features, X, y, y_min=None, y_max=None, height=4, width=4):
+def fit_sbs(classifier, k_features, X, y, y_min=None, y_max=None, height=4, width=4,
+            title="SBS", output='show', save_path='sbs.png'):
     t = time()
 
     sbs = SBS(classifier, k_features=k_features)
@@ -86,10 +87,14 @@ def fit_sbs(classifier, k_features, X, y, y_min=None, y_max=None, height=4, widt
     f, ax = plt.subplots(1, figsize=(width, height))
     plt.plot(k_feat, sbs.scores_, marker='o')
     ax.set_ylim(bottom=y_min, top=y_max)
+    ax.set_title(title)
     plt.ylabel('Accuracy')
     plt.xlabel('Number of features')
     plt.grid()
-    plt.show()
+    if output == 'show':
+        plt.show()
+    elif output == 'save':
+        f.savefig(save_path, dpi=300, bbox_inches='tight')
 
 
 def plot_decision_regions(X, y, classifier, test_idx=None,
