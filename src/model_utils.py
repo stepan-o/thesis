@@ -58,7 +58,7 @@ def plot_decision_regions(X, y, classifier, test_idx=None,
 
 
 def fit_model(model, model_name, X_train, y_train, X_test, y_test, X_val1, y_val1, X_val2, y_val2,
-              return_coefs=False, plot_dec_reg=None):
+              return_coefs=False, feat_names=None, class_names=None, plot_dec_reg=None):
     t = time()
 
     # fit the model
@@ -97,7 +97,17 @@ def fit_model(model, model_name, X_train, y_train, X_test, y_test, X_val1, y_val
                               classifier=model)
 
     if return_coefs:
-        return model.coef_
+        if feat_names is None:
+            feat_names = range(X_train.shape[1])
+        if class_names is None:
+            class_names = range(model.coef_.shape[0])
+        coef_df = pd.DataFrame()
+        for cl in range(model.coef_.shape[0]):
+            class_coef = pd.DataFrame(model.coef_[cl], index=feat_names).reset_index() \
+                .rename(columns={'index': 'var', 0: 'coefficient'})
+            class_coef['class'] = class_names[cl]
+            coef_df = coef_df.append(class_coef)
+        return coef_df
 
 
 def fit_class(X, y, test_size=0.3, stratify_y=True, scale=None,
