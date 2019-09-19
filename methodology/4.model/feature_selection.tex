@@ -66,6 +66,68 @@
     Sparsity can be useful in practice if we have a high-dimensional dataset with many features that are irrelevant, especially cases where we have more irrelevant dimensions than samples.
     In this sense, L1 regularization can be understood as a technique for feature selection.
 
+    \section{Sequential feature selection algorithms} \label{sec:sequential_feature_selection_algorithms}
+
+    An alternative way to reduce the complexity of the model and avoid overfitting is dimensionality reduction via feature selection, which is especially useful for unregularized models.
+    There are two main categories of dimensionality reduction techniques: feature selection and feature extraction.
+    Via feature selection, we select a subset of the original features, whereas in feature extraction, we derive information from the feature set to construct a new feature subspace.
+    In this section, we will take a look at a classic family of feature selection algorithms.
+
+    Sequential feature selection algorithms are a family of greedy search algorithms that are used to reduce an initial d-dimensional feature space to a k-dimensional feature subspace where k<d.
+    Greedy algorithms make locally optimal choices at each stage of a combinatorial search problem and generally yield a suboptimal solution to the problem, in contrast to exhaustive search algorithms, which evaluate all possible combinations and are guaranteed to find the optimal solution.
+    However, in practice, an exhaustive search is often computationally not feasible, whereas greedy algorithms allow for a less complex, computationally more efficient solution.
+
+    \subsection{Sequential Backward Selection (SBS) algorithm} \label{subsec:sbs_algorithm}
+
+    The motivation behind feature selection algorithms is to automatically select a subset of features that are most relevant to the problem, to improve computational efficiency or reduce the generalization error of the model by removing irrelevant features or noise, which can be useful for algorithms that don't support regularization.
+    A classic sequential feature selection algorithm is Sequential Backward Selection (SBS), which aims to reduce the dimensionality of the initial feature subspace with a minimum decay in performance of the classifier to improve upon computational efficiency.
+    In certain cases, SBS can even improve the predictive power of the model if a model suffers from overfitting.
+
+    The idea behind the SBS algorithm is quite simple: SBS sequentially removes features from the full feature subset until the new feature subspace contains the desired number of features.
+    In order to determine which feature is to be removed at each stage, we need to define the criterion function J that we want to minimize.
+    The criterion calculated by the criterion function can simply be the difference in performance of the classifier before and after the removal of a particular feature.
+    Then, the feature to be removed at each stage can simply be defined as the feature that maximizes this criterion;
+    or in more intuitive terms, at each stage we eliminate the feature that causes the least performance loss after removal.
+    Based on the preceding definition of SBS, we can outline the algorithm in four simple steps:
+
+    \begin{enumerate}
+        \item Initialize the algorithm with $k=d$, where $d$ is the dimensionality of the full feature space $\boldsymbol{X}_d$.
+        \item Determine the feature $x^-$ that maximizes the criterion:
+
+        $x^-=arg~max~J(\boldsymbol{X}_k - \boldsymbol{x})$, where $\boldsymbol{x}\in \boldsymbol{X}_k$.
+
+        \item Remove the feature $x^-$ from the feature set:
+
+        $\boldsymbol{X}_{k-1}:=\boldsymbol{X}_k - \boldsymbol{x}^-;~k:=k-1$.
+
+        \item Terminate if $k$ equals the number of desired features;
+        otherwise, go to step 2.
+    \end{enumerate}
+
+    You can find a detailed evaluation of several sequential feature algorithms in Comparative Study of Techniques for Large-Scale Feature Selection by F. Ferri et al.\cite{Ferri1994}.
+
+    \section{Other feature selection algorithms} \label{sec:other_feature_selection_algorithms}
+
+    \subsection{Variance Threshold} \label{subsec:variance_threshold}
+
+    \texttt{VarianceThreshold} in \texttt{scikit-learn} is a simple baseline approach to feature selection.
+    It removes all features whose variance doesn’t meet some threshold.
+    By default, it removes all zero-variance features, i.e. features that have the same value in all samples.
+
+    As an example, suppose that we have a dataset with boolean features, and we want to remove all features that are either one or zero (on or off) in more than 80\% of the samples.
+    Boolean features are Bernoulli random variables, and the variance of such variables is given by:
+
+    \begin{equation} \label{eq:bernoulli_variance}
+        Var[X] = p(1-p)
+    \end{equation}
+
+    so we can select using the threshold .8 * (1 - .8):
+
+    \texttt{from sklearn.feature\_selection import VarianceThreshold}
+
+    \texttt{sel = VarianceThreshold(threshold=(.8 * (1 - .8)))}
+
+
     \bibliography{model}
     \bibliographystyle{ieeetr}
 
