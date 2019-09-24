@@ -1,8 +1,6 @@
 \chapter[Background information]{Background information} \label{ch:background}
 
-\section{Chapter 2: transportation and land use, land registration in Canada and Teranet} \label{sec:chapter_2_intro}
-
-This chapter discusses the complex interaction of land use and transportation, provides a brief overview of the history of development of land use-transportation (LUT) models, presents some legal and historical background for Teranet's dataset of real estate transactions and finishes with discussing challenges of working with Teranet's data and the proposed solution.
+This chapter discusses the complex interaction of land use and transportation, provides a brief overview of the history of development of land use-transportation (LUT) models, presents some legal and historical background for Teranet's dataset of land registration records, and finishes with a discussion of challenges of working with Teranet's data and the proposed solution.
 
 \section{Land Use and Transport (LUT) models} \label{sec:evolution_of_models_of_urban_systems}
 
@@ -47,7 +45,6 @@ In addition, to accurately assess the costs and benefits of an expensive long-te
 need to be quantified and included in evaluation and decision making.
 Thus, today there is a steadily growing recognition within the urban policy field that the interaction between transportation and land use does exist and does matter\cite{Miller2018b}.
 
-%TODO change the end of 1st sentence
 In the context of models, integrated urban models (IUMs) aim to capture the complex relationship between urban systems such as transportation and land use more accurately.
 Integrated land use-transportation models combine travel demand forecasting and land use forecasting functions and recognize that the distribution of population and jobs depends, in part, on transportation accessibility.
 The reverse is also true, and thus integrated models incorporate feedback relationship between transportation and land use, with economic decisions by households and firms acting as one of the links between the two systems\cite{Miller1998}.
@@ -72,73 +69,48 @@ The modeling paradigm has changed fundamentally in the early 1990s along with th
 Urban systems used to be viewed as hierarchical and centrally organized equilibrium structures, or "top-down".
 Instead, now they were considered to be structured from the "bottom-up", dynamically retaining their integrity through interactions of numerous microelements\cite{Batty2008}.
 A new broad class of LUT models that could fall under the title of "microsimulation" began to be developed.
-It included such classes of models as activity-based travel, cell-based models, and multi-agent models, and more recently comprehensive urban microsimulation models that fully reflect the dynamics of changes in the population and the urban environment\cite{Iacono2008}.
-%TODO check last sentence
 
+The new broad class included such classes of models as as activity-based travel, cell-based models, and multi-agent models, and more recently comprehensive urban microsimulation models that fully reflect the dynamics of changes in the population and the urban environment\cite{Iacono2008}.
 "Micro" in the microsimulation implies that the model must be highly disaggregated spatially, socio-economically and in its representation of processes.
 "Simulation" implies that the model must be numerical, stochastic, have an explicit time dimension, and "evolve" into the end state rather than "solve for it"\cite{Miller2018c}.
 An example of such model has been developed by the University of Toronto ILUTE team;
 their product is an integrated urban model capable of microsimulating urban demographic evolution, housing markets and travel behaviour over extended periods of time\cite{Miller2018a}.
-The ILUTE system and some of the ways for its future improvement are discussed in the following section.
 
-\subsection{ILUTE and HoMES model systems} \label{subsec:ilute}
+The Integrated Land Use, Transportation, Environment (ILUTE) model system is a system of disaggregate agent-based microsimulation models for greater Toronto-Hamilton area.
+It includes such components as land use, activity/travel, urban economics, auto ownership, demographics and emissions/energy use.
+The system uses disaggregate models of spatial socioeconomic processes to evolve from a known base case to a predicted end state of the greater Toronto \textendash Hamilton area in 1-year time steps\cite{Miller2011}.
 
-The Integrated Land Use, Transportation, Environment (ILUTE) model system is an agent-based microsimulation model for greater Toronto-Hamilton area;
-it includes such components as land use, activity/travel, urban economics, auto ownership, demographics and emissions/energy use.
-It uses disaggregate models of spatial socioeconomic processes to evolve the state of the greater Toronto\textendash Hamilton area from a known base case to a predicted end state in 1-year time steps.
-The system state is defined in terms of the individual persons, households, dwelling units, firms, etc.
-that collectively define the urban region being modeled\cite{Miller2011}.
-
-ILUTE model simulates the evolution of an urban region's spatial form, demographics, travel behavior and economic structure over time.
-Many markets are of interest within ILUTE, such as housing, labour, commercial, real estate, etc.) and are modeled via microsimulation.
-The model aims to capture the dynamics of these markets through disaggregated representations.
-For example, in the housing market component of ILUTE, houses are auctioned off one dwelling at a time to interested bidders in a disaggregate implementation of Martinez' Bid Choice theory\cite{Martinez1992}.
-
-The Housing Market Evolutionary System (HoMES) is the updated housing market module for the ILUTE model system.
-HoMES is a disaggregate, agent-based microsimulation of the owner-occupied housing market that evolves the residential location of households over time and includes the endogenous supply of housing by type and location, as well as the endogenous determination of sales prices and rents.
-
-An overview of the framework of housing market supply, demand and clearing mechanisms utilized in HoMES provided by Rosenfield et al.\cite{Rosenfield2013} is presented on figure~\ref{fig:homes_framework}
-
-\begin{figure}[hbt!]
-    \centering
-    \includegraphics[width=0.99\linewidth,trim=0 0 0 0,clip]{homes_framework.png}
-    \caption{Framework of housing market supply, demand and clearing mechanisms used in HoMES module of ILUTE, as summarized by Rosenfield et al.\cite{Rosenfield2013}.}
-    \label{fig:homes_framework}
-\end{figure}
+In ILUTE, the system state of greater Toronto-Hamilton area is defined in terms of the individual persons, households, dwelling units, firms, etc.
+that collectively define the urban region being modeled.
+Many markets are of interest within ILUTE, such as housing, labour, commercial, real estate, etc., and are modeled via microsimulation.
+For example, in HoMES, the housing market module of ILUTE, houses are auctioned off one dwelling at a time to interested bidders in a disaggregate implementation of Martinez' Bid Choice theory\cite{Rosenfield2013,Martinez1992}.
 
 Among the major barriers to implementation of integrated urban models since their introduction were such aspects as data hungriness and computational requirements\cite{Miller1998}.
-However, continuing methodological advances, such as cost-effective High Performance Computing (HPC), detailed GIS-based datasets and machine learning methods, mean that former barriers now represent opportunities for model system development.
-In the case of ILUTE and HoMES, one of the possibilities for further improvement is the use of new data sources to update the housing market model.
-One of these new data sources, Teranet's dataset of land registry records, and main challenges of working with it are discussed in section~\ref{sec:new_data_sources_and_their_challgenges}.
+However, as an increasing amount of aspects of human life becomes digitalized, a wealth of new data is produced and can be used to model and analyze dynamics of urban systems\cite{Arribas-Bel2014,Chen2016}.
+Continuing methodological advances such as cost-effective High Performance Computing (HPC), detailed GIS-based datasets and machine learning methods mean that former barriers now represent opportunities for model system development\cite{Miller2018a}.
 
-\subsection{Longitudinal Housing Market Research Conducted by UTTRI} \label{subsec:longitudinal_housing_market_research}
+An example of such digitalization of human activity is the introduction of the Province of Ontario Land Registration Information System (POLARIS) in 1985 by the Government of Ontario\cite{TeranetEnterprisesInc.}.
+Introduction of POLARIS lead to the creation of an extensive dataset of real estate transactions (land registration records) by the Teranet Enterprises Inc.
+Due to its high resolution, Teranet's dataset presents a valuable resource to inform and validate the design of ILUTE and HoMES .
+In addition, Teranet's dataset plays an important part in the Longitudinal Housing Market Research conducted by UTTRI which is discussed in the following section.
+
+\section{Teranet's dataset of land registration records and its challenges} \label{sec:teranet_and_its_challgenges}
+
+\subsection{Longitudinal Housing Market Research conducted by UTTRI} \label{subsec:longitudinal_housing_market_research}
 
 There is ample evidence of the role of land use and transportation interactions in determining urban spatial structure.
 Accessibility and mobility provided by transportation systems drive economic development and impact travel behaviour and location of households and firms.
 Similarly, urban sprawl and location of activities drive travel demand and the need for building transport networks.
 Land values in a metropolitan region are an outcome of such land use-transportation interactions.
 
-The researchers at the University of Toronto Transportation Research Institute are conducting longitudinal analysis to identify trends and changes in land value distributions using the Teranet sales data, over the 30-year period (1986-2016) in the Greater Toronto-Hamilton Area (GTHA).
+Researchers at the University of Toronto Transportation Research Institute are conducting longitudinal analysis to identify trends and changes in land value distributions using the Teranet sales data over the 30-year period (1986-2016) in the Greater Toronto-Hamilton Area (GTHA).
 The aim is to understand the spatial-temporal effects of changes in socio-economic characteristics, transportation accessibility and built-environment on land values.
-Data from various sources (Census, TTS, etc.) is required to be merged at the land parcel level to enhance datasets with additional attributes, while maintaining the ease of data storage and retrieval for analysis as needed.
+Data from various sources (e.g., Census, Transportation Tomorrow Survey, etc.) is required to be merged at the land parcel level to enhance datasets with additional attributes, while maintaining the ease of data storage and retrieval for analysis as needed.
+In addition to that, accurate land use information needs to be added to Teranet records to allow separating sales data by major property types.
 
-However, along with opportunities, there are also challenges present.
-Teranet's dataset of land registration records presents a wealth of information about the housing market at a very fine scale but is severely limited in the number of features describing each transaction.
-One of the main features that is missing is the type of property being transacted (e.g., single detached house, apartment/condo, commercial, mix use, etc.).
-Teranet's dataset and the main challenges of using it for ILUTE improvement and Longitudindal Housing Market Research, along with the proposed solution, is discussed in section~\ref{sec:new_data_sources_and_their_challgenges}.
+Brief legal and historical background of Teranet's dataset, main challenges of working with it and the proposed solution are discussed in the remainder of this chapter.
 
-\section{New data sources and their challenges} \label{sec:new_data_sources_and_their_challgenges}
-
-\subsection{Further improvement of integrated urban models} \label{subsec:further_improvement_of_iums}
-
-
-As an increasing amount of aspects of human life becomes digitalized, a wealth of new data is produced and can be used to model and analyze dynamics of urban systems\cite{Arribas-Bel2014, Chen2016}.
-An example of such digitalization of human activity is the introduction of the Province of Ontario Land Registration Information System (POLARIS) in 1985 by the Government of Ontario\cite{TeranetEnterprisesInc.} that will be discussed in the following section.
-Introduction of POLARIS lead to the creation of an extensive dataset of real estate transactions (land registration records) by the Teranet Enterprises Inc.
-This dataset offers a very fine resolution of housing market dynamics across both time and space, which can be beneficial for updating and testing microsimulation models, but it also presents challenges to work with that will be discussed in section~\ref{subsec:teranet_ontario} of this chapter;
-the chapter concludes with the proposed solution to address one of the main challenges of working with Teranet's data.
-
-\subsection{POLARIS: electronic system of land registration in Ontario} \label{subsec:land_reg_system_canada}
+\subsection{POLARIS: electronic system of land registration in Ontario} \label{subsec:polaris}
 
 All land owned in Canada is registered in a public land registry in the applicable province.
 Each province and territory in Canada has its own land registry system, whether it is a land titles system, a registry system or a combination of both, with each system having its own rules.
@@ -152,7 +124,7 @@ The Land Registration Reform Act (Ontario)\cite{TheGovernmentofOntario1990} was 
 POLARIS was built by the Province to house and process electronic land records, which in turn lead to the creation of an extensive dataset of land registration records managed by Teranet Enterprises Inc.
 Today, POLARIS is the search/registration and property maintenance system for all automated land records in Ontario.
 
-\subsection{The Teranet-Ontario Partnership, Teranet's data and its challenges} \label{subsec:teranet_ontario}
+\subsection{Teranet's dataset, its challenges and the proposed solution} \label{subsec:teranet_challenges_solution}
 
 In 1991, the Government of Ontario established a partnership with Teranet, a Toronto-based organization, founded the same year, which provides e-services to legal, real estate, government, financial, and healthcare markets.
 The partnership was established to convert Ontario's land registration system to a more modernized electronic title system.
@@ -161,19 +133,38 @@ Teranet converted all qualified Registry properties in Ontario to the Land Title
 As a result, 99.9\% of property in Ontario was parcelized and administered under the Land Titles system.
 Teranet fully automated the conversion of millions of paper-based documents and records into the Ontario Electronic Land Registration System (ELRS)\cite{TeranetEnterprisesInc.2019}.
 
-
-Teranet dataset presents an extensive historical record of real estate transactions recorded in the Province of Ontario since the beginning of XIX century.
-However, when it comes to using new data sources in social studies, along with opportunities there are also challenges present.
-For example, these data sources can have issues with the quality of the data, might require a specific set of skills to take advantage of these data sources, or might not be suitable for traditional methods meant for traditional data\cite{Arribas-Bel2014}, all of which are true in the case of Teranet's dataset.
-
-One of the major attributes missing from the available version of Teranet's dataset is the information about the type of property being transacted, with records of various residential, commercial and industrial properties all being mixed together in the same dataset.
-At the same time, Teranet records have timestamps (dates) and location information (x and y coordinates) and thus can be joined to variety of other urban data sources, such as Census demographics, Transportation Tomorrow Survey (TTS) and parcel-level land use information.
-It is possible to derive this attribute from additional related sources of information, such as detailed land use or Census demographics.
+Teranet's dataset presents an extensive historical record of real estate transactions recorded in the Province of Ontario since the beginning of XIX century.
+However, its available version also suffers from severe lack of features describing each transaction, which makes meaningful analysis or modeling difficult.
+At the same time, each Teranet transaction has a timestamp (date) and location information (x and y coordinates) and thus can be joined to variety of other geocoded urban data sources, such as Census demographics, Transportation Tomorrow Survey (TTS) and parcel-level land use information.
 However, joining these data sources together requires additional considerations, as they use different spatial units and are available at different temporal spans, as will be discussed in chapter~\ref{ch:spatial_and_temporal_relationships_between_urban_data}.
 
+One of the major attributes missing from the available version of Teranet's dataset is the information about the type of property being transacted, with records of various residential, commercial and industrial properties all being mixed together in the same dataset.
+This introduces a major limitation on how Teranet's data can be used, limiting the ability to separate the transactions of different property types, identify submarkets of the housing market and see its fine-scale characteristics and dynamics.
+Detailed parcel-level land use information could offer some degree of filtering and can be joined from such sources as DMTI Spatial's land use and detailed land use manually collected by the Department of Geography at the University of Toronto.
+
+\vspace{5mm}
+
+However, these sources of land use information also have their limitations:
+\begin{itemize}
+    \item DMTI's land use data does not offer any split between categories of residential properties and only covers the period of 2001--2014
+    \item land use from the Department of Geography is a lot more detailed and accurate, but has been collected at a single point in time over the summer of 2012 and 2013
+    \item neither of the available land use sources covers the full span of the Longitudinal Housing Market Research conducted by UTTRI (1986-2016)
+\end{itemize}
+
+At the same time, detailed land use from the Department of Geography offers the opportunity to train a machine learning model capable of recognizing certain property types that have characteristically different behavior on the housing market (e.g., high / low volume of transactions, median price ratio, etc.).
+Teranet records coming from a particular parcel (x and y coordinate pair) or pin (same parcel can include different pins, i.e.\ apartment complexes) can be combined to produce new features that characterize the behavior of this parcel or pin on the housing market.
+Combining these new features with spatially-joined variables from Census and TTS can yield a dataset that can be used to train and test a classification algorithm capable of determining the parcel land use based on the nature of its behavior on the housing market at transaction level (recognizing changes of land use with time).
+
+The primary focus of this master's thesis consists of:
+
+\begin{itemize}
+    \item augmenting Teranet's dataset with TTS, Census and land use variables, while maintaining the integrity of the spatial and temporal relationships between different data sources and ensuring the ease of storage and retrieval as needed for the Longitudinal Housing Market Research conducted by UTTRI
+    \item investigating the opportunity for the implementation of a machine learning algorithm to classify land use based on the housing market dynamics
+\end{itemize}
 
 \section{Chapter summary} \label{sec:background_summary}
 
+%TODO rewrite chapter summary
 The fundamental link between transportation and urban form creates a feedback relationship between land development, travel needs, viability of alternative modes, accessibility, and other important characteristics of the urban transportation system.
 Numerous "top-down" and "bottom-up" models have been designed to analyze and forecast the behaviour of urban regions and interaction of their transportation and land use systems.
 Since urban systems are complex in nature and require "re-solving" over and over, data science process models present a good fit for this task with their iterative structure.
