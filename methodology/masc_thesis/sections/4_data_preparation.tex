@@ -125,6 +125,7 @@ Relationships introduced via the operations described in this section formulate 
 
 \section{Dealing with outliers} \label{sec:outliers}
 
+
 Outliers in both the high and the low end of the price distribution are present in Teranet's dataset:
 \begin{itemize}
     \item there is a high number of transactions with very low consideration amounts (starting from a few dollars) that most likely represent transactions recording gifts of property, where some symbolic consideration amount has been used
@@ -137,13 +138,13 @@ The large spike can be seen on the low end of the distribution of consideration 
     \centering
     \begin{subfigure}{\linewidth}
         \centering
-        \includegraphics[width=.8\linewidth]{price_dist_raw.png}
+        \includegraphics[width=.95\linewidth]{price_dist_raw.png}
         \caption{From 0 to 2'000'000 CAD}
     \end{subfigure}
 
     \begin{subfigure}{\linewidth}
         \centering
-        \includegraphics[width=.8\linewidth]{price_dist_zoom.png}
+        \includegraphics[width=.95\linewidth]{price_dist_zoom.png}
         \caption{From 0 to 40'000 CAD}
     \end{subfigure}
     \caption{Outliers at the bottom end of the price distribution most likely represent gift transactions.
@@ -156,23 +157,18 @@ Since low outliers represent transactions that are not useful for analysis, they
 However, there is no way to establish what constitutes a reasonable bottom cut-off threshold, as there is no criteria available and there is no distinct break in the price distribution.
 Since there seems to be en exceptionally large spike of transactions with consideration amount under 10'000 CAD, they were considered to be low outliers and were removed from Teranet's dataset, further reducing the number of records from 6,803,691 to 5,188,513.
 
-In the case of outliers on the high end of the price distribution, they most likely correspond to transactions of expensive commercial and industrial property or whole residential buildings.
-Since these transactions are useful for research questions concerning commercial and industrial property, they are left in the dataset and instead are marked with special features.
-Since, again, there is no clear criteria for what would constitute an outlier, instead of using a single criterion, 7 different attributes are added that describe whether a record belongs to outliers according to a particular condition.
-Examples of boxplots produced from two different criteria used to mark top outliers are presented on figure~\ref{fig:top_outliers}.
-
 \begin{figure}[ht]
     \centering
     \begin{subfigure}{\linewidth}
         \centering
-        \includegraphics[width=.8\linewidth]{outliers_strict.png}
+        \includegraphics[width=.98\linewidth]{outliers_strict.png}
         \label{fig:top_outliers_mild}
         \caption{Outlier is 2 x median for 'xy'}
     \end{subfigure}
 
     \begin{subfigure}{\linewidth}
         \centering
-        \includegraphics[width=.8\linewidth]{outliers_mild.png}
+        \includegraphics[width=.98\linewidth]{outliers_mild.png}
         \label{fig:top_outliers_strict}
         \caption{Outlier is 10 x median for 'xy'}
     \end{subfigure}
@@ -182,6 +178,11 @@ Examples of boxplots produced from two different criteria used to mark top outli
     7 different criteria were used in total to mark top outliers.}
     \label{fig:top_outliers}
 \end{figure}
+
+In the case of outliers on the high end of the price distribution, they most likely correspond to transactions of expensive commercial and industrial property or whole residential buildings.
+Since these transactions are useful for research questions concerning commercial and industrial property, they are left in the dataset and instead are marked with special features.
+Since, again, there is no clear criteria for what would constitute an outlier, instead of using a single criterion, 7 different attributes are added that describe whether a record belongs to outliers according to a particular condition.
+Examples of boxplots produced from two different criteria used to mark top outliers are presented on figure~\ref{fig:top_outliers}.
 
 For example, feature 'outlier\_y\_10' is a Boolean variable capturing if the price of a record, corrected for inflation, is over 10 times greater than the median price of all records for the corresponding year.
 New attributes identifying outliers from the high end of the distribution in layers are added to each Teranet record and are used as features by the classification algorithm.
