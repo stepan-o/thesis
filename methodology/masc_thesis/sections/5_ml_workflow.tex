@@ -1,43 +1,58 @@
-\chapter{A prototype of a machine learning workflow to classify land use from housing market dynamics} \label{ch:ml_workflow}
+\chapter{A prototype of a machine learning workflow to classify land use from the housing market dynamics} \label{ch:ml_workflow}
 
-\section{Intro: databases} \label{sec:intro_database_design}
+As was previously mentioned in section~\ref{sec:teranet_and_its_challgenges}, one of the major features missing from the available version of Teranet's dataset is the information about the type of property being transacted, which introduces a major limitation on how Teranet's data can be used.
+As was described in chapter~\ref{ch:data_preparation}, parcel-level land use information from DMTI and the Department of Geography has been spatially joined to Teranet records, but these sources of land use information also have their limitations:
 
-%TODO write chapter introduction
-Something about Knowledge Discovery in Databases
+\begin{itemize}
+    \item DMTI's land use data does not offer any split between subcategories of residential properties and only covers the period of 2001--2014
+    \item land use from the Department of Geography is a lot more detailed and accurate, but has been collected at a single point in time over the summer of 2012 and 2013
+    \item neither of the available land use sources covers the full span of the Longitudinal Housing Market Research conducted by UTTRI (1986-2016)
+\end{itemize}
 
-\section{Requirements to the information system for housing market data} \label{sec:requirements_to_information_system}
+To address this issue, detailed land use from the Department of Geography can be used as labelled data to train a machine learning model capable of recognizing certain property types that have characteristically different behavior on the housing market;
+i.e., be able to differentiate a detached house from a condo through such features as high / low volume of transactions, ratio of price to median price for that year, etc.
+Chapter~\ref{ch:data_preparation} described the production of the dataset that combines the new engineered Teranet features with spatially-joined variables from Census and TTS\@.
+In this chapter, this dataset is used to investigate the opportunity to implement a classification algorithm to determine the parcel land use at Teranet transaction level (recognizing changes of land use with time) based on the housing market dynamics.
+This way a machine learning algorithm could be implemented to automate a labour-intensive task of collecting parcel-level detailed land use and expand the accuracy of this data by classifying Teranet records covering the full period of the longitudinal study introduced in section~\ref{subsec:longitudinal_housing_market_research}.
 
-%TODO check requirements
-On one hand, for such information-handling system to be comprehensive, it needs to combine a wide range of data sources describing these systems while maintaining semantic interoperability between these sources.
-In the case of land use, transportation, demographic, and real estate data, it means to take into account the varying spatial and temporal scale and resolution between these data sources when joining them together.
-At the same time, the system needs to be easily accessible to a wide range of researchers and students;
-it also needs to have powerful data processing capacity, to allow working with and performing calculations on large datasets related to real estate and land use.
-In addition to that, the system should have a modular structure, have a workflow that is reproducible and modifiable, so that new data sources and new relationships can be added to the system, while maintaining the existing part intact.
+Figure~\ref{fig:typical_ml_workflow} presents a typical workflow for using machine learning in predictive modeling, as summarized by Raschka and Mirjalili\cite{RaschkaMirjalili2017}.
 
-All of the requirements listed above present a strong case for the housing market information system to be implemented in a form of a relational database.
-Given the size of the datasets and the current research needs, PostgreSQL presents a good option for the database management system that fits all the discussed criteria.
-The focus of this master thesis is the organization and implementation of the GTHA housing market database to facilitate future research activities focused on the Longitudinal Analysis of housing sales in the Greater Toronto-Hamilton Area conducted by the University of Toronto Transportation Research Institute (UTTRI).
+\begin{figure}[hbt!]
+    \centering
+    \includegraphics[width=0.98\linewidth,trim=0 0 0 0,clip]{typical_ml_workflow.png}
+    \caption{A typical workflow for using machine learning in predictive modeling, as summarized by Raschka and Mirjalili\cite{RaschkaMirjalili2017}.}
+    \label{fig:typical_ml_workflow}
+\end{figure}
 
-\section{Philosophy of the housing market database} \label{sec:housing_market_database_philosophy}
+\section{Selecting and encoding target} \label{sec:select_encode_target}
 
-%TODO describe the philosophy behind attribute-based spatial and temporal joins
-attribute-based database defined by spatial relationships
+\textit{Classification is a subcategory of supervised learning where the goal is to predict the categorical class labels of new instances, based on past observations. Those class labels are discrete, unordered values that can be understood as the group memberships of the instances. The previously mentioned example of email spam detection represents a typical example of a binary classification task, where the machine learning algorithm learns a set of rules in order to distinguish between two possible classes: spam and non-spam emails.}
+The Iris dataset consisting of 150 samples and four features can then be written as a  matrix :
 
-\section{Entity relationship diagrams of GTHA housing market database} \label{sec:entity_relationship_diagrams_in_gtha_database}
 
-%TODO include ER diagrams for the database
+\section{Feature selection} \label{sec:feature_selection}
 
-\section{Attribute and referential integrity constraints} \label{sec:constraints_database}
+In the case of 9 features selected via the SBS algorithm, the training subset of Teranet dataset consists of 138,015 samples and 9 features that can be written as a $138015 \times 9$ matrix $\boldsymbol{X} \in \mathbb{R}^{138015 \times 9}$:
 
-\subsection{Primary keys used in the database} \label{subsec:primary_keys_in_gtha_database}
+\vspace{5mm}
+\begin{bmatrix}
+    \centering
+    x_1^{(1)} & x_2^{(1)} & \dots & x_9^{(1)} \\ \\
+    x_1^{(2)} & x_2^{(2)} & \dots & x_9^{(2)} \\ \\
+    \vdots & \vdots & \vdots & \vdots \\ \\
+    x_1^{(138015)} & x_2^{(138015)} & \dots & x_9^{(138015)}
+\end{bmatrix},$
+\vspace{1mm}
 
-%TODO write about primary keys in the database
+where superscript refers to the training sample, and the subscript refers to the dimension of the training dataset.
 
-\subsection{Referential integrity constraints used in the database} \label{subsec:referential_integrity_constraints_in_gtha_database}
 
-%TODO write about referential integrity constraints in the database
+\section{Training, testing and validating the model} \label{sec:train_test_validate_model}
 
-\section{Chapter summary} \label{sec:rdbms_design_summary}
+\section{Feature scaling} \label{sec:feature_scaling}
 
-All the requirements have been met via appropriate constraints.
-%TODO write chapter summary
+\section{Classification algorithms and their performance} \label{sec:classification_algorithms_performance}
+
+No Free Lunch Theorem by David H. Wolpert states that no single classifier works best across all possible scenarios\cite{Wolpert1996}, as there is a lack of a priori distinctions between learning algorithms.
+
+\section{Chapter summary} \label{ml_workflow_summary}
