@@ -30,9 +30,10 @@ The following data sources are combined into the GTHA housing market database th
     TTS represents a retrospective survey of travel taken by every member (age 11 or over) of the household during the day previous to the telephone or web contact.
     The information collected and the method of collection has remained relatively consistent over the seven surveys and includes characteristics of the household, characteristics of each person in the household, and details of the trips taken by each member of the household, including details on any trips taken by transit\cite{Ashby2018}.
 
-    \item Land use from DMTI Spatial by year (2001-2014)
+    \item Land use from DMTI Spatial Inc.\ by year (2001-2014)
 
-    DMTI Spatial, a Digital Map Products company, is a major provider of location based information in Canada.
+    DMTI Spatial Inc., a Digital Map Products company, is a major provider of location based information in Canada.
+    DMTI has been providing industry leading enterprise Location Intelligence solutions for more than a decade to Global 2000 companies and government agencies\cite{DMTISpatialInc.2014}.
 
     \item Detailed land use information from University of Toronto's Department of Geography collected in 2012 and 2013
 
@@ -58,6 +59,8 @@ The travel time data was used to create further transportation accessibility var
 
 Land use data collected by DMTI and by the Department of Geography uses the spatial unit of a parcel polygon.
 Teranet records have attributes representing x and y coordinates matching parcel centroids.
+
+\vspace{5mm}
 
 Below is the summary of the spatial units being used by the different data sources:
 
@@ -94,15 +97,11 @@ In addition to using different spatial units, data sources joined with Teranet's
     \item Teranet records have individual timestamps (date) on each record
     \item Census and TTS variables are available once in 5 years
     \item DMTI's land use data is available by year and covers a time span from 2001 to 2014
-    \item Detailed land use from the Department of Geography was collected at a single point in time during summers of 2012 and 2013
+    \item Detailed land use from the Department of Geography was collected at a single point in time during the summers of 2012 and 2013
 \end{itemize}
 
 Temporal matching between Teranet records and DMTI data can be done directly: DMTI land use for each year from 2001 to 2014 can be spatially joined with a subset of Teranet records from the corresponding year.
 Since the detailed land use provided by the Department of Geography was collected at a single point in time, it can be joined to all Teranet records, keeping in mind that it will be the most accurate around its time of collection in 2012 and 2013.
-
-\vspace{5mm}
-
-As for the Teranet and Census / TTS variables, they can be matched in a number of ways:
 
 \begin{figure}[hbt!]
     \centering
@@ -110,6 +109,10 @@ As for the Teranet and Census / TTS variables, they can be matched in a number o
     \caption{Temporal spans of the data sources used in the GTHA housing market database.}
     \label{fig:temporal_spans}
 \end{figure}
+
+\vspace{5mm}
+
+As for the Teranet and Census / TTS variables, they can be matched in a number of ways:
 
 \begin{enumerate}
     \item Direct match with appropriate Teranet subsets
@@ -154,7 +157,7 @@ To avoid additional assumptions and use the recorded values of Census and TTS va
 Each Census / TTS survey is assigned a 5-year time span centered at the survey year (i.e., 2014--2018 for 2016 survey year) and new foreign keys are introduced to Teranet records to allow matching with 5-year time spans of Census / TTS variables.
 Implementation of temporal relationships for Teranet records will be described in chapter~\ref{ch:data_preparation}.
 
-Figure~\ref{fig:temporal_spans} presents temporal spans assigned to the data sources for joining with Teranet records.
+Figure~\ref{fig:temporal_spans} presents the temporal spans assigned to the data sources for joining with Teranet records.
 
 \section{Chapter summary} \label{sec:data_sources_summary}
 
@@ -163,5 +166,5 @@ These relationships need to be respected when combining the data sources togethe
 The integrity of spatial relationships can be ensured by spatially joining all polygon-based data sources to Teranet points.
 Temporal relationships between DMTI land use and Teranet are incorporated by performing separate spatial join operations between DMTI land use data for each year and a corresponding Teranet subset.
 For Census and TTS variables, additional foreign keys are introduced assigning 5-year spans to each Census / TTS survey.
-These foreign keys indicate which Teranet records can be joining to a particular Census or TTS survey.
+These foreign keys indicate which Teranet records should be joined to a particular Census or TTS survey.
 Implementation of these relationships via a standardized data preparation workflow in Python and a PostgreSQL relational database are described in chapter~\ref{ch:data_preparation}.
