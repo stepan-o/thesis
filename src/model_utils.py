@@ -143,7 +143,8 @@ def plot_decision_regions(X, y, classifier, test_idx=None,
 
 
 def fit_model(model, model_name, X_train, y_train, X_test, y_test, X_val1, y_val1, X_val2, y_val2,
-              return_coefs=False, feat_names=None, class_names=None, plot_dec_reg=None):
+              return_coefs=False, return_scores=False, verbose=True,
+              feat_names=None, class_names=None, plot_dec_reg=None):
     t = time()
 
     # fit the model
@@ -162,9 +163,10 @@ def fit_model(model, model_name, X_train, y_train, X_test, y_test, X_val1, y_val
     val2_score = accuracy_score(y_val2, y_pred_val2)
 
     elapsed = time() - t
-    print("\n{0} fit, took {1:,.2f} seconds ({2:,.2f} minutes)".format(model_name, elapsed, elapsed / 60) +
-          "\naccuracy: train={0:.2f}, test={1:.2f}, validation #1={2:.2f}, validation #2={3:.2f}"
-          .format(train_score, test_score, val1_score, val2_score))
+    if verbose:
+        print("\n{0} fit, took {1:,.2f} seconds ({2:,.2f} minutes)".format(model_name, elapsed, elapsed / 60) +
+              "\naccuracy: train={0:.2f}, test={1:.2f}, validation #1={2:.2f}, validation #2={3:.2f}"
+              .format(train_score, test_score, val1_score, val2_score))
 
     if plot_dec_reg == 'train-test':
         X_combined = np.vstack((X_train, X_test))
@@ -193,6 +195,8 @@ def fit_model(model, model_name, X_train, y_train, X_test, y_test, X_val1, y_val
             class_coef['class'] = class_names[cl]
             coef_df = coef_df.append(class_coef)
         return coef_df
+    elif return_scores:
+        return train_score, test_score, val1_score, val2_score
 
 
 def fit_class(X, y, test_size=0.3, stratify_y=True, scale=None,
