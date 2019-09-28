@@ -5,14 +5,15 @@ import seaborn as sns
 from matplotlib.colors import ListedColormap
 from itertools import combinations
 from sklearn import clone
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.linear_model import LogisticRegression, Perceptron
-from sklearn.metrics import accuracy_score
-from sklearn.model_selection import train_test_split
-from sklearn.neighbors import KNeighborsClassifier
+from sklearn.feature_selection import RFECV
 from sklearn.preprocessing import StandardScaler, MinMaxScaler
+from sklearn.model_selection import StratifiedKFold, train_test_split
+from sklearn.linear_model import LogisticRegression, Perceptron
 from sklearn.svm import SVC
 from sklearn.tree import DecisionTreeClassifier
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.metrics import accuracy_score
 from scipy.stats import norm, shapiro, normaltest, anderson
 from time import time
 
@@ -98,6 +99,28 @@ def fit_sbs(classifier, k_features, X, y, y_min=None, y_max=None, height=4, widt
         f.savefig(save_path, dpi=300, bbox_inches='tight')
     if return_feats:
         return sbs.subsets_
+
+
+def fit_rfecv(classifier, X, y, model_name,
+              step=1, kfold=2):
+    t = time()
+
+    rfecv = RFECV(estimator=classifier, step=step, cv=StratifiedKFold(kfold),
+                  scoring='accuracy')
+    rfecv.fit(X, y)
+
+    print("{0} fit using RFE".format(model_name))
+    print("Optimal number of features : %d" % rfecv.n_features_)
+
+    # Plot number of features VS. cross-validation scores
+    plt.figure()
+    plt.xlabel("Number of features selected")
+    plt.ylabel("Cross validation score (nb of correct classifications)")
+    plt.plot(range(1, len(rfecv.grid_scores_) + 1), rfecv.grid_scores_)
+    plt.show()
+
+    elapsed = time() - t
+    print("RFE fit, took, {0:,.2f} seconds ({1:,.2f} minutes)".format(elapsed, elapsed / 60))
 
 
 def plot_decision_regions(X, y, classifier, test_idx=None,
@@ -201,7 +224,7 @@ def fit_model(model, model_name, X_train, y_train, X_test, y_test, X_val1, y_val
 
 
 def targets_corr(df, target_list, target_var, plot_corr=True, print_top_coefs=True, print_top=10,
-                 fig_height=10, fig_width=4, legend_loc='center right',
+                 fig_height=4, fig_width=10, legend_loc='center right',
                  output='show', save_path='targets_corr.png', dpi=300, save_only=False):
     target0_corr = df.corr()[target_list[0]].reset_index().rename(columns={'index': 'var', 'variable': 'class'})
     target1_corr = df.corr()[target_list[1]].reset_index().rename(columns={'index': 'var', 'variable': 'class'})
@@ -227,7 +250,7 @@ def targets_corr(df, target_list, target_var, plot_corr=True, print_top_coefs=Tr
 
     if plot_corr:
         # plot univariate Pearson correlation coefficients with target classes
-        f, ax = plt.subplots(1, figsize=(fig_height, fig_width))
+        f, ax = plt.subplots(1, figsize=(fig_width, fig_height))
         sns.barplot(x="value", y="var", hue="variable", data=targets_corr_tidy,
                     palette="muted", ax=ax)
         ax.set_ylabel("Features", fontsize=16)
