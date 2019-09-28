@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+import seaborn as sns
 from matplotlib.colors import ListedColormap
 from itertools import combinations
 from sklearn import clone
@@ -197,6 +198,51 @@ def fit_model(model, model_name, X_train, y_train, X_test, y_test, X_val1, y_val
         return coef_df
     elif return_scores:
         return train_score, test_score, val1_score, val2_score
+
+
+def targets_corr(df, target_list, target_var, plot_corr=True, print_top_coefs=True, print_top=10,
+                 fig_height=10, fig_width=4, legend_loc='center right',
+                 output='show', save_path='targets_corr.png', dpi=300, save_only=False):
+    target0_corr = df.corr()[target_list[0]].reset_index().rename(columns={'index': 'var', 'variable': 'class'})
+    target1_corr = df.corr()[target_list[1]].reset_index().rename(columns={'index': 'var', 'variable': 'class'})
+    target2_corr = df.corr()[target_list[2]].reset_index().rename(columns={'index': 'var', 'variable': 'class'})
+    target3_corr = df.corr()[target_list[3]].reset_index().rename(columns={'index': 'var', 'variable': 'class'})
+
+    all_targets_corr = pd.merge(
+        pd.merge(
+            pd.merge(target0_corr, target1_corr, on='var'),
+            target2_corr, on='var'),
+        target3_corr, on='var')
+    target_list.append(target_var)
+    mask1 = all_targets_corr['var'].isin(target_list)
+    all_targets_corr = all_targets_corr[~mask1]
+    targets_corr_tidy = pd.melt(all_targets_corr, id_vars='var').sort_values('var')
+
+    if print_top_coefs:
+        print("----- Pearson correlation coefficient between features and target classes"
+              "\n\n         strongest negative correlation (top {0}):\n".format(print_top),
+              targets_corr_tidy.sort_values('value').head(print_top),
+              "\n\n         strongest positive correlation (top {0}):\n".format(print_top),
+              targets_corr_tidy.sort_values('value', ascending=False).head(print_top))
+
+    if plot_corr:
+        # plot univariate Pearson correlation coefficients with target classes
+        f, ax = plt.subplots(1, figsize=(fig_height, fig_width))
+        sns.barplot(x="value", y="var", hue="variable", data=targets_corr_tidy,
+                    palette="muted", ax=ax)
+        ax.set_ylabel("Features", fontsize=16)
+        ax.set_xlabel("Correlation coefficient", fontsize=16)
+        ax.set_title("Pearson correlation coefficient between features and target classes", fontsize=16)
+        ax.grid(True)
+        ax.legend(loc=legend_loc, fontsize=14)
+        plt.xticks(fontsize=14)
+        plt.yticks(fontsize=14)
+        if output == 'show':
+            plt.show()
+        if output == 'save':
+            plt.savefig(save_path, dpi=dpi, bbox_inches='tight')
+            if save_only:
+                f.close()
 
 
 def fit_class(X, y, test_size=0.3, stratify_y=True, scale=None,
