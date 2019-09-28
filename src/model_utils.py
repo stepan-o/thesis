@@ -102,7 +102,7 @@ def fit_sbs(classifier, k_features, X, y, y_min=None, y_max=None, height=4, widt
 
 
 def fit_rfecv(classifier, X, y, model_name,
-              step=1, kfold=2):
+              step=1, kfold=2, fig_width=6, fig_height=4):
     t = time()
 
     rfecv = RFECV(estimator=classifier, step=step, cv=StratifiedKFold(kfold),
@@ -113,7 +113,7 @@ def fit_rfecv(classifier, X, y, model_name,
     print("Optimal number of features : %d" % rfecv.n_features_)
 
     # Plot number of features VS. cross-validation scores
-    plt.figure()
+    f, ax = plt.subplots(1, figsize=(fig_width, fig_height))
     plt.xlabel("Number of features selected")
     plt.ylabel("Cross validation score (nb of correct classifications)")
     plt.plot(range(1, len(rfecv.grid_scores_) + 1), rfecv.grid_scores_)
