@@ -9,8 +9,8 @@ Similarly, data preparation can be followed in a linear manner, but is very like
 Data preparation plays a critical role in research projects:
 
 \begin{itemize}
-    \item it can determine the success of applications of machine learning algorithms
     \item it is a prerequisite for any meaningful analysis
+    \item data quality and the amount of useful information that it contains can determine the success of application of machine learning algorithms\cite{RaschkaMirjalili2017}
     \item it is often required to allow the introduction of constraints necessary for implementation of RDBMS
 \end{itemize}
 
@@ -186,6 +186,40 @@ Examples of boxplots produced from two different criteria used to mark top outli
 
 For example, feature 'outlier\_y\_10' is a Boolean variable capturing if the price of a record, corrected for inflation, is over 10 times greater than the median price of all records for the corresponding year.
 New attributes identifying outliers from the high end of the distribution in layers are added to each Teranet record and are used as features by the classification algorithm.
+
+\vspace{5mm}
+
+Table~\ref{tab:outliers} presents the outlier categories that were used and the count of records that each of them marked to belong to outliers.
+
+\begin{table}[h!]
+    \centering
+    \begin{tabular}{|| c | c ||}
+        \hline
+        Category & Count of records \\
+        \hline
+        \hline
+        outlier\_y\_3 & 251,537 \\
+        \hline
+        outlier\_y\_5 & 137,814 \\
+        \hline
+        outlier\_y\_10 & 84,260 \\
+        \hline
+        outlier\_y\_20 & 53,866 \\
+        \hline
+        outlier\_xy\_2 & 160,662 \\
+        \hline
+        outlier\_xy\_4 & 57,766 \\
+        \hline
+        outlier\_xy\_10: & 35,778 \\
+        \hline
+    \end{tabular}
+    \caption{Categories of outliers and the count of records that they produced.
+    Categories coded 'y' were compared to median price of all records for that year;
+    categories coded 'xy' were compared to median price of all records for that 'xy';
+    number represents the threshold that the ratio needed to exceed for a record to be considered an outlier).}
+    \label{tab:outliers}
+
+\end{table}
 
 \section{Engineering new features for the classification algorithm} \label{sec:feature_engineering}
 
