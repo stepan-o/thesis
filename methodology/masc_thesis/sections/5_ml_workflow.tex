@@ -20,14 +20,14 @@ To address this issue, detailed land use from the Department of Geography can be
 i.e., be able to differentiate a detached house from a condo through such features as high / low volume of transactions, ratio of price to median price for that year, etc.
 Chapter~\ref{ch:data_preparation} described the production of the dataset that combines the new features engineered from Teranet data with spatially-joined variables from Census and TTS\@.
 In this chapter, this dataset is used to investigate the opportunity to implement a classification algorithm to determine the parcel land use at Teranet transaction level (recognizing changes of land use with time) based on the housing market dynamics.
-This way a machine learning algorithm could be implemented to automate a labour-intensive task of collecting parcel-level detailed land use and expand the temporal span for which the land use data collected from the Department of Geography can be used with accuracy.
+This way, a machine learning algorithm could provide a scalable solution to automate a labour-intensive task of collecting parcel-level detailed land use and expand the temporal span for which the land use data collected from the Department of Geography can be used with accuracy.
 
 Figure~\ref{fig:typical_ml_workflow} presents a typical workflow for using machine learning in predictive modeling, as summarized by Raschka and Mirjalili\cite{RaschkaMirjalili2017}.
 
 \section{Selecting and encoding the target variable} \label{sec:select_encode_target}
 
 As was expected, different property types have characteristically different behaviour on the housing market.
-Figure~\ref{fig:xy_total_sales_dist_by_lu} shows the distributions of total count of Teranet records per 'xy' coordinate pair by top 10 land use categories.
+Figure~\ref{fig:xy_total_sales_dist_by_lu} shows the distributions of total count of Teranet records per 'xy' coordinate pair by the top 10 land use categories.
 
 \begin{figure}[hbt!]
     \centering
@@ -38,9 +38,10 @@ Figure~\ref{fig:xy_total_sales_dist_by_lu} shows the distributions of total coun
     \label{fig:xy_total_sales_dist_by_lu}
 \end{figure}
 
-The target variable used for the purposes of investigating possibility of land use classification was land use code reduced to 4 major categories.
-These categories have been derived from the most common (by frequency of Teranet transactions) land use codes used in the Department of Geography's land use dataset.
-The four classes that were manually selected as a reduced representation of the major property types have been chosen to have a comparable number of records between classes and similar distributions of price and count of sales per 'xy' between the land use categories that were grouped together to form a single class.
+The target variable used for the purposes of investigating the possibility of land use classification was constructed by reducing the land use codes used in the Department of Geography's dataset to 4 major categories;
+these categories were derived from the land use codes that have the highest counts of Teranet records.
+The four classes that were manually selected as a reduced representation of the major property types have been chosen to have a comparable number of records between classes and a similar distribution of price and count of sales per 'xy' between the land use categories that were grouped together to form a single class.
+Figure~\ref{fig:class_2_price_dist} shows an example of such grouping: in class 2, Duplex/Semi-Detached properties are grouped together with Townhouses.
 
 \begin{figure}[ht]
     \centering
@@ -58,7 +59,7 @@ The four classes that were manually selected as a reduced representation of the 
         \caption{Townhouse}
     \end{subfigure}
     \caption{Distribution of price (in 2016 dollars) for two property types grouped together under Class 2: Townhouses and Duplex/Semi-Detached.
-    Both categories have similar distributions of price and records per 'xy' and thus are grouped together to represent a single class "duplex".}
+    Both categories have similar distributions of price and records per 'xy' and thus are grouped together to represent a single class "duplex\_townhouse".}
     \label{fig:class_2_price_dist}
 \end{figure}
 
@@ -71,7 +72,7 @@ The four target classes that were introduced are:
     \item Class 3: "other", including Commercial/Shopping, Mix (Commercial Residential), Industrial/Employment Lands, and everything else
 \end{itemize}
 
-The selection was performed with an aim to separate types of properties that would have characteristically different behaviour on the housing market (i.e., detached houses would have a much smaller frequency of transaction when compared to condos and higher median price when compared to duplexes).
+The selection was performed with an aim to separate types of properties that would have characteristically different behaviour on the housing market (i.e., detached houses would have a much smaller frequency of transaction when compared to condos and a higher median price when compared to duplexes).
 Distributions of price (in 2016 dollars) and count of records per 'xy' coordinate pair were used to define classes.
 Figure~\ref{fig:class_2_price_dist} presents an example of price distributions for Townhouses and Duplex/Semi-Detached.
 Similar analysis has been performed to group other categories together into 4 major classes.
@@ -79,22 +80,97 @@ Similar analysis has been performed to group other categories together into 4 ma
 Classification algorithms, a subcategory of algorithms for supervised learning, predict the discrete unordered categorical class labels of new instances based on past observations.
 A trained algorithm is capable of using a set of rules that were learned from past observations to distinguish new instances between the possible classes.
 Once the classes have been determined and assigned, the target variable must be encoded, as it is considered good practice to provide class labels as integer arrays to avoid technical glitches and improve computational efficiency.
-Class labels are not ordinal and classification estimators in scikit-learn treat class labels as categorical data that does not imply any order.
+Class labels are not ordinal and classification estimators in scikit-learn\cite{scikit-learn} machine learning library in Python treat class labels as categorical data that does not imply any order.
 'LabelEncoder' from scikit-learn was used to encode the class labels as integers.
 
 \section{Dimensionality reduction} \label{sec:dimensionality_reduction}
 
+The quality of the data plays a critical part in the success of the application of a machine learning algorithm, and one of the important aspects of data quality is the dimensionality of the input space.
+The input space may contain features that are either redundant or irrelevant;
+highly correlated features also introduce multicollinearity and can make the model unstable, or too sensitive to small changes in the input data.
 In machine learning, statistics, and information theory, dimensionality reduction is the process of reducing the number of random variables under consideration.
-There is a number of reasons for reducing dimensionality of the dataset:
+There is a number of reasons for reducing dimensionality of a dataset:
+
 \begin{enumerate}
     \item reducing the number of features improves computational efficiency and reduces training times
+    \item in case of a low signal-to-noise ratio in the dataset, dimensionality reduction can improve the predictive performance of an algorithm\cite{RaschkaMirjalili2017}
     \item simpler models are easier to interpret\cite{James2013}
     \item excessive complexity of the model could cause overfitting\cite{RaschkaMirjalili2017}
     \item the curse of dimensionality\cite{Bellman1954} (in the context of machine learning, the curse of dimensionality describes the phenomena where the feature space becomes too sparse for the size of the training dataset)\cite{RaschkaMirjalili2017}
 \end{enumerate}
 
-The two main categories of dimensionality reduction techniques are feature selection, where a subset of the original features is selected, and feature extraction, where a new feature subspace is constructed from information derived from the original feature set.
-One of the possible approaches to reduce the complexity of a model is to use L1 regularization to penalize large individual weights.
+There is a number of approaches that could be utilized to reduce the dimensionality of the feature space.
+There are two main categories of dimensionality reduction techniques:
+\begin{itemize}
+    \item feature selection, also referred to as Feature Subset Selection, or (FSS), where a subset of the original features is selected
+    \item feature extraction, where a new feature subspace is constructed from information derived from the original feature set
+\end{itemize}
+
+A feature selection algorithm presents a practical approach to feature selection at scale;
+such algorithms combine a search strategy for proposing new feature subsets with an objective function to evaluate these subsets.
+Exhaustive evaluation of all possible feature subsets is computationally unfeasible even for a moderate number of features.
+For example, if we are given a feature set with $m = 64$ features and want to reduce it to $n = 19$, an exhaustive evaluation would involve over $10^{15}$ possible feature sets:
+
+\begin{equation}
+    _{m}C_n = _{64}C_{19} = \binom{64} {19} = \frac{64!} {19!(64 - 19)!} = 8,719,878,125,622,720
+\end{equation}
+
+Therefore, it is more practical to utilize an FSS algorithm that uses some other search strategy to explore the space of all possible combinations of features.
+The second element of a feature selection algorithm is the objective function, which plays the role of a feedback signal used by the search strategy to choose between candidate subset.
+Objective functions are divided into three major groups:
+
+\begin{itemize}
+    \item filters
+    \begin{itemize}
+        \item evaluate candidate feature subsets by their information content (e.g., inter/intra class distance, mutual information, etc.)
+        \item advantages: have faster execution since there generally is no iterative computation;
+        have good generality since they evaluate the intrinsic properties of the data.
+        \item disadvantages: tend to select large feature subsets due to monotonic objective functions
+    \end{itemize}
+    \item wrappers
+    \begin{itemize}
+        \item use a classifier to evaluate subsets by their predictive accuracy on test data
+        \item advantages: have better accuracy since they select subsets based on specific interactions between the classifier and the dataset
+        \item disadvantages: slower to execute since a classifier needs to be re-trained multiple times;
+        selected feature subset will be specific to the classifier that was used to evaluate the candidate subsets.
+    \end{itemize}
+    \item embedded methods
+    \begin{itemize}
+        \item feature selection is performed as a part of model construction process (i.e., LASSO method for constructing a linear model with L1 regularization)\cite{Scikit-learndevelopers2019}
+        \item
+    \end{itemize}
+\end{itemize}
+An example of a feature selection algorithm is the Sequential Backward Selection algorithm
+
+To gain a better understanding of the data, univariate feature selection techniques can be used;
+these techniques examine each feature individually to determine the strength of the relationship of a feature with the target variable.
+Univariate feature selection methods could be useful for better understanding of the data, but not necessarily for improving the generalization of the learning algorithm.
+
+One of the simplest methods to analyze the relationship between individual features and the target classes is the Pearson correlation coefficient, measuring bivariate correlation.
+The values of the coefficient lie in the interval $[-1; 1]$, with $-1/+1$ meaning perfect negative/positive correlation respectively, and 0 meaning no linear correlation between the two variables.
+However, it is important to remember that Pearson correlation coefficient is only sensitive to a linear relationship between the variables and can be close to 0 even if a strong non-linear relationship is present.
+Figure~\ref{fig:sbs9f_corr} presents an example of a plot displaying 9 selected features (selection process is described below) and their Pearson correlation coefficients with each target class (target classes have been encoded one-hot for this purpose).
+Similar analysis was performed on the full list of 54 features as a first step in assessing their importance.
+
+\begin{figure}[hbt!]
+    \centering
+    \includegraphics[width=0.98\linewidth,trim=0 0 0 0,clip]{sbs9f_corr.png}
+    \caption{9 most important features determined using Sequential Backward Selection (SBS) algorithm and their Pearson correlation coefficients for each target class.
+    Target classes have been encoded one-hot for the purposes of this plot.}
+    \label{fig:sbs9f_corr}
+\end{figure}
+
+Interpreting the relationships between the two variables based solely on correlation value can be highly misleading, as illustrated by Anscombe's quartet\cite{Anscombe1973}, which highlights the importance of visualization.
+Pair-wise scatter plots have been produced for all variables to analyze their distributions by target classes, figure~\ref{fig:pairplot_sample} presents a section of such pairplot.
+
+\begin{figure}[hbt!]
+    \centering
+    \includegraphics[width=0.98\linewidth,trim=0 0 0 0,clip]{pairplot_sample.png}
+    \caption{A section of a pairplot with pair-wise scatter plots of input variables coloured by target classes.}
+    \label{fig:pairplot_sample}
+\end{figure}
+
+Another possible approach to reduce the complexity of a model is to use L1 regularization to penalize large individual weights.
 L1 regularization introduces a penalty term to the cost function which is taken as the norm of the weight vector defined as:
 
 \begin{equation} \label{eq:l1_regularization}
@@ -106,39 +182,20 @@ L1 regularization is similar to L2 regularization, which is defined as:
 \begin{equation} \label{eq:l2_regularization}
     L2:~\norm{\vect{w}}_2^2 = \sum \limits_{j=1}^m w_j^2
 \end{equation}
+where $m$ is the number of features.
 
-However, since in the case of L1 regularization, the sum of squares of weights is replaced with the sum of the absolute values of weights, L1 regularization usually yields sparse feature vectors.
-Sparcity of feature vectors can be useful
+However, since in the case of L1 regularization, the sum of squares of weights is replaced with the sum of the absolute values of weights, L1 regularization usually yields sparse feature vectors, since most feature weights will be zero\cite{RaschkaMirjalili2017,Scikit-learndevelopers2019}.
+Sparsity of feature vectors can help us get rid of irrelevant features in a high-dimensional dataset;
+in this context, L1 regularization can be understood as a technique for feature selection\cite{RaschkaMirjalili2017}.
+Figure~\ref{fig:lr_l1_sbs9f_coef} presents the plot of model coefficients for each class that were obtained from a Logistic Regression model with L1 regularization.
 
-\textit{one approach to reduce the complexity of a model by penalizing large individual weights, where we defined the L2 norm of our weight vector w as follows:}
-
-\textit{L2 regularization is one approach to reduce the complexity of a model by penalizing large individual weights, we define the L2 norm of our weight vector \vect{w} as follows:
-
-
-Here, we simply replaced the square of the weights by the sum of the absolute values of the weights.
-In contrast to L2 regularization, L1 regularization usually yields sparse feature vectors;
-most feature weights will be zero.
-Sparsity can be useful in practice if we have a high-dimensional dataset with many features that are irrelevant, especially cases where we have more irrelevant dimensions than samples.
-In this sense, L1 regularization can be understood as a technique for feature selection.}
-
-\textit{The quality of the data and the amount of useful information that it contains are key factors that determine how well a machine learning algorithm can learn.}
-
-\textit{Some of the selected features may be highly correlated and therefore redundant to a certain degree. In those cases, dimensionality reduction techniques are useful for compressing the features onto a lower dimensional subspace. Reducing the dimensionality of our feature space has the advantage that less storage space is required, and the learning algorithm can run much faster. In certain cases, dimensionality reduction can also improve the predictive performance of a model if the dataset contains a large number of irrelevant features (or noise), that is, if the dataset has a low signal-to-noise ratio.}
-
-In the case of 9 features selected via the SBS algorithm, the training subset of Teranet dataset consists of 138,015 samples and 9 features that can be written as a $138015 \times 9$ matrix $\boldsymbol{X} \in \mathbb{R}^{138015 \times 9}$:
-
-\vspace{5mm}
-\begin{bmatrix}
+\begin{figure}[hbt!]
     \centering
-    x_1^{(1)} & x_2^{(1)} & \dots & x_9^{(1)} \\ \\
-    x_1^{(2)} & x_2^{(2)} & \dots & x_9^{(2)} \\ \\
-    \vdots & \vdots & \vdots & \vdots \\ \\
-    x_1^{(138015)} & x_2^{(138015)} & \dots & x_9^{(138015)}
-\end{bmatrix},
+    \includegraphics[width=0.98\linewidth,trim=0 0 0 0,clip]{lr_l1_sbs9f_coef.png}
+    \caption{Logistic regression with L1 regularization, model coefficients.}
+    \label{fig:lr_l1_sbs9f_coef}
+\end{figure}
 
-\vspace{1mm}
-
-where superscript refers to the training sample, and the subscript refers to the dimension of the training dataset.
 
 
 \section{Training, testing and validating the model} \label{sec:train_test_validate_model}
