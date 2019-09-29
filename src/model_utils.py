@@ -7,7 +7,7 @@ from itertools import combinations
 from sklearn import clone
 from sklearn.feature_selection import RFECV
 from sklearn.preprocessing import StandardScaler, MinMaxScaler
-from sklearn.model_selection import StratifiedKFold, train_test_split
+from sklearn.model_selection import StratifiedKFold, train_test_split, learning_curve
 from sklearn.linear_model import LogisticRegression, Perceptron
 from sklearn.svm import SVC
 from sklearn.tree import DecisionTreeClassifier
@@ -266,6 +266,36 @@ def targets_corr(df, target_list, target_var, plot_corr=True, print_top_coefs=Tr
             plt.savefig(save_path, dpi=dpi, bbox_inches='tight')
             if save_only:
                 f.close()
+
+
+def plot_learning_curve(classifier, model_name, X, y, n_jobs=1, cv=10, num_train_sizes=10,
+                        fig_height=4, fig_width=6):
+    train_sizes, train_scores, test_scores = learning_curve(estimator=classifier,
+                                                            X=X,
+                                                            y=y,
+                                                            train_sizes=np.linspace(0.1, 1.0, num_train_sizes),
+                                                            cv=cv,
+                                                            n_jobs=n_jobs)
+
+    train_mean = np.mean(train_scores, axis=1)
+    train_std = np.std(train_scores, axis=1)
+    test_mean = np.mean(test_scores, axis=1)
+    test_std = np.std(test_scores, axis=1)
+
+    f, ax = plt.subplots(1, figsize=(fig_width, fig_height))
+    plt.plot(train_sizes, train_mean, color='blue', marker='o', markersize=5, label='training accuracy')
+    plt.plot(train_sizes, test_mean, color='green', linestyle='--', marker='s', markersize=5,
+             label='validation accuracy')
+
+    plt.fill_between(train_sizes, train_mean + train_std, train_mean - train_std, alpha=0.15, color='blue')
+    plt.fill_between(train_sizes, test_mean + test_std, test_mean - test_std, alpha=0.15, color='green')
+
+    ax.set_xlabel('Number of training samples')
+    ax.set_ylabel('Accuracy')
+    ax.set_title("{0}, learning curve".format(model_name))
+    plt.legend(loc='lower right')
+
+    plt.show()
 
 
 def fit_norm_dist(series, h_bins='auto',
