@@ -1,5 +1,18 @@
 \chapter[Introduction]{Introduction} \label{ch:introduction}
 
-\section{Introduction} \label{sec:introduction}
+The fundamental link between transportation and urban form creates a feedback relationship between land development, travel needs, viability of alternative modes, accessibility, and other important characteristics of the urban transportation system.
+Numerous "top-down" and "bottom-up" models have been designed to analyze and forecast the behaviour of urban regions and interaction of their transportation and land use systems.
+Since urban systems are complex in nature and require "re-solving" over and over, data science process models present a good fit for this task with their iterative structure.
 
-Chapter~\ref{ch:background} presents background information on land use and transportation models, context for Teranet's dataset of land registry records, its opportunities and challenges and the proposed solution, chapter~\ref{ch:spatial_and_temporal_relationships_between_urban_data} discusses the nature of the spatial and temporal relationships of different data sources used in this master's thesis, chapter~\ref{ch:data_preparation} presents the data preparation workflow designed to implement the relationships introduced in chapter~\ref{ch:spatial_and_temporal_relationships_between_urban_data}, chapter~\ref{ch:ml_workflow} describes a prototype of a machine learning workflow to classify land use from housing market dynamics, chapter~\ref{ch:eda_results} presents and discusses the results and chapter~\ref{ch:conclusion} presents the conclusion and outlines opportunities for future work.
+Increased digitization of human activity, such as introduction of POLARIS land registration system by the Government of Ontario in 1985, produces a wealth of new information that can be used to study interaction between land use and transportation at a fine spatial and temporal scale.
+Teranet's dataset of real estate transactions presents a wealth of information on the housing market of Ontario and can be used for empirical studies of transportation-land use interaction.
+However, along with the opportunities, the new data sources also present new challenges.
+Teranet's dataset has some data quality issues that need to be addressed and might require special skills to work with due to its size.
+But most importantly, it is very limited in the number of features available for each transaction.
+
+One of the major challenges of working with Teranet's data is the lack of features describing each transaction, namely the type of property being sold.
+As Teranet's records have timestamps (dates) and coordinates of parcel centroids for each record, they can be joined with other data sources via temporal and spatial relationships, integrity of which needs to be maintained when combining data sources to ensure semantic interoperability.
+These relationships are implemented through a standardized data preparation workflow using Python via a series of jupyter notebook which was designed as a part of this master's thesis.
+In addition, since all the available sources of land use information have their limitations, a prototype of a machine learning workflow to classify land use from the housing market dynamics is proposed and tested by this master's thesis.
+
+Chapter~\ref{ch:background} presents background information on land use and transportation models, context for Teranet's dataset of land registry records, its opportunities and challenges and the proposed solution, chapter~\ref{ch:spatial_and_temporal_relationships} discusses the nature of the spatial and temporal relationships of different data sources used in this master's thesis, chapter~\ref{ch:data_preparation} presents the data preparation workflow designed to implement the relationships introduced in chapter~\ref{ch:spatial_and_temporal_relationships}, chapter~\ref{ch:ml_workflow} describes a prototype of a machine learning workflow to classify land use from the housing market dynamics, chapter~\ref{ch:eda_results} presents and discusses the results and chapter~\ref{ch:conclusion} presents the conclusion and outlines opportunities for future work.

@@ -1,17 +1,19 @@
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+import seaborn as sns
 from matplotlib.colors import ListedColormap
 from itertools import combinations
 from sklearn import clone
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.linear_model import LogisticRegression, Perceptron
-from sklearn.metrics import accuracy_score
-from sklearn.model_selection import train_test_split
-from sklearn.neighbors import KNeighborsClassifier
+from sklearn.feature_selection import RFECV
 from sklearn.preprocessing import StandardScaler, MinMaxScaler
+from sklearn.model_selection import StratifiedKFold, train_test_split, learning_curve
+from sklearn.linear_model import LogisticRegression, Perceptron
 from sklearn.svm import SVC
 from sklearn.tree import DecisionTreeClassifier
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.metrics import accuracy_score
 from scipy.stats import norm, shapiro, normaltest, anderson
 from time import time
 
@@ -99,6 +101,28 @@ def fit_sbs(classifier, k_features, X, y, y_min=None, y_max=None, height=4, widt
         return sbs.subsets_
 
 
+def fit_rfecv(classifier, X, y, model_name,
+              step=1, kfold=2, fig_width=6, fig_height=4):
+    t = time()
+
+    rfecv = RFECV(estimator=classifier, step=step, cv=StratifiedKFold(kfold),
+                  scoring='accuracy')
+    rfecv.fit(X, y)
+
+    print("{0} fit using RFE".format(model_name))
+    print("Optimal number of features : %d" % rfecv.n_features_)
+
+    # Plot number of features VS. cross-validation scores
+    f, ax = plt.subplots(1, figsize=(fig_width, fig_height))
+    plt.xlabel("Number of features selected")
+    plt.ylabel("Cross validation score (nb of correct classifications)")
+    plt.plot(range(1, len(rfecv.grid_scores_) + 1), rfecv.grid_scores_)
+    plt.show()
+
+    elapsed = time() - t
+    print("RFE fit, took, {0:,.2f} seconds ({1:,.2f} minutes)".format(elapsed, elapsed / 60))
+
+
 def plot_decision_regions(X, y, classifier, test_idx=None,
                           resolution=0.02, limits=False, alpha=0.05,
                           minx=-0.5, maxx=1, miny=-0.8, maxy=2):
@@ -143,7 +167,8 @@ def plot_decision_regions(X, y, classifier, test_idx=None,
 
 
 def fit_model(model, model_name, X_train, y_train, X_test, y_test, X_val1, y_val1, X_val2, y_val2,
-              return_coefs=False, feat_names=None, class_names=None, plot_dec_reg=None):
+              return_coefs=False, return_scores=False, verbose=True,
+              feat_names=None, class_names=None, plot_dec_reg=None):
     t = time()
 
     # fit the model
@@ -162,9 +187,10 @@ def fit_model(model, model_name, X_train, y_train, X_test, y_test, X_val1, y_val
     val2_score = accuracy_score(y_val2, y_pred_val2)
 
     elapsed = time() - t
-    print("\n{0} fit, took {1:,.2f} seconds ({2:,.2f} minutes)".format(model_name, elapsed, elapsed / 60) +
-          "\naccuracy: train={0:.2f}, test={1:.2f}, validation #1={2:.2f}, validation #2={3:.2f}"
-          .format(train_score, test_score, val1_score, val2_score))
+    if verbose:
+        print("\n{0} fit, took {1:,.2f} seconds ({2:,.2f} minutes)".format(model_name, elapsed, elapsed / 60) +
+              "\naccuracy: train={0:.2f}, test={1:.2f}, validation #1={2:.2f}, validation #2={3:.2f}"
+              .format(train_score, test_score, val1_score, val2_score))
 
     if plot_dec_reg == 'train-test':
         X_combined = np.vstack((X_train, X_test))
@@ -193,105 +219,83 @@ def fit_model(model, model_name, X_train, y_train, X_test, y_test, X_val1, y_val
             class_coef['class'] = class_names[cl]
             coef_df = coef_df.append(class_coef)
         return coef_df
+    elif return_scores:
+        return train_score, test_score, val1_score, val2_score
 
 
-def fit_class(X, y, test_size=0.3, stratify_y=True, scale=None,
-              classifier='lr', xlabel="x1", ylabel="y2",
-              lr_c=100.0, perc_max_iter=40, perc_eta=0.1,
-              svm_l_c=1.0, svm_k_c=1.0, svm_k_gamma=0.2,
-              tree_criterion='gini', tree_max_depth=4,
-              forest_criterion='gini', forest_n_estimators=25, forest_njobs=2,
-              knn_nn=5, knn_p=2, knn_metric='minkowski',
-              random_state=1, plot_result='show', plot_resolution=0.02, save_path=""):
-    if stratify_y:
-        stratify = y
-    else:
-        stratify = None
-    print("\n----- Fitting classification algorithms to predict", y.name, "from", xlabel, ylabel,
-          "\n\nTotal samples in the dataset: {0:,}".format(len(X)))
-    X_train, X_test, y_train, y_test = \
-        train_test_split(X, y, test_size=0.3, random_state=random_state, stratify=stratify)
-    print('Labels counts in y_train:', np.bincount(y_train),
-          '\nLabels counts in y_test:', np.bincount(y_test),
-          '\nLabels counts in y:', np.bincount(y))
+def targets_corr(df, target_list, target_var, plot_corr=True, print_top_coefs=True, print_top=10,
+                 fig_height=4, fig_width=10, legend_loc='center right',
+                 output='show', save_path='targets_corr.png', dpi=300, save_only=False):
+    target0_corr = df.corr()[target_list[0]].reset_index().rename(columns={'index': 'var', 'variable': 'class'})
+    target1_corr = df.corr()[target_list[1]].reset_index().rename(columns={'index': 'var', 'variable': 'class'})
+    target2_corr = df.corr()[target_list[2]].reset_index().rename(columns={'index': 'var', 'variable': 'class'})
+    target3_corr = df.corr()[target_list[3]].reset_index().rename(columns={'index': 'var', 'variable': 'class'})
 
-    if scale:
-        if scale == 'norm':
-            scaler = MinMaxScaler(feature_range=(0, 1))
-        elif scale == 'std':
-            scaler = StandardScaler()
-        else:
-            raise AttributeError("Parameter 'scale' must be set to either 'norm' or 'std'.")
-        scaler.fit(X_train)
-        X = pd.DataFrame(scaler.transform(X))
-        X_train = scaler.transform(X_train)
-        X_test = scaler.transform(X_test)
-        print("\n --- Features scaled using StandardScaler.")
+    all_targets_corr = pd.merge(
+        pd.merge(
+            pd.merge(target0_corr, target1_corr, on='var'),
+            target2_corr, on='var'),
+        target3_corr, on='var')
+    target_list.append(target_var)
+    mask1 = all_targets_corr['var'].isin(target_list)
+    all_targets_corr = all_targets_corr[~mask1]
+    targets_corr_tidy = pd.melt(all_targets_corr, id_vars='var').sort_values('var')
 
-    models = {
-        'lr': LogisticRegression(C=lr_c, random_state=random_state),
-        'perc': Perceptron(max_iter=perc_max_iter, eta0=perc_eta, random_state=random_state),
-        'svm_linear': SVC(kernel='linear', C=svm_l_c, random_state=random_state),
-        'svm_kernel': SVC(kernel='rbf', C=svm_k_c, gamma=svm_k_gamma, random_state=random_state),
-        'tree': DecisionTreeClassifier(criterion=tree_criterion,
-                                       max_depth=tree_max_depth,
-                                       random_state=random_state),
-        'forest': RandomForestClassifier(criterion=forest_criterion,
-                                         n_estimators=forest_n_estimators,
-                                         n_jobs=forest_njobs,
-                                         random_state=random_state),
-        'knn': KNeighborsClassifier(n_neighbors=knn_nn, p=knn_p,
-                                    metric=knn_metric)
-    }
-    if classifier == 'all':
-        for name, class_model in models.items():
-            model = class_model
-            print("\n----- Fitting", name.upper())
-            t = time()
-            model.fit(X, y)
-            plot_decision_regions(X, y, classifier=model, alpha=0.3, result=plot_result, name=name,
-                                  xlabel=xlabel, ylabel=ylabel, save_path=save_path,
-                                  resolution=plot_resolution,
-                                  title=name.upper() + " classification algorithm, "
-                                                       "\ndecision boundary"
-                                                       "\nx1: {0}, x2: {1}".format(xlabel, ylabel))
-            elapsed = time() - t
-            print("\n - took {0:.2f} seconds.".format(elapsed))
-    elif type(classifier) == list:
-        for classi in classifier:
-            try:
-                model = models[classi]
-            except (KeyError, TypeError):
-                raise AttributeError("Parameter 'classifier' must be string or list of strings with one or several of "
-                                     "'lr', 'perc', 'svm_linear', 'svm_kernel', 'tree', 'forest', 'knn', or 'all'")
-            print("\n----- Fitting", classi.upper())
-            t = time()
-            model.fit(X, y)
-            plot_decision_regions(X, y, classifier=model, alpha=0.3, result=plot_result, name=classi,
-                                  xlabel=xlabel, ylabel=ylabel, save_path=save_path,
-                                  resolution=plot_resolution,
-                                  title=classi.upper() + " classification algorithm, "
-                                                         "\ndecision boundary"
-                                                         "\nx1: {0}, x2: {1}".format(xlabel, ylabel))
-            elapsed = time() - t
-            print("\n - took {0:.2f} seconds.".format(elapsed))
-    else:
-        try:
-            model = models[classifier]
-        except (KeyError, TypeError):
-            raise AttributeError("Parameter 'classifier' must be string or list of strings with one or several of "
-                                 "'lr', 'perc', 'svm_linear', 'svm_kernel', 'tree', 'forest', 'knn', or 'all'")
-        print("\n----- Fitting", classifier.upper())
-        t = time()
-        model.fit(X, y)
-        plot_decision_regions(X, y, classifier=model, alpha=0.3, result=plot_result, name=classifier,
-                              xlabel=xlabel, ylabel=ylabel, save_path=save_path,
-                              resolution=plot_resolution,
-                              title=classifier.upper() + " classification algorithm, "
-                                                         "\ndecision boundary"
-                                                         "\nx1: {0}, x2: {1}".format(xlabel, ylabel))
-        elapsed = time() - t
-        print("\n - took {0:.2f} seconds.".format(elapsed))
+    if print_top_coefs:
+        print("----- Pearson correlation coefficient between features and target classes"
+              "\n\n         strongest negative correlation (top {0}):\n".format(print_top),
+              targets_corr_tidy.sort_values('value').head(print_top),
+              "\n\n         strongest positive correlation (top {0}):\n".format(print_top),
+              targets_corr_tidy.sort_values('value', ascending=False).head(print_top))
+
+    if plot_corr:
+        # plot univariate Pearson correlation coefficients with target classes
+        f, ax = plt.subplots(1, figsize=(fig_width, fig_height))
+        sns.barplot(x="value", y="var", hue="variable", data=targets_corr_tidy,
+                    palette="muted", ax=ax)
+        ax.set_ylabel("Features", fontsize=16)
+        ax.set_xlabel("Correlation coefficient", fontsize=16)
+        ax.set_title("Pearson correlation coefficient between features and target classes", fontsize=16)
+        ax.grid(True)
+        ax.legend(loc=legend_loc, fontsize=14)
+        plt.xticks(fontsize=14)
+        plt.yticks(fontsize=14)
+        if output == 'show':
+            plt.show()
+        if output == 'save':
+            plt.savefig(save_path, dpi=dpi, bbox_inches='tight')
+            if save_only:
+                f.close()
+
+
+def plot_learning_curve(classifier, model_name, X, y, n_jobs=1, cv=10, num_train_sizes=10,
+                        fig_height=4, fig_width=6):
+    train_sizes, train_scores, test_scores = learning_curve(estimator=classifier,
+                                                            X=X,
+                                                            y=y,
+                                                            train_sizes=np.linspace(0.1, 1.0, num_train_sizes),
+                                                            cv=cv,
+                                                            n_jobs=n_jobs)
+
+    train_mean = np.mean(train_scores, axis=1)
+    train_std = np.std(train_scores, axis=1)
+    test_mean = np.mean(test_scores, axis=1)
+    test_std = np.std(test_scores, axis=1)
+
+    f, ax = plt.subplots(1, figsize=(fig_width, fig_height))
+    plt.plot(train_sizes, train_mean, color='blue', marker='o', markersize=5, label='training accuracy')
+    plt.plot(train_sizes, test_mean, color='green', linestyle='--', marker='s', markersize=5,
+             label='validation accuracy')
+
+    plt.fill_between(train_sizes, train_mean + train_std, train_mean - train_std, alpha=0.15, color='blue')
+    plt.fill_between(train_sizes, test_mean + test_std, test_mean - test_std, alpha=0.15, color='green')
+
+    ax.set_xlabel('Number of training samples')
+    ax.set_ylabel('Accuracy')
+    ax.set_title("{0}, learning curve".format(model_name))
+    plt.legend(loc='lower right')
+
+    plt.show()
 
 
 def fit_norm_dist(series, h_bins='auto',
@@ -494,6 +498,104 @@ def fit_norm_dist(series, h_bins='auto',
 
     return series.describe()
 
+
+def fit_class(X, y, test_size=0.3, stratify_y=True, scale=None,
+              classifier='lr', xlabel="x1", ylabel="y2",
+              lr_c=100.0, perc_max_iter=40, perc_eta=0.1,
+              svm_l_c=1.0, svm_k_c=1.0, svm_k_gamma=0.2,
+              tree_criterion='gini', tree_max_depth=4,
+              forest_criterion='gini', forest_n_estimators=25, forest_njobs=2,
+              knn_nn=5, knn_p=2, knn_metric='minkowski',
+              random_state=1, plot_result='show', plot_resolution=0.02, save_path=""):
+    if stratify_y:
+        stratify = y
+    else:
+        stratify = None
+    print("\n----- Fitting classification algorithms to predict", y.name, "from", xlabel, ylabel,
+          "\n\nTotal samples in the dataset: {0:,}".format(len(X)))
+    X_train, X_test, y_train, y_test = \
+        train_test_split(X, y, test_size=0.3, random_state=random_state, stratify=stratify)
+    print('Labels counts in y_train:', np.bincount(y_train),
+          '\nLabels counts in y_test:', np.bincount(y_test),
+          '\nLabels counts in y:', np.bincount(y))
+
+    if scale:
+        if scale == 'norm':
+            scaler = MinMaxScaler(feature_range=(0, 1))
+        elif scale == 'std':
+            scaler = StandardScaler()
+        else:
+            raise AttributeError("Parameter 'scale' must be set to either 'norm' or 'std'.")
+        scaler.fit(X_train)
+        X = pd.DataFrame(scaler.transform(X))
+        X_train = scaler.transform(X_train)
+        X_test = scaler.transform(X_test)
+        print("\n --- Features scaled using StandardScaler.")
+
+    models = {
+        'lr': LogisticRegression(C=lr_c, random_state=random_state),
+        'perc': Perceptron(max_iter=perc_max_iter, eta0=perc_eta, random_state=random_state),
+        'svm_linear': SVC(kernel='linear', C=svm_l_c, random_state=random_state),
+        'svm_kernel': SVC(kernel='rbf', C=svm_k_c, gamma=svm_k_gamma, random_state=random_state),
+        'tree': DecisionTreeClassifier(criterion=tree_criterion,
+                                       max_depth=tree_max_depth,
+                                       random_state=random_state),
+        'forest': RandomForestClassifier(criterion=forest_criterion,
+                                         n_estimators=forest_n_estimators,
+                                         n_jobs=forest_njobs,
+                                         random_state=random_state),
+        'knn': KNeighborsClassifier(n_neighbors=knn_nn, p=knn_p,
+                                    metric=knn_metric)
+    }
+    if classifier == 'all':
+        for name, class_model in models.items():
+            model = class_model
+            print("\n----- Fitting", name.upper())
+            t = time()
+            model.fit(X, y)
+            plot_decision_regions(X, y, classifier=model, alpha=0.3, result=plot_result, name=name,
+                                  xlabel=xlabel, ylabel=ylabel, save_path=save_path,
+                                  resolution=plot_resolution,
+                                  title=name.upper() + " classification algorithm, "
+                                                       "\ndecision boundary"
+                                                       "\nx1: {0}, x2: {1}".format(xlabel, ylabel))
+            elapsed = time() - t
+            print("\n - took {0:.2f} seconds.".format(elapsed))
+    elif type(classifier) == list:
+        for classi in classifier:
+            try:
+                model = models[classi]
+            except (KeyError, TypeError):
+                raise AttributeError("Parameter 'classifier' must be string or list of strings with one or several of "
+                                     "'lr', 'perc', 'svm_linear', 'svm_kernel', 'tree', 'forest', 'knn', or 'all'")
+            print("\n----- Fitting", classi.upper())
+            t = time()
+            model.fit(X, y)
+            plot_decision_regions(X, y, classifier=model, alpha=0.3, result=plot_result, name=classi,
+                                  xlabel=xlabel, ylabel=ylabel, save_path=save_path,
+                                  resolution=plot_resolution,
+                                  title=classi.upper() + " classification algorithm, "
+                                                         "\ndecision boundary"
+                                                         "\nx1: {0}, x2: {1}".format(xlabel, ylabel))
+            elapsed = time() - t
+            print("\n - took {0:.2f} seconds.".format(elapsed))
+    else:
+        try:
+            model = models[classifier]
+        except (KeyError, TypeError):
+            raise AttributeError("Parameter 'classifier' must be string or list of strings with one or several of "
+                                 "'lr', 'perc', 'svm_linear', 'svm_kernel', 'tree', 'forest', 'knn', or 'all'")
+        print("\n----- Fitting", classifier.upper())
+        t = time()
+        model.fit(X, y)
+        plot_decision_regions(X, y, classifier=model, alpha=0.3, result=plot_result, name=classifier,
+                              xlabel=xlabel, ylabel=ylabel, save_path=save_path,
+                              resolution=plot_resolution,
+                              title=classifier.upper() + " classification algorithm, "
+                                                         "\ndecision boundary"
+                                                         "\nx1: {0}, x2: {1}".format(xlabel, ylabel))
+        elapsed = time() - t
+        print("\n - took {0:.2f} seconds.".format(elapsed))
 
 
 # dot_data = export_graphviz(model, filled=True, rounded=True,

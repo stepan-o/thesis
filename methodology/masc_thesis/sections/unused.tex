@@ -120,3 +120,73 @@ another important constraint is travel time, with suitable location being restri
 On the purchase and sale of real estate and land, ownership is generally transferred to the buyer when the deed or transfer is registered in the applicable land registry office.
 An agreement of purchase and sale must be in writing to be enforceable.
 A transfer of ownership is actualised by registering, either physically or electronically (depending on the applicable land registry system), a deed or transfer with the applicable land registry office or land registrar.
+
+However, along with opportunities, there are also challenges present.
+Teranet's dataset of land registration records presents a wealth of information about the housing market at a very fine scale but is severely limited in the number of features describing each transaction.
+One of the main features that is missing is the type of property being transacted (e.g., single detached house, apartment/condo, commercial, mix use, etc.).
+Teranet's dataset and the main challenges of using it for ILUTE improvement and Longitudindal Housing Market Research, along with the proposed solution, is discussed in section~\ref{sec:new_data_sources_and_their_challgenges}.
+
+\subsection{ILUTE model system and HoMES} \label{subsec:ilute_and_homes}
+
+The system state is defined in terms of the individual persons, households, dwelling units, firms, etc.
+that collectively define the urban region being modeled\cite{Miller2011}.
+The model aims to capture the dynamics of these markets through disaggregated representations.
+For example, in the housing market component of ILUTE, houses are auctioned off one dwelling at a time to interested bidders in a disaggregate implementation of Martinez' Bid Choice theory\cite{Martinez1992}.
+
+The ILUTE model system simulates the evolution of an urban region's spatial form, demographics, travel behavior and economic structure over time.
+The model aims to capture the dynamics of these markets through disaggregated representations.
+
+The Housing Market Evolutionary System (HoMES) is the updated housing market module for the ILUTE model system.
+HoMES is a disaggregate, agent-based microsimulation of the owner-occupied housing market that evolves the residential location of households over time and includes the endogenous supply of housing by type and location, as well as the endogenous determination of sales prices and rents.
+
+An overview of the framework of housing market supply, demand and clearing mechanisms utilized in HoMES provided by Rosenfield et al.\cite{Rosenfield2013} is presented on figure~\ref{fig:homes_framework}
+\begin{figure}[hbt!]
+    \centering
+    \includegraphics[width=0.99\linewidth,trim=0 0 0 0,clip]{homes_framework.png}
+    \caption{Framework of housing market supply, demand and clearing mechanisms used in HoMES module of ILUTE, as summarized by Rosenfield et al.\cite{Rosenfield2013}.}
+    \label{fig:homes_framework}
+\end{figure}
+
+In the case of ILUTE and HoMES, one of the possibilities for further improvement is the use of new data sources to update the housing market model.
+One of these new data sources is Teranet's dataset of land registry records;
+its background, challenges and the proposed solution are discussed in the remainder of this chapter.
+
+Changes to relative accessibility of a location can thus be estimated as changes in zone-to-zone travel times in a travel network\cite{Iacono2008}.
+
+
+The proposed GTHA housing market database combines urban data coming from a variety of sources.
+At the heart of it lies Teranet's dataset of real estate transactions (land registration records) recorded in the Province of Ontario since the beginning of XIX century up to October of 2017.
+
+
+
+
+As defined by Codd (\cite{Codd1990}, section 17.5.1), the basic ideas in normalization are to organize the information in a database as follows:
+
+\begin{enumerate}
+    \item Each distinct type of object has a distinct type identifier, which becomes the name of a base relation.
+    \item Every distinct object of a given type must have an instance identifier that is unique within the object type;
+    this is called its primary-key value.
+    \item Every fact in the database is a fact about the object identified by the primary key.
+    \item Each such fact contains nothing other than the single-valued immediate properties of the object.
+    \item Such facts are collected together in a single relation, if they are about objects of the same type.
+    The result is a collection of facts, all of the same type.
+\end{enumerate}
+
+According to Wickham, the most common problems with messy datasets are:
+\begin{itemize}
+    \item Column headers are values, not variable names.
+    \item Multiple variables are stored in one column.
+    \item Variables are stored in both rows and columns.
+    \item Multiple types of observational units are stored in the same table.
+    \item A single observational unit is stored in multiple tables.
+\end{itemize}
+
+% Alternative abstract
+
+
+Microsimulation models are the latest generation of models used to study the complex interaction of land use and transportation;
+these models use highly disaggregated representation of markets and processes.
+Increased digitization of human activity produced new data sources that offer higher spatial and temporal resolution, making them valuable for design and validation of urban models.
+Introduction of the POLARIS system in Ontario in 1985 lead to the creation of an extensive dataset of land registration records, capturing every property sale in Ontario.
+However, despite the high resolution, Teranet's dataset suffers from the lack of features characterizing each transaction, most notably, the type of the property being sold.
+This master's thesis proposes a prototype of a workflow to augment Teranet's dataset with data from multiple sources and use machine learning to classify land use at transaction level based on the housing market dynamics.

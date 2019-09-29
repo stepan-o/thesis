@@ -73,7 +73,12 @@
 %% for details).
 \usepackage{graphicx}
 \usepackage{subcaption}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{commath}
 
+% New commands
+\newcommand{\vect}[1]{\boldsymbol{#1}}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%                                                                    %%
 %%                   ***   I M P O R T A N T   ***                    %%
@@ -91,7 +96,7 @@
 \department{Civil Engineering}
 \gradyear{2019}
 \author{Stepan Oskin}
-\title{A prototype of a machine learning workflow to classify land use from housing market dynamics.
+\title{A prototype of a machine learning workflow to classify land use from the housing market dynamics.
 Part of a Longitudinal Analysis of housing sales in the Greater Toronto-Hamilton Area.}
 
 
@@ -134,13 +139,11 @@ Part of a Longitudinal Analysis of housing sales in the Greater Toronto-Hamilton
 \begin{abstract}
 %% *** Put your Abstract here. ***
 %% (At most 150 words for M.Sc. or 350 words for Ph.D.)
-    Increased digitization of human activities produces a wealth of new data that can be used to model and analyze urban systems.
-    The complex interaction of transportation and land use could be studied empirically, for which fine-scale urban data from multiple sources needs to be combined.
-    Teranet's dataset of real estate transactions holds fine-scale information on the housing market of Ontario, but is very limited in the number of available attributes.
-    The dataset can be augmented by joining additional attributes from various data sources, such as Census or TTS survey, based on spatial and/or temporal relationships.
-    However, this presents a challenge since these data sources use different spatial units and are available at different temporal spans.
-    This master's thesis proposes a machine learning workflow to augment Teranet's dataset and classify land use based on housing market dynamics.
-%TODO rewrite absract to ML workflow
+    There is ample evidence of the role of land use and transportation interactions in determining urban spatial structure.
+    The new data sources introduced by increased digitization of human activity, such as Teranet's dataset of real estate sales, offer opportunities for development of integrated urban models or studies conducting longitudinal analysis of changes in land value distributions.
+    To facilitate this, data from various sources (Census, TTS, etc.) needs to be merged at the land parcel level to enhance datasets with additional attributes, while maintaining the ease of data storage and retrieval.
+    In addition to that, accurate land use information needs to be added to Teranet records to allow separating sales data by major property types.
+    This master's thesis proposes a prototype of a workflow to augment Teranet's dataset with data from multiple sources and use machine learning to classify land use at the transaction level based on the housing market dynamics.
 \end{abstract}
 
 %% Anything placed between the abstract and table of contents will
