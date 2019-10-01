@@ -15,4 +15,20 @@ As Teranet's records have timestamps (dates) and coordinates of parcel centroids
 These relationships are implemented through a standardized data preparation workflow using Python via a series of jupyter notebook which was designed as a part of this master's thesis.
 In addition, since all the available sources of land use information have their limitations, a prototype of a machine learning workflow to classify land use from the housing market dynamics is proposed and tested by this master's thesis.
 
-Chapter~\ref{ch:background} presents background information on land use and transportation models, context for Teranet's dataset of land registry records, its opportunities and challenges and the proposed solution, chapter~\ref{ch:spatial_and_temporal_relationships} discusses the nature of the spatial and temporal relationships of different data sources used in this master's thesis, chapter~\ref{ch:data_preparation} presents the data preparation workflow designed to implement the relationships introduced in chapter~\ref{ch:spatial_and_temporal_relationships}, chapter~\ref{ch:ml_workflow} describes a prototype of a machine learning workflow to classify land use from the housing market dynamics, chapter~\ref{ch:eda_results} presents and discusses the results and chapter~\ref{ch:conclusion} presents the conclusion and outlines opportunities for future work.
+This master's thesis generally follows the structure proposed by CRISP-DM, a comprehensive data mining methodology and a process model\cite{Shearer2000} (shown on figure~\ref{fig:crisp_dm}).
+CRISP-DM breaks down the life cycle of a data mining project into six phases: business understanding, data understanding, data preparation, modeling, evaluation, and deployment.
+
+\begin{figure}[hbt!]
+    \centering
+    \includegraphics[width=0.5\linewidth,trim=0 0 0 0,clip]{crisp_dm.png}
+    \caption{Phases of the CRISP-DM Reference Model, adapted from Shearer\cite{Shearer2000}.}
+    \label{fig:crisp_dm}
+\end{figure}
+
+The first phase of CRISP-DM is business understanding, which involves such key elements as the definition of goals of the project and their acceptance criteria and the definition of the target variable of analysis\cite{Nisbet2018}.
+Chapter~\ref{ch:background} focuses on the definition of the goals of this master's thesis: it provides the background information on land use and transportation models and some of the ongoing research efforts at UTTRI involving the housing market, outlines the role of Teranet's dataset in these efforts, the challenges of its usage and the proposed solution.
+The definition of the target variable and the acceptance criteria for model evaluation are discussed in more detail in chapter~\ref{ch:ml_workflow}.
+Chapter~\ref{ch:spatial_and_temporal_relationships} covers the second phase of the process model, data understanding, and discusses the nature of the spatial and temporal relationships of different data sources used in this master's thesis.
+Chapter~\ref{ch:data_preparation} covers the third phase, data preparation, and presents the data preparation workflow designed to implement the relationships introduced in chapter~\ref{ch:spatial_and_temporal_relationships}.
+Chapter~\ref{ch:ml_workflow} covers the fourth phase, modeling, and describes a prototype of a machine learning workflow to classify land use from the housing market dynamics.
+Chapter~\ref{ch:evaluation} covers the fifth phase, evaluation, and presents the discussion of the results and chapter~\ref{ch:conclusion} presents the conclusion and outlines opportunities for future work.
