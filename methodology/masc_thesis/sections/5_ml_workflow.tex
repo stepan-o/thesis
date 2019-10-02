@@ -28,7 +28,7 @@ Figure~\ref{fig:typical_ml_workflow} presents a typical workflow for using machi
 
 As was expected, different property types have characteristically different behaviour on the housing market.
 Figure~\ref{fig:xy_total_sales_dist_by_lu} shows the distributions of total count of Teranet records per 'xy' coordinate pair by the top 10 land use categories.
-
+%TODO add plot title
 \begin{figure}[hbt!]
     \centering
     \includegraphics[width=0.98\linewidth,trim=0 0 0 0,clip]{xy_total_sales_dist_by_lu.png}
@@ -82,6 +82,9 @@ A trained algorithm is capable of using a set of rules that were learned from pa
 Once the classes have been determined and assigned, the target variable must be encoded, as it is considered good practice to provide class labels as integer arrays to avoid technical glitches and improve computational efficiency.
 Class labels are not ordinal and classification estimators in scikit-learn\cite{scikit-learn} machine learning library in Python treat class labels as categorical data that does not imply any order.
 'LabelEncoder' from scikit-learn was used to encode the class labels as integers.
+
+\textit{many machine learning models are subject to a frequency bias in which they place more emphasis on learning from data observations which occur more commonly.}
+
 
 \section{Dimensionality reduction} \label{sec:dimensionality_reduction}
 
@@ -196,13 +199,22 @@ Figure~\ref{fig:lr_l1_sbs9f_coef} presents the plot of model coefficients for ea
     \label{fig:lr_l1_sbs9f_coef}
 \end{figure}
 
+\section{Training and testing models and tuning their hyperparameters} \label{sec:train_test_validate_model}
 
+\textit{To determine whether our machine learning algorithm not only performs well on the training set but also generalizes well to new data, we also want to randomly divide the dataset into a separate training and test set. We use the training set to train and optimize our machine learning model, while we keep the test set until the very end to evaluate the final model. Comparing predictions to true labels in the test set can be understood as the unbiased performance evaluation of our model. In scikit-learn a random split into training and test sets can be quickly computed with the train\_test\_split helper function.}\cite{RaschkaMirjalili2017}
 
-\section{Training, testing and validating the model} \label{sec:train_test_validate_model}
+\textit{When evaluating different settings (''hyperparameters'') for estimators, such as the C setting that must be manually set for an SVM, there is still a risk of overfitting on the test set because the parameters can be tweaked until the estimator performs optimally. This way, knowledge about the test set can “leak” into the model and evaluation metrics no longer report on generalization performance. To solve this problem, yet another part of the dataset can be held out as a so-called ''validation set'': training proceeds on the training set, after which evaluation is done on the validation set, and when the experiment seems to be successful, final evaluation can be done on the test set.}\cite{Scikit-learndevelopers2019a}
 
-\textit{To determine whether our machine learning algorithm not only performs well on the training set but also generalizes well to new data, we also want to randomly divide the dataset into a separate training and test set. We use the training set to train and optimize our machine learning model, while we keep the test set until the very end to evaluate the final model.}
+\textit{However, by partitioning the available data into three sets, we drastically reduce the number of samples which can be used for learning the model, and the results can depend on a particular random choice for the pair of (train, validation) sets.  A solution to this problem is a procedure called cross-validation (CV for short). A test set should still be held out for final evaluation, but the validation set is no longer needed when doing CV. In the basic approach, called k-fold CV, the training set is split into k smaller sets (other approaches are described below, but generally follow the same principles). The following procedure is followed for each of the k “folds”:  A model is trained using  of the folds as training data; the resulting model is validated on the remaining part of the data (i.e., it is used as a test set to compute a performance measure such as accuracy). The performance measure reported by k-fold cross-validation is then the average of the values computed in the loop. This approach can be computationally expensive, but does not waste too much data (as is the case when fixing an arbitrary validation set), which is a major advantage in problems such as inverse inference where the number of samples is very small.}\cite{Scikit-learndevelopers2019a}
 
-\textit{comparing predictions to true labels in the test set can be understood as the unbiased performance evaluation of our model}
+Figure~\ref{fig:cross_validation_workflow} presents a typical cross-validation workflow to evaluate model performance as summarized in scikit-learn documentation\cite{Scikit-learndevelopers2019a}.
+
+\begin{figure}[hbt!]
+    \centering
+    \includegraphics[width=0.5\linewidth,trim=0 0 0 0,clip]{cross_validation_workflow.png}
+    \caption{A typical cross-validation workflow for evaluating model performance as summarized in scikit-learn documentation\cite{Scikit-learndevelopers2019a}.}
+    \label{fig:cross_validation_workflow}
+\end{figure}
 
 \textit{For example, each classification algorithm has its inherent biases, and no single classification model enjoys superiority if we don't make any assumptions about the task. In practice, it is therefore essential to compare at least a handful of different algorithms in order to train and select the best performing model. But before we can compare different models, we first have to decide upon a metric to measure performance. One commonly used metric is classification accuracy, which is defined as the proportion of correctly classified instances.}
 
@@ -212,11 +224,25 @@ Figure~\ref{fig:lr_l1_sbs9f_coef} presents the plot of model coefficients for ea
 
 \textit{In this context, stratification means that the train\_test\_split method returns training and test subsets that have the same proportions of class labels as the input dataset.}
 
+\textit{Both the prediction error (ERR) and accuracy (ACC) provide general information about how many samples are misclassified. The error can be understood as the sum of all false predictions divided by the number of total predications, and the accuracy is calculated as the sum of correct predictions divided by the total number of predictions, respectively:}
+
+\begin{equation} \label{eq:prediction_error}
+    ERR = \frac{\text{Incorrect classifications}} {\text{Total classifications}}
+\end{equation}
+
+The prediction accuracy can then be calculated directly from the error:
+
+\begin{equation} \label{eq:prediction_accuracy}
+    ACC = 1 - ERR = \frac{\text{Correct classifications}} {\text{Total classifications}}
+\end{equation}
+
+\textit{When dealing with imbalanced data, standard classification metrics do not adequately represent your models performance.}
+
 \section{Feature scaling} \label{sec:feature_scaling}
 
 \textit{Raw data rarely comes in the form and shape that is necessary for the optimal performance of a learning algorithm. Thus, the preprocessing of the data is one of the most crucial steps in any machine learning application. Many machine learning algorithms also require that the selected features are on the same scale for optimal performance, which is often achieved by transforming the features in the range [0, 1] or a standard normal distribution with zero mean and unit variance, as we will see in later chapters.}
 
-\textit{Decision trees and random forests are two of the very few machine learning algorithms where we don't need to worry about feature scaling. Those algorithms are scale invariant.}
+\textit{Indeed many estimators are designed with the assumption that each feature takes values close to zero or more importantly that all features vary on comparable scales. In particular, metric-based and gradient-based estimators often assume approximately standardized data (centered features with unit variances). A notable exception are decision tree-based estimators that are robust to arbitrary scaling of the data.}\cite{Scikit-learndevelopers2019b}
 
 \textit{there are two common approaches to bring different features onto the same scale: normalization and standardization.}
 
@@ -244,7 +270,11 @@ The procedure for standardization can be expressed by the following equation:
 
 \textit{we fit the StandardScaler and MinMaxScaler classes only once—on the training data—and use those parameters to transform the test set or any new data point.}
 
-\section{Classification algorithms and their performance} \label{sec:classification_algorithms_performance}
+\section{Algorithm selection} \label{sec:algorithm_selection}
+
+\textit{let's consider two common ways we'll train a model: tree-based logical rules developed according to some splitting criterion, and parameterized models updated by gradient descent.}
+
+\textit{Machine learning algorithms can be grouped into parametric and nonparametric models. Using parametric models, we estimate parameters from the training dataset to learn a function that can classify new data points without requiring the original training dataset anymore. Typical examples of parametric models are the perceptron, logistic regression, and the linear SVM. In contrast, nonparametric models can't be characterized by a fixed set of parameters, and the number of parameters grows with the training data. KNN belongs to a subcategory of nonparametric models that is described as instance-based learning. Models based on instance-based learning are characterized by memorizing the training dataset, and lazy learning is a special case of instance-based learning that is associated with no (zero) cost during the learning process.}
 
 \textit{Machine learning algorithms can be grouped into parametric and nonparametric models. Using parametric models, we estimate parameters from the training dataset to learn a function that can classify new data points without requiring the original training dataset anymore. Typical examples of parametric models are the perceptron, logistic regression, and the linear SVM. In contrast, nonparametric models can't be characterized by a fixed set of parameters, and the number of parameters grows with the training data. Two examples of non-parametric models that we have seen so far are the decision tree classifier/random forest and the kernel SVM.}
 
