@@ -267,6 +267,31 @@ def plot_hist(ser, form_x=False, form_y=False, width=14, height=5, min_x=None, m
             plt.close(f)
 
 
+def log_hist(series, bins=10, title='', yticks_sep=True):
+
+    plt.subplot(211)
+    hist, bins, _ = plt.hist(series, bins=bins)
+    plt.title("Linear scale histogram {0}".format(title))
+    ax = plt.gca()
+    if yticks_sep:
+        ax.get_yaxis().set_major_formatter(
+            matplotlib.ticker.FuncFormatter(lambda x, p: format(int(x), ',')))
+
+    # histogram on log scale.
+    # Use non-equal bin sizes, such that they look equal on log scale.
+    logbins = np.logspace(np.log10(bins[0]), np.log10(bins[-1]), len(bins))
+    plt.subplot(212)
+    plt.hist(series, bins=logbins)
+    ax = plt.gca()
+    plt.title("Log scale histogram {0}".format(title))
+    plt.xscale('log')
+    if yticks_sep:
+        ax.get_yaxis().set_major_formatter(
+            matplotlib.ticker.FuncFormatter(lambda x, p: format(int(x), ',')))
+    plt.tight_layout()
+    plt.show()
+
+
 def map_points(gdf, color_col=None, target_point_gdf=None, buffer_size=None,
                caption_idx=None, caption_col=None, caption_size=10,
                height=12, width=12, basemap=True,
