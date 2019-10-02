@@ -1,3 +1,4 @@
+import numpy as np
 import contextily as ctx
 import geopandas as gpd
 import matplotlib
