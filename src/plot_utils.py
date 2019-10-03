@@ -301,7 +301,7 @@ def stripplot_outliers(df, feat_col, target_col, outlier_zscore,
     sns.stripplot(data=df, y=feat_col, x=target_col, alpha=alpha, ax=axes[0])
 
     # plot a stripplot of the feature filtered by outliers (zscore < outlier_zscore)
-    mask1 = zscore(df[feat]) < outlier_zscore
+    mask1 = zscore(df[feat_col]) < outlier_zscore
     sns.stripplot(data=df[mask1], y=feat_col, x=target_col, alpha=alpha, ax=axes[1])
 
     # set axis parameters
