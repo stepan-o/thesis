@@ -5,7 +5,7 @@ import matplotlib
 import matplotlib.pyplot as plt
 import pandas as pd
 import seaborn as sns
-from scipy.stats import kurtosis, skew
+from scipy.stats import kurtosis, skew, zscore
 from time import time
 
 
