@@ -293,6 +293,30 @@ def log_hist(series, bins=10, title='', yticks_sep=True):
     plt.show()
 
 
+def stripplot_outliers(df, feat_col, target_col, outlier_zscore,
+                       output='show', save_path='stripplot.png', dpi=300, alpha=0.05, xticks_rot=10):
+    f, axes = plt.subplots(nrows=1, ncols=2, figsize=(10, 4))
+
+    # plot a stripplot of the feature colored by target class
+    sns.stripplot(data=df, y=feat_col, x=target_col, alpha=alpha, ax=axes[0])
+
+    # plot a stripplot of the feature filtered by outliers (zscore < outlier_zscore)
+    mask1 = zscore(df[feat]) < outlier_zscore
+    sns.stripplot(data=df[mask1], y=feat_col, x=target_col, alpha=alpha, ax=axes[1])
+
+    # set axis parameters
+    plt.setp(axes[0].xaxis.get_majorticklabels(), rotation=xticks_rot)
+    plt.setp(axes[1].xaxis.get_majorticklabels(), rotation=xticks_rot)
+    axes[0].set_title("raw values".format(outlier_zscore))
+    axes[1].set_title("zscore < {0}".format(outlier_zscore))
+    plt.suptitle("Stripplots of '{0}''".format(feat_col))
+    plt.tight_layout(rect=[0, 0.03, 1, 0.95])
+    if output == 'save':
+        plt.savefig(save_path, dpi=dpi)
+    else:
+        plt.show()
+
+
 def map_points(gdf, color_col=None, target_point_gdf=None, buffer_size=None,
                caption_idx=None, caption_col=None, caption_size=10,
                height=12, width=12, basemap=True,
