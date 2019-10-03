@@ -294,7 +294,8 @@ def log_hist(series, bins=10, title='', yticks_sep=True):
 
 
 def stripplot_outliers(df, feat_col, target_col, outlier_zscore,
-                       output='show', save_path='stripplot.png', dpi=300, alpha=0.05, xticks_rot=10):
+                       output='show', save_path='stripplot.png', dpi=300, alpha=0.05, xticks_rot=10,
+                       p1_ysep=False, p2_ysep=False):
     f, axes = plt.subplots(nrows=1, ncols=2, figsize=(10, 4))
 
     # plot a stripplot of the feature colored by target class
@@ -304,6 +305,13 @@ def stripplot_outliers(df, feat_col, target_col, outlier_zscore,
     mask1 = zscore(df[feat_col]) < outlier_zscore
     sns.stripplot(data=df[mask1], y=feat_col, x=target_col, alpha=alpha, ax=axes[1])
 
+    # add thousands separator
+    if p1_ysep:
+        axes[0].get_yaxis().set_major_formatter(
+            matplotlib.ticker.FuncFormatter(lambda x, p: format(int(x), ',')))
+    if p2_ysep:
+        axes[1].get_yaxis().set_major_formatter(
+            matplotlib.ticker.FuncFormatter(lambda x, p: format(int(x), ',')))
     # set axis parameters
     plt.setp(axes[0].xaxis.get_majorticklabels(), rotation=xticks_rot)
     plt.setp(axes[1].xaxis.get_majorticklabels(), rotation=xticks_rot)
