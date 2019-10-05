@@ -89,8 +89,8 @@ def get_fit_times(clf, feat_dict, target_dict, model_name, model_code, n_jobs):
         times_scores[feats]['n_jobs'] = n_jobs
 
     model_times_scores_df = pd.DataFrame(times_scores).reset_index().rename(columns={'index': 'result'})
-    idx = [model_code for i in range(len(model_times_scores_df))]
-    model_times_scores_df.index = [idx]
+    idx = pd.Index([model_code for i in range(len(model_times_scores_df))])
+    model_times_scores_df.index = idx
 
     elapsed = time() - tt
 
