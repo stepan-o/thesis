@@ -72,6 +72,33 @@ class SBS():
         return score
 
 
+def get_fit_times(clf, feat_dict, target_dict, model_name, model_code, n_jobs):
+    tt = time()
+
+    times_scores = dict()
+
+    for feats in feat_dict.keys():
+        times_scores[feats] = dict()
+        t = time()
+
+        model = clone(clf)
+        model.fit(feat_dict[feats]['train'], target_dict['train'])
+
+        times_scores[feats]['acc'] = model.score(feat_dict[feats]['test'], target_dict['test'])
+        times_scores[feats]['fit_time'] = time() - t
+        times_scores[feats]['n_jobs'] = n_jobs
+
+    model_times_scores_df = pd.DataFrame(times_scores).reset_index().rename(columns={'index': 'result'})
+    idx = [model_code for i in range(len(model_times_scores_df))]
+    model_times_scores_df.index = [idx]
+
+    elapsed = time() - tt
+
+    print("{0} fit, took {1:,.2f} seconds ({2:,.2f} minutes) in total".format(model_name, elapsed, elapsed / 60))
+
+    return model_times_scores_df
+
+
 def fit_sbs(classifier, k_features, X, y, y_min=None, y_max=None, height=4, width=4,
             title="SBS", output='show', save_path='sbs.png', return_feats=True):
     t = time()
@@ -236,6 +263,50 @@ def targets_corr(df, target_list, target_var, plot_corr=True, print_top_coefs=Tr
             pd.merge(target0_corr, target1_corr, on='var'),
             target2_corr, on='var'),
         target3_corr, on='var')
+    target_list.append(target_var)
+    mask1 = all_targets_corr['var'].isin(target_list)
+    all_targets_corr = all_targets_corr[~mask1]
+    targets_corr_tidy = pd.melt(all_targets_corr, id_vars='var').sort_values('var')
+
+    if print_top_coefs:
+        print("----- Pearson correlation coefficient between features and target classes"
+              "\n\n         strongest negative correlation (top {0}):\n".format(print_top),
+              targets_corr_tidy.sort_values('value').head(print_top),
+              "\n\n         strongest positive correlation (top {0}):\n".format(print_top),
+              targets_corr_tidy.sort_values('value', ascending=False).head(print_top))
+
+    if plot_corr:
+        # plot univariate Pearson correlation coefficients with target classes
+        f, ax = plt.subplots(1, figsize=(fig_width, fig_height))
+        sns.barplot(x="value", y="var", hue="variable", data=targets_corr_tidy,
+                    palette="muted", ax=ax)
+        ax.set_ylabel("Features", fontsize=16)
+        ax.set_xlabel("Correlation coefficient", fontsize=16)
+        ax.set_title("Pearson correlation coefficient between features and target classes", fontsize=16)
+        ax.grid(True)
+        ax.legend(loc=legend_loc, fontsize=14)
+        plt.xticks(fontsize=14)
+        plt.yticks(fontsize=14)
+        if output == 'show':
+            plt.show()
+        if output == 'save':
+            plt.savefig(save_path, dpi=dpi, bbox_inches='tight')
+            if save_only:
+                f.close()
+
+
+def targets_corr_3c(df, target_list, target_var, plot_corr=True, print_top_coefs=True, print_top=10,
+                    fig_height=4, fig_width=10, legend_loc='center right',
+                    output='show', save_path='targets_corr.png', dpi=300, save_only=False):
+
+    target0_corr = df.corr()[target_list[0]].reset_index().rename(columns={'index': 'var', 'variable': 'class'})
+    target1_corr = df.corr()[target_list[1]].reset_index().rename(columns={'index': 'var', 'variable': 'class'})
+    target2_corr = df.corr()[target_list[2]].reset_index().rename(columns={'index': 'var', 'variable': 'class'})
+
+    all_targets_corr = pd.merge(
+        pd.merge(target0_corr, target1_corr, on='var'),
+        target2_corr, on='var')
+
     target_list.append(target_var)
     mask1 = all_targets_corr['var'].isin(target_list)
     all_targets_corr = all_targets_corr[~mask1]
