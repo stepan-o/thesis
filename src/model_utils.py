@@ -72,6 +72,33 @@ class SBS():
         return score
 
 
+def get_fit_times(clf, feat_dict, target_dict, model_name, model_code, n_jobs):
+    tt = time()
+
+    times_scores = dict()
+
+    for feats in feat_dict.keys():
+        times_scores[feats] = dict()
+        t = time()
+
+        model = clone(clf)
+        model.fit(feat_dict[feats]['train'], target_dict['train'])
+
+        times_scores[feats]['acc'] = model.score(feat_dict[feats]['test'], target_dict['test'])
+        times_scores[feats]['fit_time'] = time() - t
+        times_scores[feats]['n_jobs'] = n_jobs
+
+    model_times_scores_df = pd.DataFrame(times_scores).reset_index().rename(columns={'index': 'result'})
+    idx = [model_code for i in range(len(model_times_scores_df))]
+    model_times_scores_df.index = [idx]
+
+    elapsed = time() - tt
+
+    print("{0} fit, took {1:,.2f} seconds ({2:,.2f} minutes) in total".format(model_name, elapsed, elapsed / 60))
+
+    return model_times_scores_df
+
+
 def fit_sbs(classifier, k_features, X, y, y_min=None, y_max=None, height=4, width=4,
             title="SBS", output='show', save_path='sbs.png', return_feats=True):
     t = time()
