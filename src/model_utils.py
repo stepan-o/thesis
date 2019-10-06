@@ -19,7 +19,6 @@ from scipy.stats import norm, shapiro, normaltest, anderson
 from time import time
 
 
-
 class SBS():
     def __init__(self, estimator, k_features,
                  scoring=accuracy_score,
