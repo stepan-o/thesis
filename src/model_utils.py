@@ -373,7 +373,7 @@ def plot_validation_curve(classifier, model_name, X, y, param_name, param_range,
                           fig_height=4, fig_width=6, xlog=False):
     t = time()
 
-    train_scores, test_scores = validation_curve(estimator=classifier, X=X, y=y, cv=10,
+    train_scores, test_scores = validation_curve(estimator=classifier, X=X, y=y, cv=cv, n_jobs=n_jobs,
                                                  param_name=param_name, param_range=param_range)
 
     train_mean = np.mean(train_scores, axis=1)
