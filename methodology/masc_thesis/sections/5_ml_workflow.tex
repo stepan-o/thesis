@@ -9,12 +9,6 @@ As was described in chapter~\ref{ch:data_preparation}, parcel-level land use inf
     \item neither of the available land use sources covers the full span of the Longitudinal Housing Market Research conducted by UTTRI (1986-2016)
 \end{itemize}
 
-\begin{figure}[hbt!]
-    \centering
-    \includegraphics[width=0.98\linewidth,trim=0 0 0 0,clip]{typical_ml_workflow.png}
-    \caption{A typical workflow for using machine learning in predictive modeling, as summarized by Raschka and Mirjalili\cite{RaschkaMirjalili2017}.}
-    \label{fig:typical_ml_workflow}
-\end{figure}
 
 To address this issue, detailed land use from the Department of Geography can be used as labelled data to train a machine learning model capable of recognizing certain property types that have characteristically different behavior on the housing market;
 i.e., be able to differentiate a detached house from a condo through such features as high / low volume of transactions, ratio of price to median price for that year, etc.
@@ -199,7 +193,7 @@ Figure~\ref{fig:lr_l1_sbs9f_coef} presents the plot of model coefficients for ea
     \label{fig:lr_l1_sbs9f_coef}
 \end{figure}
 
-\section{Training and testing models and tuning their hyperparameters} \label{sec:train_test_validate_model}
+\section{Tuning model hyperparameters} \label{sec:tuning_hyperparameters}
 
 \textit{To determine whether our machine learning algorithm not only performs well on the training set but also generalizes well to new data, we also want to randomly divide the dataset into a separate training and test set. We use the training set to train and optimize our machine learning model, while we keep the test set until the very end to evaluate the final model. Comparing predictions to true labels in the test set can be understood as the unbiased performance evaluation of our model. In scikit-learn a random split into training and test sets can be quickly computed with the train\_test\_split helper function.}\cite{RaschkaMirjalili2017}
 
@@ -211,10 +205,23 @@ Figure~\ref{fig:cross_validation_workflow} presents a typical cross-validation w
 
 \begin{figure}[hbt!]
     \centering
-    \includegraphics[width=0.5\linewidth,trim=0 0 0 0,clip]{cross_validation_workflow.png}
-    \caption{A typical cross-validation workflow for evaluating model performance as summarized in scikit-learn documentation\cite{Scikit-learndevelopers2019a}.}
-    \label{fig:cross_validation_workflow}
+    \includegraphics[width=0.7\linewidth,trim=0 0 0 0,clip]{holdout_validation_workflow.png}
+    \caption{Holdout cross-validation as summarized by Raschka and Mirjalili\cite{RaschkaMirjalili2017}.}
+    \label{fig:holdout_validation_workflow}
 \end{figure}
+
+\begin{figure}[hbt!]
+    \centering
+    \includegraphics[width=0.8\linewidth,trim=0 0 0 0,clip]{kfold_validation_workflow.png}
+    \caption{$K$-fold cross-validation as summarized by Raschka and Mirjalili\cite{RaschkaMirjalili2017}.
+    In the case of $K=10$, the training dataset is divided into 10 folds, and during the 10 iterations, nine folds are used for training, and one fold is used as the test set for the model evaluation.
+    Estimated performances (for example, classification accuracy or error) for each fold are then used to calculate the estimated average performance E of the model.}
+    \label{fig:kfold_validation_workflow}
+\end{figure}
+
+\textit{A good standard value for k in k-fold cross-validation is 10, as empirical evidence shows. For instance, experiments by Ron Kohavi on various real-world datasets suggest that 10-fold cross-validation offers the best trade-off between bias and variance (A Study of Cross-Validation and Bootstrap for Accuracy Estimation and Model Selection, Kohavi, Ron, International Joint Conference on Artificial Intelligence (IJCAI), 14 (12): 1137-43, 1995).}\cite{Kohavi1995}
+
+\textit{A slight improvement over the standard k-fold cross-validation approach is stratified k-fold cross-validation, which can yield better bias and variance estimates, especially in cases of unequal class proportions, as has been shown in a study by Ron Kohavi (A Study of Cross-Validation and Bootstrap for Accuracy Estimation and Model Selection, International Joint Conference on Artificial Intelligence (IJCAI), 14 (12): 1137-43, 1995). In stratified cross-validation, the class proportions are preserved in each fold to ensure that each fold is representative of the class proportions in the training dataset}\cite{Kohavi1995}
 
 \textit{For example, each classification algorithm has its inherent biases, and no single classification model enjoys superiority if we don't make any assumptions about the task. In practice, it is therefore essential to compare at least a handful of different algorithms in order to train and select the best performing model. But before we can compare different models, we first have to decide upon a metric to measure performance. One commonly used metric is classification accuracy, which is defined as the proportion of correctly classified instances.}
 
@@ -272,9 +279,21 @@ The procedure for standardization can be expressed by the following equation:
 
 \textit{we fit the StandardScaler and MinMaxScaler classes only once—on the training data—and use those parameters to transform the test set or any new data point.}
 
-\section{Algorithm selection} \label{sec:algorithm_selection}
+\section{Model selection} \label{sec:model_selection}
 
 \textit{A popular class of procedures for solving classification tasks are based on linear models. What this means is that they aim at dividing the feature space into a collection of regions labelled according to the values the target can take, where the decision boundaries between those regions are linear: they are lines in 2D, planes in 3D and hyperplanes with more features.}
+
+\textit{Trying to understand how the biological brain works, in order to design AI, Warren McCulloch and Walter Pitts published the first concept of a simplified brain cell, the so-called McCulloch-Pitts (MCP) neuron, in 1943 (A Logical Calculus of the Ideas Immanent in Nervous Activity, W. S. McCulloch and W. Pitts, Bulletin of Mathematical Biophysics, 5(4): 115-133, 1943).}
+
+\textit{Only a few years later, Frank Rosenblatt published the first concept of the perceptron learning rule based on the MCP neuron model (The Perceptron: A Perceiving and Recognizing Automaton, F. Rosenblatt, Cornell Aeronautical Laboratory, 1957). With his perceptron rule, Rosenblatt proposed an algorithm that would automatically learn the optimal weight coefficients that are then multiplied with the input features in order to make the decision of whether a neuron fires or not. In the context of supervised learning and classification, such an algorithm could then be used to predict if a sample belongs to one class or the other.}
+
+\textit{The Perceptron is another simple classification algorithm suitable for large scale learning. By default: It does not require a learning rate. It is not regularized (penalized). It updates its model only on mistakes.}
+
+\textit{Logistic regression models the probabilities of an observation belonging to each of the K classes via linear functions, ensuring these probabilities sum up to one and stay in the (0, 1) range. Logistic regression models are typically estimated by maximum likelihood. Although logistic regression is mostly used as an inference tool in tasks where the goal is to understand the role of input variables in explaining the outcome (it produces easily interpretable coefficients, just like linear regression does), it can also prove to be of significant predictive power.}
+
+\textit{Linear Discriminant Analysis (LDA) assumes that the joint densities of all features given target’s classes are multivariate Gaussians with the same covariance for each class. Quadratic Discriminant Analysis (QDA) relaxes the common covariance assumption of LDA through estimating a separate covariance matrix for each class.}
+
+\textit{A Naive Bayes Classifier determines the probability that an example belongs to some class, calculating the probability that an event will occur given that some input event has occurred.}
 
 \textit{let's consider two common ways we'll train a model: tree-based logical rules developed according to some splitting criterion, and parameterized models updated by gradient descent.}
 
@@ -288,9 +307,6 @@ An important point to be summarized from the famous No Free Lunch Theorems (NFL)
 
 \textit{In practice, it is always recommended that you compare the performance of at least a handful of different learning algorithms to select the best model for the particular problem; these may differ in the number of features or samples, the amount of noise in a dataset, and whether the classes are linearly separable or not.}
 
-\textit{Trying to understand how the biological brain works, in order to design AI, Warren McCulloch and Walter Pitts published the first concept of a simplified brain cell, the so-called McCulloch-Pitts (MCP) neuron, in 1943 (A Logical Calculus of the Ideas Immanent in Nervous Activity, W. S. McCulloch and W. Pitts, Bulletin of Mathematical Biophysics, 5(4): 115-133, 1943).}
-
-\textit{Only a few years later, Frank Rosenblatt published the first concept of the perceptron learning rule based on the MCP neuron model (The Perceptron: A Perceiving and Recognizing Automaton, F. Rosenblatt, Cornell Aeronautical Laboratory, 1957). With his perceptron rule, Rosenblatt proposed an algorithm that would automatically learn the optimal weight coefficients that are then multiplied with the input features in order to make the decision of whether a neuron fires or not. In the context of supervised learning and classification, such an algorithm could then be used to predict if a sample belongs to one class or the other.}
 
 \textit{Another simple yet more powerful algorithm for linear and binary classification problems: logistic regression. Note that, in spite of its name, logistic regression is a model for classification, not regression.}
 
@@ -325,6 +341,10 @@ The KNN algorithm itself is fairly straightforward and can be summarized by the 
 2. Find the k-nearest neighbors of the sample that we want to classify.
 
 3. Assign the class label by majority vote.
+
+\textit{The principle behind nearest neighbor methods is to find a predefined number of training samples closest in distance to the new point, and predict the label from these. The number of samples can be a user-defined constant (k-nearest neighbor learning), or vary based on the local density of points (radius-based neighbor learning). The distance can, in general, be any metric measure: standard Euclidean distance is the most common choice. Neighbors-based methods are known as non-generalizing machine learning methods, since they simply “remember” all of its training data (possibly transformed into a fast indexing structure such as a Ball Tree or KD Tree). Being a non-parametric method, it is often successful in classification situations where the decision boundary is very irregular.}\cite{Scikit-learndevelopers2019c}
+
+\textit{Neighbors-based classification is a type of instance-based learning or non-generalizing learning: it does not attempt to construct a general internal model, but simply stores instances of the training data. Classification is computed from a simple majority vote of the nearest neighbors of each point: a query point is assigned the data class which has the most representatives within the nearest neighbors of the point.}
 
 \section{Chapter summary} \label{sec:ml_workflow_summary}
 asd
