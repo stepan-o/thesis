@@ -4,89 +4,95 @@ As was previously mentioned in section~\ref{sec:teranet_challenges_solution}, on
 As was described in chapter~\ref{ch:data_preparation}, parcel-level land use information from DMTI and the Department of Geography has been spatially joined to Teranet records, but these sources of land use information also have their limitations:
 
 \begin{itemize}
-    \item DMTI's land use data does not offer any split between subcategories of residential properties and only covers the period of 2001--2014
+    \item DMTI's land use data does not offer any split between subcategories of residential properties and only covers the period from 2001 to 2014
     \item land use from the Department of Geography is a lot more detailed and accurate, but has been collected at a single point in time over the summer of 2012 and 2013
-    \item neither of the available land use sources covers the full span of the Longitudinal Housing Market Research conducted by UTTRI (1986-2016)
+    \item neither of the available land use sources covers the full span of the Longitudinal Housing Market Research conducted by UTTRI (1986--2016)
 \end{itemize}
 
-
-To address this issue, detailed land use from the Department of Geography can be used as labelled data to train a machine learning model capable of recognizing certain property types that have characteristically different behavior on the housing market;
-i.e., be able to differentiate a detached house from a condo through such features as high / low volume of transactions, ratio of price to median price for that year, etc.
-Chapter~\ref{ch:data_preparation} described the production of the dataset that combines the new features engineered from Teranet data with spatially-joined variables from Census and TTS\@.
-In this chapter, this dataset is used to investigate the opportunity to implement a classification algorithm to determine the parcel land use at Teranet transaction level (recognizing changes of land use with time) based on the housing market dynamics.
-This way, a machine learning algorithm could provide a scalable solution to automate a labour-intensive task of collecting parcel-level detailed land use and expand the temporal span for which the land use data collected from the Department of Geography can be used with accuracy.
-
-Figure~\ref{fig:typical_ml_workflow} presents a typical workflow for using machine learning in predictive modeling, as summarized by Raschka and Mirjalili\cite{RaschkaMirjalili2017}.
+To address this issue, detailed land use from the Department of Geography can be used as labelled data to train a machine learning model capable of recognizing certain property types that have characteristically different behavior on the housing market.
+For example, the proposed model would be able to differentiate a detached house from a condo through such features as high / low volume of transactions, ratio of price to median price for that year, etc.
+Chapter~\ref{ch:data_preparation} described the production of a dataset that combines the new features engineered from Teranet data with the variables spatially and temporally joined from Census and TTS surveys.
+In this chapter, this dataset is used to investigate the opportunity to implement a classification algorithm to determine the parcel land use at Teranet transaction level (land use is determined for each Teranet transaction, recognizing the changes of land use on the same parcel with time) based on the housing market dynamics.
+This way, a machine learning algorithm could provide a scalable solution to automate a labour-intensive task of collecting parcel-level detailed land use and expand the temporal span for which the land use data collected by Department of Geography can be used with accuracy.
 
 \section{Selecting and encoding the target variable} \label{sec:select_encode_target}
 
 As was expected, different property types have characteristically different behaviour on the housing market.
-Figure~\ref{fig:xy_total_sales_dist_by_lu} shows the distributions of total count of Teranet records per 'xy' coordinate pair by the top 10 land use categories.
-%TODO add plot title
+Figure~\ref{fig:xy_total_sales_dist_by_lu} shows the distributions of total count of Teranet records per coordinate pair by the top 10 land use categories used in the Department of Geography's dataset.
+
 \begin{figure}[hbt!]
     \centering
     \includegraphics[width=0.98\linewidth,trim=0 0 0 0,clip]{xy_total_sales_dist_by_lu.png}
-    \caption{Distributions of total count of Teranet records per 'xy' coordinate pair by top 10 land use categories.
-    It can be seen that detached houses, duplexes, and townhouses ("collapsed" boxplots) have much lower number of records per 'xy'.
-    It can also be seen that there are some outliers present on the category of detached houses (first boxplot from the left), which most likely represent mislabelled records, as it is very unlikely that a detached house can have almost 4'000 sales.}
+    \caption{Distributions of total count of Teranet records per coordinate pair by the top 10 land use categories.
+    It can be seen that detached houses, duplexes, and townhouses ("collapsed" boxplots) have much lower number of records per coordinate pair.
+    It can also be seen that there are some outliers present on the category of detached houses (first boxplot from the left).
+    These outliers most likely represent mislabelled records, as it is very unlikely that a detached house can have almost 4'000 sales.}
     \label{fig:xy_total_sales_dist_by_lu}
 \end{figure}
 
-The target variable used for the purposes of investigating the possibility of land use classification was constructed by reducing the land use codes used in the Department of Geography's dataset to 4 major categories;
-these categories were derived from the land use codes that have the highest counts of Teranet records.
-The four classes that were manually selected as a reduced representation of the major property types have been chosen to have a comparable number of records between classes and a similar distribution of price and count of sales per 'xy' between the land use categories that were grouped together to form a single class.
+The target variable used for the purposes of investigating the possibility of land use classification using the housing market dynamics was constructed by reducing the land use codes found in the Department of Geography's land use dataset.
+Department of Geography's land use categories that have the highest counts of Teranet records have been used to reduce all different property types to the three major land use classes.
+As many machine learning algorithms are subject to a frequency bias in which they place more emphasis on learning from data observations which occur more frequently, the three classes were selected to have a comparable number of records between themselves to achieve a more balanced dataset.
+In addition, chosen groupings combine categories that have a similar distribution of price and count of sales per coordinate pair between land use categories that were grouped together to form a single class.
+For example, detached and semi-detached houses and townhouses would have a much smaller frequency of transaction and a higher median price per coordinate pair when compared to condos and strata townhouses.
 Figure~\ref{fig:class_2_price_dist} shows an example of such grouping: in class 2, Duplex/Semi-Detached properties are grouped together with Townhouses.
+
+\vspace{5mm}
+
+The three target classes that were introduced are:
+
+\begin{itemize}
+    \item Class 0: "condo", including Apartments/Condos/Residence and Strata Townhouses
+    \item Class 1: "house", including Single Detached Houses, Duplex/Semi-Detached and Townhouses
+    \item Class 2: "other", including Commercial/Shopping, Mix (Commercial Residential), Industrial/Employment Lands, and everything else
+\end{itemize}
 
 \begin{figure}[ht]
     \centering
     \begin{subfigure}{\linewidth}
         \centering
-        \includegraphics[width=.98\linewidth]{duplex_price_dist.png}
+        \includegraphics[width=.9\linewidth]{duplex_price_dist.png}
         \label{fig:duplex_price_dist}
         \caption{Duplex/Semi-Detached}
     \end{subfigure}
 
     \begin{subfigure}{\linewidth}
         \centering
-        \includegraphics[width=.98\linewidth]{townhouse_price_dist.png}
+        \includegraphics[width=.9\linewidth]{townhouse_price_dist.png}
         \label{fig:townhouse_price_dist}
         \caption{Townhouse}
     \end{subfigure}
-    \caption{Distribution of price (in 2016 dollars) for two property types grouped together under Class 2: Townhouses and Duplex/Semi-Detached.
-    Both categories have similar distributions of price and records per 'xy' and thus are grouped together to represent a single class "duplex\_townhouse".}
+    \caption{Distribution of price (in 2016 dollars) for two out of the three property types that are grouped together under Class 2: House.
+    Both categories have similar distributions of price and records per coordinate pair between themselves and with the Single Detached Houses, and thus all three categories are grouped together to represent a single class ''house''.}
     \label{fig:class_2_price_dist}
 \end{figure}
 
-The four target classes that were introduced are:
+Classification algorithms, a subcategory of algorithms for supervised learning, predict the discrete unordered categorical class labels of new instances based on past observations.
+A trained algorithm is capable of using a set of rules that were learned from past observations to distinguish the new instances between the possible classes.
+Once the classes have been determined and assigned, the target variable must be encoded, as it is considered good practice to provide class labels as integer arrays to algorithms to avoid technical glitches and improve computational efficiency.
+Class labels are not ordinal and classification estimators in the scikit-learn\cite{scikit-learn} machine learning library in Python treat them as categorical data that does not imply any order.
+
+\section{Missing values} \label{sec:missing_values}
+
+As was mentioned in section~\ref{sec:feature_engineering}, some of the new features engineered from Teranet attributes, such as 'xy\_years\_since\_last\_sale' and 'xy\_years\_to\_next\_sale' contain missing values in each case of the first or the last Teranet record coming from a coordinate pair.
+Since classification algorithms cannot handle inputs with missing values, these values were replaced using the following logic:
 
 \begin{itemize}
-    \item Class 0: "condo", including Apartments/Condos/Residence and Strata Townhouses
-    \item Class 1: "detached", including Single Detached Houses
-    \item Class 2: "duplex\_townhouse", including Duplex/Semi-Detached and Townhouses
-    \item Class 3: "other", including Commercial/Shopping, Mix (Commercial Residential), Industrial/Employment Lands, and everything else
+    \item For all the records with missing 'xy\_years\_since\_last\_sale' (first record from a coordinate pair), values were replaced with the median 'xy\_years\_to\_next\_sale' for this subset (median time interval between all future sales from this Teranet subset).
+    \item For all the records with missing 'xy\_years\_to\_next\_sale' (last record from a coordinate pair), values were replaced with the median 'xy\_years\_since\_last\_sale' for this subset (median time interval between all past sales from this Teranet subset).
 \end{itemize}
 
-The selection was performed with an aim to separate types of properties that would have characteristically different behaviour on the housing market (i.e., detached houses would have a much smaller frequency of transaction when compared to condos and a higher median price when compared to duplexes).
-Distributions of price (in 2016 dollars) and count of records per 'xy' coordinate pair were used to define classes.
-Figure~\ref{fig:class_2_price_dist} presents an example of price distributions for Townhouses and Duplex/Semi-Detached.
-Similar analysis has been performed to group other categories together into 4 major classes.
-
-Classification algorithms, a subcategory of algorithms for supervised learning, predict the discrete unordered categorical class labels of new instances based on past observations.
-A trained algorithm is capable of using a set of rules that were learned from past observations to distinguish new instances between the possible classes.
-Once the classes have been determined and assigned, the target variable must be encoded, as it is considered good practice to provide class labels as integer arrays to avoid technical glitches and improve computational efficiency.
-Class labels are not ordinal and classification estimators in scikit-learn\cite{scikit-learn} machine learning library in Python treat class labels as categorical data that does not imply any order.
-'LabelEncoder' from scikit-learn was used to encode the class labels as integers.
-
-\textit{many machine learning models are subject to a frequency bias in which they place more emphasis on learning from data observations which occur more commonly.}
-
+This replacement affects a large number of Teranet records, as there are many coordinate pairs with a low count of records, but this allows the classification algorithm to work on the majority of Teranet data, which improves the generalization of the algorithm and allows classifying land use of most Teranet records.
+The features that have missing values also have strong predictive power for land use classes and thus are best kept in the input set with the missing values replaced.
+This replacement is done during the fitting of classification algorithm and is not recorded in the final version of Teranet's dataset with new features and keys, were the missing values are left as missing.
 
 \section{Dimensionality reduction} \label{sec:dimensionality_reduction}
 
-The quality of the data plays a critical part in the success of the application of a machine learning algorithm, and one of the important aspects of data quality is the dimensionality of the input space.
+Quality of the data plays a critical part in the success of application of a machine learning algorithm, and one of important aspects of data quality is the dimensionality of input space.
 The input space may contain features that are either redundant or irrelevant;
 highly correlated features also introduce multicollinearity and can make the model unstable, or too sensitive to small changes in the input data.
-In machine learning, statistics, and information theory, dimensionality reduction is the process of reducing the number of random variables under consideration.
-There is a number of reasons for reducing dimensionality of a dataset:
+In machine learning, statistics, and information theory, dimensionality reduction is the process of reducing the number of random variables under consideration;
+there is a number of reasons for reducing dimensionality of a dataset:
 
 \begin{enumerate}
     \item reducing the number of features improves computational efficiency and reduces training times
@@ -103,17 +109,17 @@ There are two main categories of dimensionality reduction techniques:
     \item feature extraction, where a new feature subspace is constructed from information derived from the original feature set
 \end{itemize}
 
-A feature selection algorithm presents a practical approach to feature selection at scale;
-such algorithms combine a search strategy for proposing new feature subsets with an objective function to evaluate these subsets.
+Feature selection can either be performed manually or by utilizing a feature selection algorithm.
 Exhaustive evaluation of all possible feature subsets is computationally unfeasible even for a moderate number of features.
-For example, if we are given a feature set with $m = 64$ features and want to reduce it to $n = 19$, an exhaustive evaluation would involve over $10^{15}$ possible feature sets:
+For example, if we are given a feature set with $m = 64$ features and want to reduce it to $n = 11$, an exhaustive evaluation would involve over $10^{12}$ possible feature sets:
 
 \begin{equation}
-    _{m}C_n = _{64}C_{19} = \binom{64} {19} = \frac{64!} {19!(64 - 19)!} = 8,719,878,125,622,720
+    _{m}C_n = _{64}C_{11} = \binom{64} {11} = \frac{64!} {11!(64 - 11)!} = 743,595,781,824
 \end{equation}
 
-Therefore, it is more practical to utilize an FSS algorithm that uses some other search strategy to explore the space of all possible combinations of features.
-The second element of a feature selection algorithm is the objective function, which plays the role of a feedback signal used by the search strategy to choose between candidate subset.
+Feature selection algorithms present a practical approach to feature selection at scale;
+such algorithms combine a search strategy for proposing new feature subsets with an objective function to evaluate these subsets;
+objective function plays the role of a feedback signal used by the search strategy to choose between candidate subset.
 Objective functions are divided into three major groups:
 
 \begin{itemize}
@@ -126,7 +132,7 @@ Objective functions are divided into three major groups:
     \end{itemize}
     \item wrappers
     \begin{itemize}
-        \item use a classifier to evaluate subsets by their predictive accuracy on test data
+        \item use a classifier to evaluate subsets by their predictive accuracy
         \item advantages: have better accuracy since they select subsets based on specific interactions between the classifier and the dataset
         \item disadvantages: slower to execute since a classifier needs to be re-trained multiple times;
         selected feature subset will be specific to the classifier that was used to evaluate the candidate subsets.
@@ -134,9 +140,13 @@ Objective functions are divided into three major groups:
     \item embedded methods
     \begin{itemize}
         \item feature selection is performed as a part of model construction process (i.e., LASSO method for constructing a linear model with L1 regularization)\cite{Scikit-learndevelopers2019}
-        \item
     \end{itemize}
 \end{itemize}
+
+A combination of different FSS techniques have been used to reduce the dimensionality of the dataset with Teranet, TTS, and Census variables for classification from 64 to 11 input features.
+The first method utilized was SelectFromModel in scikit-learn, a wrapper FSS algorithm that selects an optimal size and composition of a feature subset based on the importance weights from the provided classifier.
+
+Different filter and wrapper methods have been used to score the original 64 features and the features selected for the final subset for classification were the ones that have been ranked as top
 An example of a feature selection algorithm is the Sequential Backward Selection algorithm
 
 To gain a better understanding of the data, univariate feature selection techniques can be used;
