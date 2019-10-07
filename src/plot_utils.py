@@ -153,7 +153,7 @@ def plot_count_mean_median(s, group_col, plot_col, figsize=(8, 8), tick_label_si
 
 
 def plot_hist(ser, form_x=False, form_y=False, width=14, height=5, min_x=None, max_x=None,
-              kde=False, rug=False, x_label=None, bins=None,
+              kde=False, rug=False, x_label=None, bins=None, logx=False,
               skew_kurt=True, plot_mean=True, plot_median=True, sdev=True,
               mean_xlift=1.1, med_xlift=0.7, sdev_xlift=1.3, skew_xlift=2, kurt_xlift=1.3, skew_kurt_rot=30,
               title='Distribution', title_size=20,
@@ -212,8 +212,17 @@ def plot_hist(ser, form_x=False, form_y=False, width=14, height=5, min_x=None, m
     # create figure and axis
     f, ax = plt.subplots(1, figsize=(width, height))
 
-    # plot distribution
-    sns.distplot(ser, kde=kde, rug=rug, bins=bins, ax=ax)
+    if logx == True:
+        hist, bins, _ = plt.hist(ser, bins=bins)
+        logbins = np.logspace(np.log10(bins[0]), np.log10(bins[-1]), len(bins))
+        plt.hist(ser, bins=logbins)
+        ax.set_xscale('log')
+    else:
+        # plot distribution
+        sns.distplot(ser, kde=kde, rug=rug, bins=bins, ax=ax)
+        if form_x:
+            ax.get_xaxis().set_major_formatter(
+                matplotlib.ticker.FuncFormatter(lambda x, p: format(int(x), ',')))
 
     # plot mean of the series
     if plot_mean:
@@ -236,9 +245,6 @@ def plot_hist(ser, form_x=False, form_y=False, width=14, height=5, min_x=None, m
                 fontsize=mean_med_size, rotation=skew_kurt_rot)
 
     # format axes
-    if form_x:
-        ax.get_xaxis().set_major_formatter(
-            matplotlib.ticker.FuncFormatter(lambda x, p: format(int(x), ',')))
     if form_y:
         ax.get_yaxis().set_major_formatter(
             matplotlib.ticker.FuncFormatter(lambda x, p: format(int(x), ',')))
@@ -247,6 +253,7 @@ def plot_hist(ser, form_x=False, form_y=False, width=14, height=5, min_x=None, m
     ax.set_title(title, fontsize=title_size)
     plt.xticks(fontsize=x_tick_size)
     plt.yticks(fontsize=y_tick_size)
+    plt.grid(axis='y')
     if kde:
         ax.set_ylabel('Kernel density estimation (KDE)', fontsize=y_lab_size)
     else:
