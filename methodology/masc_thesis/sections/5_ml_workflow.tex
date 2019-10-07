@@ -143,41 +143,71 @@ Objective functions are divided into three major groups:
     \end{itemize}
 \end{itemize}
 
-A combination of different FSS techniques have been used to reduce the dimensionality of the dataset with Teranet, TTS, and Census variables for classification from 64 to 11 input features.
-The first method utilized was SelectFromModel in scikit-learn, a wrapper FSS algorithm that selects an optimal size and composition of a feature subset based on the importance weights from the provided classifier.
+A combination of different FSS techniques was applied to reduce the dimensionality of the dataset with Teranet, TTS, and Census variables for classification from 64 to 11 input features.
+The first method utilized was SelectFromModel in scikit-learn, a wrapper FSS algorithm that selects an optimal size and composition of a feature subset by fitting the provided classifier to training data and getting the importance weights from the fit model.
+SelectFromModel with Random Forest classifier has determined the optimal number of features to be 18;
+this number of features was provided to the other FSS algorithms to select the 18 best features from the dataset according to each method.
 
-Different filter and wrapper methods have been used to score the original 64 features and the features selected for the final subset for classification were the ones that have been ranked as top
-An example of a feature selection algorithm is the Sequential Backward Selection algorithm
+The second FSS method that was applied to the augmented Teranet dataset comes from the filter family of objective functions: a univariate feature selection algorithm SelectKBest in scikit-learn;
+this method selects $k$ highest scoring features based on their scores on the specified univariate statistical test.
+Univariate FSS techniques can be useful for better understanding of the data, as they examine each feature individually to determine the strength of its relationship with the target variable.
+However, due to this fact, these methods will not necessarily result in improvement in the generalization of a learning algorithm, and thus their results have been used for feature selection in combination with other methods discussed in this section.
+The following statistical tests from scikit-learn have been selected for scoring features using SelectKBest FSS algorithm:
 
-To gain a better understanding of the data, univariate feature selection techniques can be used;
-these techniques examine each feature individually to determine the strength of the relationship of a feature with the target variable.
-Univariate feature selection methods could be useful for better understanding of the data, but not necessarily for improving the generalization of the learning algorithm.
+\begin{itemize}
+    \item Chi-squared stats of non-negative (pre-normalized) features for classification tasks
+    \item ANOVA F-value between label/feature for classification tasks
+    \item Mutual information for a discrete target
+\end{itemize}
 
-One of the simplest methods to analyze the relationship between individual features and the target classes is the Pearson correlation coefficient, measuring bivariate correlation.
-The values of the coefficient lie in the interval $[-1; 1]$, with $-1/+1$ meaning perfect negative/positive correlation respectively, and 0 meaning no linear correlation between the two variables.
-However, it is important to remember that Pearson correlation coefficient is only sensitive to a linear relationship between the variables and can be close to 0 even if a strong non-linear relationship is present.
-Figure~\ref{fig:sbs9f_corr} presents an example of a plot displaying 9 selected features (selection process is described below) and their Pearson correlation coefficients with each target class (target classes have been encoded one-hot for this purpose).
-Similar analysis was performed on the full list of 54 features as a first step in assessing their importance.
-
-\begin{figure}[hbt!]
-    \centering
-    \includegraphics[width=0.98\linewidth,trim=0 0 0 0,clip]{sbs9f_corr.png}
-    \caption{9 most important features determined using Sequential Backward Selection (SBS) algorithm and their Pearson correlation coefficients for each target class.
-    Target classes have been encoded one-hot for the purposes of this plot.}
-    \label{fig:sbs9f_corr}
-\end{figure}
-
-Interpreting the relationships between the two variables based solely on correlation value can be highly misleading, as illustrated by Anscombe's quartet\cite{Anscombe1973}, which highlights the importance of visualization.
-Pair-wise scatter plots have been produced for all variables to analyze their distributions by target classes, figure~\ref{fig:pairplot_sample} presents a section of such pairplot.
+The third family of FSS algorithms that were applied were the recursive feature elimination algorithms, wrapper algorithms that evaluate candidate feature subsets and recursively eliminate features until the desired number of dimensions is reached.
+RFE class in scikit-learn facilitates feature ranking with recursive feature elimination using the provided external classifier that assigns weights to features.
+Another recursive selection method used was the Sequential Backward Selection algorithm implemented as a Python class by Raschka and Mirjalili\cite{RaschkaMirjalili2017}.
+Sequential feature selection algorithms are a family of greedy search algorithms that are used to reduce an initial $d$-dimensional feature space to a $k$-dimensional feature subspace where $k<d$.
 
 \begin{figure}[hbt!]
     \centering
-    \includegraphics[width=0.98\linewidth,trim=0 0 0 0,clip]{pairplot_sample.png}
-    \caption{A section of a pairplot with pair-wise scatter plots of input variables coloured by target classes.}
-    \label{fig:pairplot_sample}
+    \begin{subfigure}[t]{.45\textwidth}
+        \centering
+        \includegraphics[width=\columnwidth,trim=0 0 0 0,clip]{sbs_perceptron.png}
+        \caption{Perceptron}
+        \label{fig:sbs_perceptron}
+    \end{subfigure}
+    ~ %add desired spacing between images, e. g. ~, \quad, \qquad, \hfill etc.
+    %(or a blank line to force the subfigure onto a new line)
+    \begin{subfigure}[t]{.53\textwidth}
+        \centering
+        \includegraphics[width=\columnwidth,trim=0 0 0 0,clip]{sbs_forest.png}
+        \caption{Random Forest}
+        \label{fig:sbs_forest}
+    \end{subfigure}
+    \caption{Sequential Backward Selection (SBS) is a classic sequential FSS algorithm;
+    on each iteration, it eliminates the feature that results in the minimum drop in performance of the provided classifier.
+    Figure~\ref{fig:sbs_perceptron} shows SBS run on augmented Teranet dataset with Perceptron and figure~\ref{fig:sbs_forest} shows SBS with Random Forest.
+    It can be seen that many features can be eliminated without a significant drop in performance of both classifiers, especially in the case of Random Forest.}
+    \label{fig:sbs_teranet}
 \end{figure}
 
-Another possible approach to reduce the complexity of a model is to use L1 regularization to penalize large individual weights.
+Sequential Backward Selection (SBS) is a classic sequential FSS algorithm which aims to reduce the dimensionality of the initial feature subspace with a minimum decay in performance of the classifier;
+in some cases of model overfitting, SBS can even improve the predictive power of a classifier.
+On each iteration, a feature is removed using the defined criterion function $J$ that we want to minimize;
+$J$ can simply be defined as the difference in performance of the classifier before and after a the elimination of a particular feature.
+Figure~\ref{fig:sbs_teranet} presents plots produced by running SBS algorithm on augmented Teranet dataset with Perceptron and Random Forest.
+
+As can be seen from the plots produced by SBS, most features in the augmented Teranet dataset can be eliminated without a significant drop in performance of both linear and tree-based models.
+As such, final set of features to be used for land use classification was selected by combining the feature subsets selected by each of the FSS methods described above.
+Features that have been selected by at least four different methods were selected as the final feature subset that was tested with the classification algorithms and used for final classification of land use;
+figure~\ref{fig:top_feats} presents the 11 features that were selected using this logic.
+
+\begin{figure}[hbt!]
+    \centering
+    \includegraphics[width=0.7\linewidth,trim=0 0 0 0,clip]{top11f_selection_summary.png}
+    \caption{FSS results: 11 features that were selected by at least four different feature selection methods.
+    These features were used to select the best-performing model and make the final classification of land use of Teranet records.}
+    \label{fig:top_feats}
+\end{figure}
+
+From the perspective of embedded feature selection methods, another possible approach to reduce the complexity of a model is to use L1 regularization to penalize large individual weights.
 L1 regularization introduces a penalty term to the cost function which is taken as the norm of the weight vector defined as:
 
 \begin{equation} \label{eq:l1_regularization}
@@ -194,14 +224,7 @@ where $m$ is the number of features.
 However, since in the case of L1 regularization, the sum of squares of weights is replaced with the sum of the absolute values of weights, L1 regularization usually yields sparse feature vectors, since most feature weights will be zero\cite{RaschkaMirjalili2017,Scikit-learndevelopers2019}.
 Sparsity of feature vectors can help us get rid of irrelevant features in a high-dimensional dataset;
 in this context, L1 regularization can be understood as a technique for feature selection\cite{RaschkaMirjalili2017}.
-Figure~\ref{fig:lr_l1_sbs9f_coef} presents the plot of model coefficients for each class that were obtained from a Logistic Regression model with L1 regularization.
-
-\begin{figure}[hbt!]
-    \centering
-    \includegraphics[width=0.98\linewidth,trim=0 0 0 0,clip]{lr_l1_sbs9f_coef.png}
-    \caption{Logistic regression with L1 regularization, model coefficients.}
-    \label{fig:lr_l1_sbs9f_coef}
-\end{figure}
+L1 regularization was attempted with Logistic Regression and Linear Support Vector Classifier models in scikit-learn, but did not result in a significant improvement in model performance.
 
 \section{Tuning model hyperparameters} \label{sec:tuning_hyperparameters}
 
