@@ -190,3 +190,28 @@ Increased digitization of human activity produced new data sources that offer hi
 Introduction of the POLARIS system in Ontario in 1985 lead to the creation of an extensive dataset of land registration records, capturing every property sale in Ontario.
 However, despite the high resolution, Teranet's dataset suffers from the lack of features characterizing each transaction, most notably, the type of the property being sold.
 This master's thesis proposes a prototype of a workflow to augment Teranet's dataset with data from multiple sources and use machine learning to classify land use at transaction level based on the housing market dynamics.
+
+
+One of the simplest methods to analyze the relationship between individual features and the target classes is the Pearson correlation coefficient, measuring bivariate correlation.
+The values of the coefficient lie in the interval $[-1; 1]$, with $-1/+1$ meaning perfect negative/positive correlation respectively, and 0 meaning no linear correlation between the two variables.
+However, it is important to remember that Pearson correlation coefficient is only sensitive to a linear relationship between the variables and can be close to 0 even if a strong non-linear relationship is present.
+Figure~\ref{fig:sbs9f_corr} presents an example of a plot displaying 9 selected features (selection process is described below) and their Pearson correlation coefficients with each target class (target classes have been encoded one-hot for this purpose).
+Similar analysis was performed on the full list of 54 features as a first step in assessing their importance.
+
+\begin{figure}[hbt!]
+    \centering
+    \includegraphics[width=0.98\linewidth,trim=0 0 0 0,clip]{sbs9f_corr.png}
+    \caption{9 most important features determined using Sequential Backward Selection (SBS) algorithm and their Pearson correlation coefficients for each target class.
+    Target classes have been encoded one-hot for the purposes of this plot.}
+    \label{fig:sbs9f_corr}
+\end{figure}
+
+Interpreting the relationships between the two variables based solely on correlation value can be highly misleading, as illustrated by Anscombe's quartet\cite{Anscombe1973}, which highlights the importance of visualization.
+Pair-wise scatter plots have been produced for all variables to analyze their distributions by target classes, figure~\ref{fig:pairplot_sample} presents a section of such pairplot.
+
+\begin{figure}[hbt!]
+    \centering
+    \includegraphics[width=0.98\linewidth,trim=0 0 0 0,clip]{pairplot_sample.png}
+    \caption{A section of a pairplot with pair-wise scatter plots of input variables coloured by target classes.}
+    \label{fig:pairplot_sample}
+\end{figure}
