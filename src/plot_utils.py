@@ -254,7 +254,7 @@ def plot_hist(ser, form_x=False, form_y=False, width=14, height=5,
     ax.set_title(title, fontsize=title_size)
     plt.xticks(fontsize=x_tick_size)
     plt.yticks(fontsize=y_tick_size)
-    plt.grid(axis='y')
+    plt.grid(axis='x')
     if kde:
         ax.set_ylabel('Kernel density estimation (KDE)', fontsize=y_lab_size)
     else:
