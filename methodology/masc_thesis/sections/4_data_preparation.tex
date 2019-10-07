@@ -200,6 +200,11 @@ in addition, they were tested as a part of the original full feature set for cla
 However, in the case of classification, all of the new ''outlier'' features were filtered out in the process of feature selection, which will be discussed in section~\ref{sec:dimensionality_reduction}.
 Instead, algorithms performed better with features that numerically represent price, such as 'med\_price\_xy', computed as the median consideration amount (in 2016 dollars) for a particular xy coordinate pair.
 
+Some of the new features that have been engineered from original Teranet attributes, which will be discussed in section~\ref{sec:feature_engineering}, also contain outliers on the high end of their distributions.
+For example, in the case of the feature 'xy\_prev\_sales' which captures rolling count of Teranet records from a coordinate pair, count of records from a coordinate pair that corresponds to a house would be in the order of $10^1$, while count of records from a coordinate pair that corresponds to an apartment building would be on the order of $10^2-10^4$.
+In these cases, outliers contain valuable information that can be used to classify Teranet records by property type, but these outliers still present a challenge for the convergence of gradient-based algorithms.
+To keep these records in the dataset while facilitating faster convergence, feature scaling was performed and will be discussed in section~\ref{sec:feature_scaling}.
+
 \section{Engineering new features for the classification algorithm} \label{sec:feature_engineering}
 
 In addition to producing new keys for joining datasets, a number of the new features was engineered from original Teranet attributes to be tested with the classification algorithm (discussed in chapter~\ref{ch:ml_workflow}).
