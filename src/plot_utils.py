@@ -152,7 +152,8 @@ def plot_count_mean_median(s, group_col, plot_col, figsize=(8, 8), tick_label_si
         plt.show()
 
 
-def plot_hist(ser, form_x=False, form_y=False, width=14, height=5, min_x=None, max_x=None,
+def plot_hist(ser, form_x=False, form_y=False, width=14, height=5,
+              min_x=None, max_x=None, min_y=None, max_y=None,
               kde=False, rug=False, x_label=None, bins=None, logx=False,
               skew_kurt=True, plot_mean=True, plot_median=True, sdev=True,
               mean_xlift=1.1, med_xlift=0.7, sdev_xlift=1.3, skew_xlift=2, kurt_xlift=1.3, skew_kurt_rot=30,
@@ -264,6 +265,8 @@ def plot_hist(ser, form_x=False, form_y=False, width=14, height=5, min_x=None, m
 
     if min_x or max_x:
         ax.set_xlim(left=min_x, right=max_x)
+    if min_y or max_y:
+        ax.set_ylim(bottom=min_y, top=max_y)
 
     # save or show results
     if act == 'show':
