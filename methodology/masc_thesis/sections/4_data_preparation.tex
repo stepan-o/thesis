@@ -246,6 +246,10 @@ The following features have been added to each Teranet record from 1985 to 2017 
 
 These new features were combined with TTS and Census variables via spatial and temporal relationships that were introduced in chapter~\ref{ch:spatial_and_temporal_relationships} and were used to train and test a classification algorithm to classify land use at Teranet transaction level, which is discussed in chapter~\ref{ch:ml_workflow}.
 
+Some of the new engineered features, such as 'xy\_years\_since\_last\_sale' and 'xy\_years\_to\_next\_sale' contain missing values in each case of the first or the last Teranet record coming from a coordinate pair.
+Since classification algorithms cannot handle inputs with missing values, during classification these values have been replaced with the corresponding median, which will be discussed in section~\ref{sec:missing_values}.
+The recorded version of Teranet's dataset with the new features and keys would still have them as missing.
+
 \section{Chapter summary} \label{sec:data_preparation_summary}
 
 The principles of ''Tidy data'', closely related to Codd's principles of database normalization, formalize the way how a shape of the data can be described and what goal should be pursued when formatting data.
