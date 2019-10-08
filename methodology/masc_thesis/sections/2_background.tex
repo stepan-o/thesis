@@ -84,8 +84,8 @@ Among the major barriers to implementation of integrated urban models since thei
 However, as an increasing amount of aspects of human life becomes digitalized, a wealth of new data is produced and can be used to model and analyze dynamics of urban systems\cite{Arribas-Bel2014,Chen2016}.
 Furthermore, continuing methodological advances in computing, such as cost-effective High Performance Computing (HPC), detailed GIS-based datasets and machine learning methods, mean that former barriers now represent opportunities for model system development\cite{Miller2018a}.
 An example of such digitalization of human activity is the introduction of the Province of Ontario Land Registration Information System (POLARIS) in 1985 by the Government of Ontario\cite{TeranetEnterprisesInc.}.
-Introduction of POLARIS lead to the creation of an extensive dataset of real estate transactions (land registration records) by the Teranet Enterprises Inc.
-Due to its high spatial and temporal resolution, Teranet's dataset presents a valuable resource to inform and validate the design of ILUTE and HoMES.
+Introduction of POLARIS lead to a complete digitization of land registration records which in turn allowed the creation of an extensive dataset of real estate transactions by the Teranet Enterprises Inc.
+Due to its high spatial and temporal resolution, Teranet's dataset holds a wealth of information about Ontario's housing market from 1985 to 2017 and thus presents a valuable resource to inform and validate the design of ILUTE and HoMES.
 In addition, Teranet's dataset plays an important part in the Longitudinal Housing Market Research conducted by UTTRI which is discussed in the following section.
 
 \section{Longitudinal Housing Market Research conducted by UTTRI} \label{sec:longitudinal_housing_market_research}
@@ -130,7 +130,7 @@ However, its available version also suffers from severe lack of features describ
 At the same time, each Teranet transaction has a timestamp (date) and location information (x and y coordinates) and thus can be joined to variety of other geocoded urban data sources, such as Census demographics, Transportation Tomorrow Survey (TTS) and parcel-level land use information.
 However, joining these data sources together requires additional considerations, as they use different spatial units and are available at different temporal spans, as will be discussed in chapter~\ref{ch:spatial_and_temporal_relationships}.
 
-One of the major attributes missing from the available version of Teranet's dataset is the information about the type of property being transacted, with records of various categories of residential, commercial and industrial properties all being mixed together in the same dataset.
+One of the major attributes missing from the available version of Teranet's dataset is the information about the type of property being transacted, with records from various categories of residential, commercial and industrial properties all being mixed together in the same dataset.
 This introduces a major limitation on how Teranet's data can be used, limiting the ability to separate the transactions of different property types, identify submarkets of the housing market and see its fine-scale characteristics and dynamics.
 Detailed parcel-level land use information could offer some degree of filtering and can be joined from such sources as DMTI Spatial's land use and detailed land use manually collected by the Department of Geography at the University of Toronto.
 
@@ -143,9 +143,9 @@ However, these sources of land use information also have their limitations:
     \item neither of the available land use sources covers the full span of the Longitudinal Housing Market Research conducted by UTTRI (1986-2016)
 \end{itemize}
 
-At the same time, detailed land use from the Department of Geography offers the opportunity to train a machine learning model capable of recognizing certain property types that have characteristically different behavior on the housing market (e.g., high / low volume of transactions, median price ratio, etc.).
+At the same time, detailed land use from the Department of Geography offers an opportunity to train a machine learning model capable of recognizing certain property types that have characteristically different behavior on the housing market (e.g., high / low volume of transactions, median price ratio, etc.).
 Teranet records coming from a particular parcel (x and y coordinate pair) or pin (same parcel can include different pins, i.e.\ apartment complexes) can be combined to produce new features that characterize the behavior of this parcel or pin on the housing market.
-Combining these new features with spatially-joined variables from Census and TTS can yield a dataset that can be used to train and test a classification algorithm capable of determining the parcel land use based on the nature of its behavior on the housing market at transaction level (recognizing changes of land use with time).
+Combining these new features with spatially-joined variables from Census and TTS can yield a dataset that can be used to train and test a classification algorithm capable of determining the parcel land use based on the nature of its behavior on the housing market at Teranet transaction level (recognizing changes of land use with time).
 
 \vspace{5mm}
 
@@ -161,12 +161,16 @@ The primary focus of this master's thesis consists of:
 The complex interaction of land use and transportation has been treated via simulation models since 1950s.
 Over the decades, the modeling paradigm has evolved from the highly aggregated and "top-down" representations of processes, such as gravity-based models, to highly disaggregated and "bottom-up", defining the macro state of the system through countless interactions of its microcomponents.
 These changes are represented in the family of microsimulation models which can define the state of an urban region in terms of the individual persons, households, dwelling units, firms, etc.\ and evolve from a know base case into a future state via simulation.
+
 It also became more clear with time that land use and transportation systems are deeply interconnected, and thus must be modeled together to incorporate feedback relationship, as is attempted by integrated urban models.
-An example of the class of integrated microsimulation urban models, Integrated Land Use, Transportation, Environment, or ILUTE, model system has been developed at the University of Toronto for the Greater Toronto--Hamilton Area.
+An example of the class of integrated microsimulation urban model systems, Integrated Land Use, Transportation, Environment, or ILUTE, model system has been developed at the University of Toronto for the Greater Toronto--Hamilton Area.
 
 Since their introduction, among the major barriers to the implementation of integrated models were their data hungriness and computational requirements.
-However, continuing methodological advances in computing and new datasets created through increased digitization of human activity present opportunities for further improvement and validation of ILUTE and its modules.
+However, continuing methodological advances in computing expand modeling capabilities and increased digitization of human activity creates new datasets with spatial and temporal resolution that was not available before.
+Together, these developments present opportunities for further improvement and validation of ILUTE and its modules.
+
 An example of new emerging data sources is Teranet's dataset of real estate sales that was created after the introduction of POLARIS land registration system by the Province of Ontario in 1985.
-Teranet's dataset also plays an important part in the Longitudinal Housing Market Research conducted by UTTRI.
+Teranet's dataset plays an important part in the Longitudinal Housing Market Research conducted by UTTRI.
 One of the major challenges of working with Teranet's data is the lack of features describing each transaction, namely the type of property being sold.
-As Teranet's records have timestamps (dates) and coordinates of parcel centroids for each record, they can be joined with other data sources via temporal and spatial relationships that will be discussed in chapter~\ref{ch:spatial_and_temporal_relationships}.
+As Teranet's records have timestamps (dates) and coordinates of parcel centroids for each record, they can be joined with other data sources via temporal and spatial relationships;
+nature of this relationships will be discussed further in chapter~\ref{ch:spatial_and_temporal_relationships}.
