@@ -1,6 +1,15 @@
 \chapter{Conculsion} \label{ch:conclusion}
 
-%TODO write thesis conclusion
-a lot of different urban data has been matched across time and space into a database to facilitate future efforts in researching transportation-land use interaction
+One of the major attributes missing from Teranet data is the type of property being transacted, or land use information for the parcel where a transaction is recorded.
+Detailed parcel-level land use from the Department of Geography and DMTI land use data have been spatially joined to each Teranet record.
+However, since both of these data sources have their limitations, detailed land use data from Department of Geography has been used to train an algorithm capable of classifying land from the housing market dynamics.
 
-feature engineering: years between sales? (how would it reflect a change in type?)
+To augment Teranet's dataset, new variables were engineered from its native attributes to capture the housing market dynamics at the parcel level:
+for example, 'xy\_total\_sales' was computed as the total count of Teranet records coming from a particular coordinate pair;
+'med\_price\_xy' represents the median price of all records coming from a coordinate pair, etc.
+To augment Teranet data with demographic and transport information, the new Teranet features were spatially and temporally joined with Census and TTS variables recorded at the level of a Dissemination Area and TAZ zone, respectively.
+Finally, the augmented Teranet dataset has been tested with machine learning algorithms, attempting to classify land use for each Teranet record, thus recognizing land use changes with time.
+
+The new Teranet features capturing housing market dynamics have show to have strong predictive power when classifying land use.
+When joined with Census variables at the level of Dissemination Areas, new features engineered from Teranet's dataset allowed the classification of land use with a high level of accuracy.
+Random Forest model that was trained using random 70\% sample of all Teranet records with new features from 2011 to 2014 stratified by target classes (''condo'', ''house'', or ''other'') achieved 97\% of accuracy on the test subset composed of the remaining 30\% of records from 2011 and 2014.
