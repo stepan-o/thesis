@@ -240,7 +240,7 @@ hence the need to split the dataset into separate training and test subsets.
 Comparing predictions made by the algorithm to true labels in the test subset can be understood as the unbiased performance evaluation of the model\cite{RaschkaMirjalili2017};
 in this context, bias refers to the difference between the expected prediction accuracy of a model and its true prediction accuracy\cite{Raschka2018}.
 
-To facilitate this, all GTHA Teranet records from 2011 to 2014 have been randomly split into two subsets: 70\% of the data was used to train models and tune their hyperparameters, while 30\% of the data has been used as a test subset for the unbiased performance evaluation of the classifier.
+To facilitate this, all GTHA Teranet records from 2011 to 2014 have been split into two subsets using random subsampling: 70\% of the data was used to train models and tune their hyperparameters, while 30\% of the data has been used as a test subset for the unbiased performance evaluation of the classifier.
 Train and test subsets have been stratified across the target classes:
 in this context, stratification means that training and test subsets will have the same proportions of class labels as the input dataset.
 
@@ -258,7 +258,9 @@ On the other hand, if a model is too complex, it can overfit the training data a
 the variance captures the random variation in the algorithm from one training set to another\cite{Dietterich1995}).
 An acceptable bias-variance trade-off can be found by tuning the hyperparameters of a learning model, but care must be taken to ensure unbiased assessment of its generalization performance.
 
-When evaluating different hyperparameters for estimators, there is a risk of overfitting on the test set because knowledge about the test set can ''leak'' into the model;
+There are no hard-and-fast rules that guarantee the best performance of a classifier on a given dataset\cite{Raschka2018};
+thus, it becomes important to evaluate the performance of a classifier with different hyperparameters to find the best model settings prior to using the model to make predictions.
+However, when evaluating different hyperparameters for estimators, there is a risk of overfitting on the test set because knowledge about the test set can ''leak'' into the model;
 evaluation metrics will no longer report on generalization performance.
 To address this issue, yet another part of the dataset can be held out as a so-called ''validation set'': training proceeds on the training set, with model hyperparameters being evaluated by its performance on the validation set;
 when the experiment seems to be successful, final evaluation can be done on the test set.
