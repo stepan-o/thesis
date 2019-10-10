@@ -228,3 +228,21 @@ Characteristics of the Teranet dataset after data preparation described in this 
     \item 5,188,513 rows
     \item 75 columns
 \end{itemize}
+
+\textit{When dealing with imbalanced data, standard classification metrics do not adequately represent your models performance.}
+
+\begin{equation} \label{eq:normalization}
+x_{norm}^{(i)} = \frac{x^{(i)} - x_{min}} {x_{max} - x_{min}}
+\end{equation}
+
+Here, $x^{(i)}$ is a particular sample, $x_{\min}$ is the smallest value in a feature column, and  the largest value.
+
+The min-max scaling procedure is implemented in scikit-learn via MinMaxScaler.
+
+The procedure for standardization can be expressed by the following equation:
+
+\begin{equation} \label{eq:standardization}
+\vect{x}^{(i)}_{std} = \frac{\vect{x}^{(i)} - \mu_x}{\sigma_x}
+\end{equation}
+
+\textit{Here,  is a vector consisting of the jth feature values of all training samples n, and this standardization technique is applied to each feature j in our dataset.}
