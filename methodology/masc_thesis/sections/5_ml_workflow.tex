@@ -371,7 +371,7 @@ Models from the following three main classes of classification algorithms have b
 
     Decision tree classifiers are attractive models due to their predictive power, computational efficiency and interpretability.
     In addition, these models are scale-invariant and require less data preprocessing.
-    These models construct a flow-chart-like decision tree by learning simple decision rules similar to asking a series of questions.
+    These models construct a flow-chart-like decision tree by learning simple decision rules similar to asking a series of questions, or in other words, introduce a set of boolean conjunctions.
 
     \begin{itemize}
 
@@ -386,7 +386,8 @@ Models from the following three main classes of classification algorithms have b
         Since decision trees can be unstable due to small variations in the data, a more robust approach is to combine multiple trees into an ensemble model.
         Random forest is a hugely popular classification algorithm due to its good classification performance, scalability, and ease of use\cite{RaschkaMirjalili2017}.
         Random forest averages multiple (deep) decision trees each of which individually suffers from high variance, to build a model with better generalization performance and less susceptible to overfitting.
-        Prediction of the class label is aggregated by a majority vote from the selected number of trees, each of which was trained on a bootstrapped sample using a randomly selected subset of features.
+        Prediction of the class label is aggregated by a majority vote from the selected number of trees, each of which is trained on a bootstrapped sample of records using a randomly selected subset of features.
+        Random forest can reduce the overfitting of individual decision trees, since methods based on voting can reduce variance of a learning algorithm\cite{Dietterich1995}.
 
     \end{itemize}
 
