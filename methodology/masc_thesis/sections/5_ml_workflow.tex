@@ -234,8 +234,12 @@ L1 regularization was attempted with Logistic Regression and Linear Support Vect
 
 \section{Tuning model hyperparameters} \label{sec:tuning_hyperparameters}
 
-One of the critical aspects of evaluating the performance of a machine learning model is the assessment of algorithm's ability to not only perform well on the data that was used to train it, but also to generalize well to unseen, or test, data;
-comparing predictions made by the algorithm to true labels in the test subset can be understood as the unbiased performance evaluation of the model\cite{RaschkaMirjalili2017}.
+One of the critical aspects of evaluating the performance of a machine learning model is the assessment of algorithm's ability to not only perform well on the data that was used to train it, but also to generalize well to unseen, or test, data.
+Evaluating the model on the same dataset that was used to train it will result in the optimistically biased estimate of the predictive power of a classifier;
+hence the need to split the dataset into separate training and test subsets.
+Comparing predictions made by the algorithm to true labels in the test subset can be understood as the unbiased performance evaluation of the model\cite{RaschkaMirjalili2017};
+in this context, bias refers to the difference between the expected prediction accuracy of a model and its true prediction accuracy\cite{Raschka2018}.
+
 To facilitate this, all GTHA Teranet records from 2011 to 2014 have been randomly split into two subsets: 70\% of the data was used to train models and tune their hyperparameters, while 30\% of the data has been used as a test subset for the unbiased performance evaluation of the classifier.
 Train and test subsets have been stratified across the target classes:
 in this context, stratification means that training and test subsets will have the same proportions of class labels as the input dataset.
