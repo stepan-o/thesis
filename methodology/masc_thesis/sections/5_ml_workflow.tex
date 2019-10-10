@@ -1,24 +1,26 @@
 \chapter{A prototype of a machine learning workflow to classify land use} \label{ch:ml_workflow}
 
+The fourth phase of CRISP-DM process model for data mining projects is modeling;
+this chapter introduces a prototype of a machine learning workflow to classify land use from the housing market dynamics using the augmented Teranet dataset, production of which was described in chapter~\ref{ch:data_preparation}.
 As was previously mentioned in section~\ref{sec:teranet_challenges_solution}, one of the major features missing from the available version of Teranet's dataset is the information about the type of property being transacted, which introduces a major limitation on how Teranet's data can be used.
 As was described in chapter~\ref{ch:data_preparation}, parcel-level land use information from DMTI and the Department of Geography has been spatially joined to Teranet records, but these sources of land use information also have their limitations:
 
 \begin{itemize}
     \item DMTI's land use data does not offer any split between subcategories of residential properties and only covers the period from 2001 to 2014
-    \item land use from the Department of Geography is a lot more detailed and accurate, but has been collected at a single point in time over the summer of 2012 and 2013
+    \item land use data from the Department of Geography is a lot more detailed and accurate, but has been collected at a single point in time over the summer of 2012 and 2013
     \item neither of the available land use sources covers the full span of the Longitudinal Housing Market Research conducted by UTTRI (1986--2016)
 \end{itemize}
 
 To address this issue, detailed land use from the Department of Geography can be used as labelled data to train a machine learning model capable of recognizing certain property types that have characteristically different behavior on the housing market.
 For example, the proposed model would be able to differentiate a detached house from a condo through such features as high / low volume of transactions, ratio of price to median price for that year, etc.
-Chapter~\ref{ch:data_preparation} described the production of a dataset that combines the new features engineered from Teranet data with the variables spatially and temporally joined from Census and TTS surveys.
-In this chapter, this dataset is used to investigate the opportunity to implement a classification algorithm to determine the parcel land use at Teranet transaction level (land use is determined for each Teranet transaction, recognizing the changes of land use on the same parcel with time) based on the housing market dynamics.
+Chapter~\ref{ch:data_preparation} described the production of a dataset that combines the new features engineered from Teranet data with Census and TTS variables based on spatial and temporal relationships that were discussed in chapter~\ref{ch:spatial_and_temporal_relationships}.
+In this chapter, this dataset is used to investigate the opportunity to implement a classification algorithm to determine the parcel land use at Teranet transaction level based on the housing market dynamics (land use is determined for each Teranet record, recognizing the changes of land use on the same parcel with time).
 This way, a machine learning algorithm could provide a scalable solution to automate a labour-intensive task of collecting parcel-level detailed land use and expand the temporal span for which the land use data collected by Department of Geography can be used with accuracy.
 
 \section{Selecting and encoding the target variable} \label{sec:select_encode_target}
 
-As was expected, different property types have characteristically different behaviour on the housing market.
-Figure~\ref{fig:xy_total_sales_dist_by_lu} shows the distributions of total count of Teranet records per coordinate pair by the top 10 land use categories used in the Department of Geography's dataset.
+According to the results of Exploratory Data Analysis (EDA), different property types have characteristically different behaviour on the housing market.
+Figure~\ref{fig:xy_total_sales_dist_by_lu} shows the distributions of total count of Teranet records per coordinate pair by 10 most frequently encountered land use categories used in the Department of Geography's dataset.
 
 \begin{figure}[hbt!]
     \centering
@@ -32,10 +34,12 @@ Figure~\ref{fig:xy_total_sales_dist_by_lu} shows the distributions of total coun
 
 The target variable used for the purposes of investigating the possibility of land use classification using the housing market dynamics was constructed by reducing the land use codes found in the Department of Geography's land use dataset.
 Department of Geography's land use categories that have the highest counts of Teranet records have been used to reduce all different property types to the three major land use classes.
-As many machine learning algorithms are subject to a frequency bias in which they place more emphasis on learning from data observations which occur more frequently, the three classes were selected to have a comparable number of records between themselves to achieve a more balanced dataset.
+Many machine learning algorithms are subject to a frequency bias in which they place more emphasis on learning from data observations which occur more frequently;
+to address this, the three classes were selected to have a comparable number of Teranet records between themselves and thus produce a more balanced dataset.
 In addition, chosen groupings combine categories that have a similar distribution of price and count of sales per coordinate pair between land use categories that were grouped together to form a single class.
 For example, detached and semi-detached houses and townhouses would have a much smaller frequency of transaction and a higher median price per coordinate pair when compared to condos and strata townhouses.
-Figure~\ref{fig:class_2_price_dist} shows an example of such grouping: in class 2, Duplex/Semi-Detached properties are grouped together with Townhouses.
+Figure~\ref{fig:class_2_price_dist} shows an example of such grouping: for target class 1, Duplex/Semi-Detached properties are grouped together with Townhouses;
+together with Single Detached Houses the three categories form a single target class ''house''.
 
 \vspace{5mm}
 
@@ -62,28 +66,29 @@ The three target classes that were introduced are:
         \label{fig:townhouse_price_dist}
         \caption{Townhouse}
     \end{subfigure}
-    \caption{Distribution of price (in 2016 dollars) for two out of the three property types that are grouped together under Class 2: House.
-    Both categories have similar distributions of price and records per coordinate pair between themselves and with the Single Detached Houses, and thus all three categories are grouped together to represent a single class ''house''.}
+    \caption{Distribution of price (in 2016 dollars) for two out of the three property types that are grouped together under Class 1: ''house''.
+    Both categories have similar distributions of price and records per coordinate pair between themselves and with Single Detached Houses, and thus all three categories are grouped together to form a single target class ''house''.}
     \label{fig:class_2_price_dist}
 \end{figure}
 
 Classification algorithms, a subcategory of algorithms for supervised learning, predict the discrete unordered categorical class labels of new instances based on past observations.
 A trained algorithm is capable of using a set of rules that were learned from past observations to distinguish the new instances between the possible classes.
 Once the classes have been determined and assigned, the target variable must be encoded, as it is considered good practice to provide class labels as integer arrays to algorithms to avoid technical glitches and improve computational efficiency.
-Class labels are not ordinal and classification estimators in the scikit-learn\cite{scikit-learn} machine learning library in Python treat them as categorical data that does not imply any order.
+Class labels are not ordinal and classification estimators in scikit-learn\cite{scikit-learn} machine learning library in Python treat them as categorical data that does not imply any order.
 
 \section{Missing values} \label{sec:missing_values}
 
 As was mentioned in section~\ref{sec:feature_engineering}, some of the new features engineered from Teranet attributes, such as 'xy\_years\_since\_last\_sale' and 'xy\_years\_to\_next\_sale' contain missing values in each case of the first or the last Teranet record coming from a coordinate pair.
-Since classification algorithms cannot handle inputs with missing values, these values were replaced using the following logic:
+Since classification algorithms cannot handle inputs with missing values, during classification these values were replaced using the following logic:
 
 \begin{itemize}
-    \item For all the records with missing 'xy\_years\_since\_last\_sale' (first record from a coordinate pair), values were replaced with the median 'xy\_years\_to\_next\_sale' for this subset (median time interval between all future sales from this Teranet subset).
-    \item For all the records with missing 'xy\_years\_to\_next\_sale' (last record from a coordinate pair), values were replaced with the median 'xy\_years\_since\_last\_sale' for this subset (median time interval between all past sales from this Teranet subset).
+    \item For all the records with missing 'xy\_years\_since\_last\_sale' (first record from a coordinate pair), values were replaced with the median 'xy\_years\_to\_next\_sale' for this subset (median time interval in years between all future sales from this Teranet subset).
+    \item For all the records with missing 'xy\_years\_to\_next\_sale' (last record from a coordinate pair), values were replaced with the median 'xy\_years\_since\_last\_sale' for this subset (median time interval in years between all past sales from this Teranet subset).
 \end{itemize}
 
-This replacement affects a large number of Teranet records, as there are many coordinate pairs with a low count of records, but this allows the classification algorithm to work on the majority of Teranet data, which improves the generalization of the algorithm and allows classifying land use of most Teranet records.
-The features that have missing values also have strong predictive power for land use classes and thus are best kept in the input set with the missing values replaced.
+This replacement affects a large number of Teranet records, as there are many coordinate pairs with a low count of transactions in the dataset.
+At the same time, it allows the classification algorithm to work on the majority of Teranet data, which improves the generalization of the algorithm and allows classifying land use of most Teranet records.
+As will be discussed in chapter~\ref{ch:model_evaluation}, features that have missing values also have strong predictive power for land use classes and thus are best kept in the input set with the missing values replaced.
 This replacement is done during the fitting of classification algorithm and is not recorded in the final version of Teranet's dataset with new features and keys, were the missing values are left as missing.
 
 \section{Dimensionality reduction} \label{sec:dimensionality_reduction}
@@ -111,7 +116,7 @@ There are two main categories of dimensionality reduction techniques:
 
 Feature selection can either be performed manually or by utilizing a feature selection algorithm.
 Exhaustive evaluation of all possible feature subsets is computationally unfeasible even for a moderate number of features.
-For example, if we are given a feature set with $m = 64$ features and want to reduce it to $n = 11$, an exhaustive evaluation would involve over $10^{12}$ possible feature sets:
+For example, if we are given a feature set with $m = 64$ features and want to reduce it to $n = 11$, an exhaustive evaluation would involve over $10^{11}$ possible feature subsets:
 
 \begin{equation}
     _{m}C_n = _{64}C_{11} = \binom{64} {11} = \frac{64!} {11!(64 - 11)!} = 743,595,781,824
@@ -126,7 +131,7 @@ Objective functions are divided into three major groups:
     \item filters
     \begin{itemize}
         \item evaluate candidate feature subsets by their information content (e.g., inter/intra class distance, mutual information, etc.)
-        \item advantages: have faster execution since there generally is no iterative computation;
+        \item advantages: have faster execution time since there generally is no iterative computation;
         have good generality since they evaluate the intrinsic properties of the data.
         \item disadvantages: tend to select large feature subsets due to monotonic objective functions
     \end{itemize}
@@ -162,7 +167,7 @@ The following statistical tests from scikit-learn have been selected for scoring
 
 The third family of FSS algorithms that were applied were the recursive feature elimination algorithms, wrapper algorithms that evaluate candidate feature subsets and recursively eliminate features until the desired number of dimensions is reached.
 RFE class in scikit-learn facilitates feature ranking with recursive feature elimination using the provided external classifier that assigns weights to features.
-Another recursive selection method used was the Sequential Backward Selection algorithm implemented as a Python class by Raschka and Mirjalili\cite{RaschkaMirjalili2017}.
+A more exhaustive approach to recursive feature elimination is the use of a sequential feature selection algorithm.
 Sequential feature selection algorithms are a family of greedy search algorithms that are used to reduce an initial $d$-dimensional feature space to a $k$-dimensional feature subspace where $k<d$.
 
 \begin{figure}[hbt!]
@@ -191,13 +196,9 @@ Sequential feature selection algorithms are a family of greedy search algorithms
 Sequential Backward Selection (SBS) is a classic sequential FSS algorithm which aims to reduce the dimensionality of the initial feature subspace with a minimum decay in performance of the classifier;
 in some cases of model overfitting, SBS can even improve the predictive power of a classifier.
 On each iteration, a feature is removed using the defined criterion function $J$ that we want to minimize;
-$J$ can simply be defined as the difference in performance of the classifier before and after a the elimination of a particular feature.
-Figure~\ref{fig:sbs_teranet} presents plots produced by running SBS algorithm on augmented Teranet dataset with Perceptron and Random Forest.
-
-As can be seen from the plots produced by SBS, most features in the augmented Teranet dataset can be eliminated without a significant drop in performance of both linear and tree-based models.
-As such, final set of features to be used for land use classification was selected by combining the feature subsets selected by each of the FSS methods described above.
-Features that have been selected by at least four different methods were selected as the final feature subset that was tested with the classification algorithms and used for final classification of land use;
-figure~\ref{fig:top_feats} presents the 11 features that were selected using this logic.
+$J$ can simply be defined as the difference in performance of the classifier before and after the elimination of a particular feature.
+Figure~\ref{fig:sbs_teranet} presents plots produced by running SBS algorithm on augmented Teranet dataset with Perceptron and Random Forest;
+Sequential Backward Selection algorithm implemented as a Python class by Raschka and Mirjalili\cite{RaschkaMirjalili2017} has been used for this master's thesis.
 
 \begin{figure}[hbt!]
     \centering
@@ -206,6 +207,11 @@ figure~\ref{fig:top_feats} presents the 11 features that were selected using thi
     These features were used to select the best-performing model and make the final classification of land use of Teranet records.}
     \label{fig:top_feats}
 \end{figure}
+
+As can be seen from the plots produced by SBS, most features in the augmented Teranet dataset can be eliminated without a significant drop in performance of both linear and tree-based models.
+As such, final set of features to be used for land use classification was selected by combining the feature subsets selected by each of the FSS methods described above.
+Features that have been selected by at least four different methods were selected as the final feature subset that was tested with the classification algorithms and used for final classification of land use;
+figure~\ref{fig:top_feats} presents the 11 features that were selected using this logic: these are the 11 features that were selected by at least four different FSS techniques.
 
 From the perspective of embedded feature selection methods, another possible approach to reduce the complexity of a model is to use L1 regularization to penalize large individual weights.
 L1 regularization introduces a penalty term to the cost function which is taken as the norm of the weight vector defined as:
@@ -228,156 +234,189 @@ L1 regularization was attempted with Logistic Regression and Linear Support Vect
 
 \section{Tuning model hyperparameters} \label{sec:tuning_hyperparameters}
 
-\textit{To determine whether our machine learning algorithm not only performs well on the training set but also generalizes well to new data, we also want to randomly divide the dataset into a separate training and test set. We use the training set to train and optimize our machine learning model, while we keep the test set until the very end to evaluate the final model. Comparing predictions to true labels in the test set can be understood as the unbiased performance evaluation of our model. In scikit-learn a random split into training and test sets can be quickly computed with the train\_test\_split helper function.}\cite{RaschkaMirjalili2017}
-
-\textit{When evaluating different settings (''hyperparameters'') for estimators, such as the C setting that must be manually set for an SVM, there is still a risk of overfitting on the test set because the parameters can be tweaked until the estimator performs optimally. This way, knowledge about the test set can “leak” into the model and evaluation metrics no longer report on generalization performance. To solve this problem, yet another part of the dataset can be held out as a so-called ''validation set'': training proceeds on the training set, after which evaluation is done on the validation set, and when the experiment seems to be successful, final evaluation can be done on the test set.}\cite{Scikit-learndevelopers2019a}
-
-\textit{However, by partitioning the available data into three sets, we drastically reduce the number of samples which can be used for learning the model, and the results can depend on a particular random choice for the pair of (train, validation) sets.  A solution to this problem is a procedure called cross-validation (CV for short). A test set should still be held out for final evaluation, but the validation set is no longer needed when doing CV. In the basic approach, called k-fold CV, the training set is split into k smaller sets (other approaches are described below, but generally follow the same principles). The following procedure is followed for each of the k “folds”:  A model is trained using  of the folds as training data; the resulting model is validated on the remaining part of the data (i.e., it is used as a test set to compute a performance measure such as accuracy). The performance measure reported by k-fold cross-validation is then the average of the values computed in the loop. This approach can be computationally expensive, but does not waste too much data (as is the case when fixing an arbitrary validation set), which is a major advantage in problems such as inverse inference where the number of samples is very small.}\cite{Scikit-learndevelopers2019a}
-
-Figure~\ref{fig:cross_validation_workflow} presents a typical cross-validation workflow to evaluate model performance as summarized in scikit-learn documentation\cite{Scikit-learndevelopers2019a}.
+One of the critical aspects of evaluating the performance of a machine learning model is the assessment of algorithm's ability to not only perform well on the data that was used to train it, but also to generalize well to unseen, or test, data;
+comparing predictions made by the algorithm to true labels in the test subset can be understood as the unbiased performance evaluation of the model\cite{RaschkaMirjalili2017}.
+To facilitate this, all GTHA Teranet records from 2011 to 2014 have been randomly split into two subsets: 70\% of the data was used to train models and tune their hyperparameters, while 30\% of the data has been used as a test subset for unbiased performance evaluation of the classifier.
+Train and test subsets have been stratified across the target classes:
+in this context, stratification means that training and test subsets will have the same proportions of class labels as the input dataset.
 
 \begin{figure}[hbt!]
     \centering
     \includegraphics[width=0.7\linewidth,trim=0 0 0 0,clip]{holdout_validation_workflow.png}
-    \caption{Holdout cross-validation as summarized by Raschka and Mirjalili\cite{RaschkaMirjalili2017}.}
+    \caption{Holdout validation of a machine learning model as summarized by Raschka and Mirjalili\cite{RaschkaMirjalili2017}.}
     \label{fig:holdout_validation_workflow}
 \end{figure}
 
+There are two types of parameters in machine learning: those that are learned by parametric models from training data (i.e., wights in logistic regression), and the parameters that tune the performance of a learning algorithm, or its hyperparameters (i.e., regularization parameter in logistic regression or maximum depth of a decision tree).
+If a model is too simple, it can suffer from underfitting and show poor performance on both the training and the test data (have high bias);
+on the other hand, if it is too complex, it can overfit the training data and have poor generalization on test data (have high variance).
+An acceptable bias-variance trade-off can be found by tuning the hyperparameters of a learning model, but care must be taken to ensure unbiased assessment of its generalization performance.
+
+When evaluating different hyperparameters for estimators, there is a risk of overfitting on the test set because knowledge about the test set can ''leak'' into the model;
+evaluation metrics will no longer report on generalization performance.
+To address this issue, yet another part of the dataset can be held out as a so-called ''validation set'': training proceeds on the training set, with model hyperparameters being evaluated by its performance on the validation set;
+when the experiment seems to be successful, final evaluation can be done on the test set.
+Figure~\ref{fig:holdout_validation_workflow} presents an example of a workflow for tuning and evaluating a machine learning model using hold-out validation, as summarized by Raschka and Mirjalili\cite{RaschkaMirjalili2017}.
+
 \begin{figure}[hbt!]
     \centering
-    \includegraphics[width=0.8\linewidth,trim=0 0 0 0,clip]{kfold_validation_workflow.png}
-    \caption{$K$-fold cross-validation as summarized by Raschka and Mirjalili\cite{RaschkaMirjalili2017}.
-    In the case of $K=10$, the training dataset is divided into 10 folds, and during the 10 iterations, nine folds are used for training, and one fold is used as the test set for the model evaluation.
-    Estimated performances (for example, classification accuracy or error) for each fold are then used to calculate the estimated average performance E of the model.}
+    \includegraphics[width=0.9\linewidth,trim=0 0 0 0,clip]{kfold_validation_workflow.png}
+    \caption{$k$-fold cross-validation as summarized by Raschka and Mirjalili\cite{RaschkaMirjalili2017}.
+    In the case of $k=10$, the training dataset is divided into 10 folds, and during the 10 iterations, nine folds are used for training, and one fold is used as the test set for the model evaluation.
+    Estimated performances (for example, classification accuracy or error) for each fold are then used to calculate the estimated average performance $E$ of the model.}
     \label{fig:kfold_validation_workflow}
 \end{figure}
 
-\textit{A good standard value for k in k-fold cross-validation is 10, as empirical evidence shows. For instance, experiments by Ron Kohavi on various real-world datasets suggest that 10-fold cross-validation offers the best trade-off between bias and variance (A Study of Cross-Validation and Bootstrap for Accuracy Estimation and Model Selection, Kohavi, Ron, International Joint Conference on Artificial Intelligence (IJCAI), 14 (12): 1137-43, 1995).}\cite{Kohavi1995}
+There is a shortcoming in this approach: by partitioning the available data into three sets, the number of samples which can be used for learning the model is drastically reduced;
+results can depend on a particular random choice of the train and validation sets.
+A solution to this problem is a procedure called cross-validation (CV for short): validation set is produced from the training set using such techniques as $k$-fold CV, while the test subset of data unseen by the model is held out for its final evaluation.
+In a basic approach called $k$-fold CV, the training set is split into $k$ smaller sets and on each of $k$ iterations a model is trained using $k-1$ of the folds as training data;
+the resulting model is validated on the held-out test fold of the data through such performance metrics as model accuracy.
+The performance measure reported by $k$-fold cross-validation is then the average of the values computed in the loop.
+Figure~\ref{fig:kfold_validation_workflow} presents $k$-fold cross-validation workflow to evaluate model performance as summarized by Raschka and Mirjalili\cite{RaschkaMirjalili2017}.
 
-\textit{A slight improvement over the standard k-fold cross-validation approach is stratified k-fold cross-validation, which can yield better bias and variance estimates, especially in cases of unequal class proportions, as has been shown in a study by Ron Kohavi (A Study of Cross-Validation and Bootstrap for Accuracy Estimation and Model Selection, International Joint Conference on Artificial Intelligence (IJCAI), 14 (12): 1137-43, 1995). In stratified cross-validation, the class proportions are preserved in each fold to ensure that each fold is representative of the class proportions in the training dataset}\cite{Kohavi1995}
-
-\textit{For example, each classification algorithm has its inherent biases, and no single classification model enjoys superiority if we don't make any assumptions about the task. In practice, it is therefore essential to compare at least a handful of different algorithms in order to train and select the best performing model. But before we can compare different models, we first have to decide upon a metric to measure performance. One commonly used metric is classification accuracy, which is defined as the proportion of correctly classified instances.}
-
-\textit{After we have selected a model that has been fitted on the training dataset, we can use the test dataset to estimate how well it performs on this unseen data to estimate the generalization error. If we are satisfied with its performance, we can now use this model to predict new, future data. It is important to note that the parameters for the previously mentioned procedures, such as feature scaling and dimensionality reduction, are solely obtained from the training dataset, and the same parameters are later reapplied to transform the test dataset, as well as any new data samples—the performance measured on the test data may be overly optimistic otherwise.}
-
-\textit{randomly partition this dataset into separate test and training datasets is to use the train_test_split function from scikit-learn's model_selection submodule:}
-
-\textit{In this context, stratification means that the train\_test\_split method returns training and test subsets that have the same proportions of class labels as the input dataset.}
-
-\textit{Both the prediction error (ERR) and accuracy (ACC) provide general information about how many samples are misclassified. The error can be understood as the sum of all false predictions divided by the number of total predications, and the accuracy is calculated as the sum of correct predictions divided by the total number of predictions, respectively:}
-
-\begin{equation} \label{eq:prediction_error}
-    ERR = \frac{\text{Incorrect classifications}} {\text{Total classifications}}
-\end{equation}
-
-The prediction accuracy can then be calculated directly from the error:
-
-\begin{equation} \label{eq:prediction_accuracy}
-    ACC = 1 - ERR = \frac{\text{Correct classifications}} {\text{Total classifications}}
-\end{equation}
-
-\textit{When dealing with imbalanced data, standard classification metrics do not adequately represent your models performance.}
+This approach can be computationally expensive, but does not waste too much data, as is the case when fixing an arbitrary validation set.
+Empirical evidence shows that a good standard value for $k$ in $k$-fold cross-validation is 10, as seen in experiments conducted by Kohavi on various real-world datasets\cite{Kohavi1995}.
+A light further improvement in bias and variance estimates over the standard $k$-fold cross-validation can be achieved by using stratified $k$-fold cross-validation, as shown in the study conducted by Kohavi.
+In stratified cross-validation, the class proportions are preserved in each fold to ensure that each fold is representative of the class proportions in the training dataset.
+For this master's thesis, stratified $k$-fold cross-validation workflow has been used to tune model hyperparameters via grid search before the final evaluation of model performance was done using the held-out test set;
+model evaluation results will be discussed in chapter~\ref{ch:model_evaluation}.
 
 \section{Feature scaling} \label{sec:feature_scaling}
 
-\textit{Raw data rarely comes in the form and shape that is necessary for the optimal performance of a learning algorithm. Thus, the preprocessing of the data is one of the most crucial steps in any machine learning application. Many machine learning algorithms also require that the selected features are on the same scale for optimal performance, which is often achieved by transforming the features in the range [0, 1] or a standard normal distribution with zero mean and unit variance, as we will see in later chapters.}
+Many machine learning algorithms are designed with the assumption that each feature takes values close to zero or, more importantly, that all features vary on comparable scales\cite{Scikit-learndevelopers2019b}.
+Raw data rarely comes in the form and shape that is necessary for the optimal performance of a learning algorithm, and thus data preprocessing via scaling is one of the most crucial steps in machine learning workflows\cite{RaschkaMirjalili2017}.
+Bringing different variables on the same scale can be accomplished by such techniques as standardization or normalization;
+in addition, outliers that are present in data can be addressed by using non-linear transformations, such as quantile or power transforms.
 
-\textit{Indeed many estimators are designed with the assumption that each feature takes values close to zero or more importantly that all features vary on comparable scales. In particular, metric-based and gradient-based estimators often assume approximately standardized data (centered features with unit variances). A notable exception are decision tree-based estimators that are robust to arbitrary scaling of the data.}\cite{Scikit-learndevelopers2019b}
+\vspace{5mm}
 
-\textit{there are two common approaches to bring different features onto the same scale: normalization and standardization.}
+The following preprocessing methods have been tested on the training dataset:
 
-\textit{In general, learning algorithms benefit from standardization of the data set. If some outliers are present in the set, robust scalers or transformers are more appropriate.}
+\begin{itemize}
+    \item standardization (mean removal and variance scaling)
+    \item normalization (min-max scaling to a range of [0, 1])
+    \item max-abs (scale to a range of [-1, 1], maximum absolute value of each feature is scaled to unit size)
+    \item robust scaling (more robust estimates for data with outliers)
+    \item power transform (Yeo-Johnson, mapping to a Gaussian distribution)
+    \item quantile transform (mapping to a Gaussian distribution)
+    \item quantile transform (mapping to a uniform distribution)
+    \item sample-wise L2 transform (normalize samples individually to unit norm)
+\end{itemize}
 
-\textit{Most often, normalization refers to the rescaling of the features to a range of [0, 1], which is a special case of min-max scaling. To normalize our data, we can simply apply the min-max scaling to each feature column, where the new value x_{norm}^{(i)} of a sample x^{(i)} can be calculated as follows:}
-
-\begin{equation} \label{eq:normalization}
-    x_{norm}^{(i)} = \frac{x^{(i)} - x_{min}} {x_{max} - x_{min}}
-\end{equation}
-
-Here, $x^{(i)}$ is a particular sample, $x_{\min}$ is the smallest value in a feature column, and  the largest value.
-
-The min-max scaling procedure is implemented in scikit-learn via MinMaxScaler.
-
-\textit{Although normalization via min-max scaling is a commonly used technique that is useful when we need values in a bounded interval, standardization, or mean removal and variance scaling, can be more practical for many machine learning algorithms, especially for optimization algorithms such as gradient descent. The reason is that many linear models, such as the logistic regression and SVM initialize the weights to 0 or small random values close to 0. Using standardization, we center the feature columns at mean 0 with standard deviation 1 so that the feature columns have the same parameters as a standard normal distribution (zero mean and unit variance), which makes it easier to learn the weights. Furthermore, standardization maintains useful information about outliers and makes the algorithm less sensitive to them in contrast to min-max scaling, which scales the data to a limited range of values.}
-
-\textit{standardization, which gives our data the property of a standard normal distribution, which helps gradient descent learning to converge more quickly. Standardization shifts the mean of each feature so that it is centered at zero and each feature has a standard deviation of 1. For instance, to standardize the jth feature, we can simply subtract the sample mean  from every training sample and divide it by its standard deviation :. One of the reasons why standardization helps with gradient descent learning is that the optimizer has to go through fewer steps to find a good or optimal solution (the global cost minimum)}
-
-The procedure for standardization can be expressed by the following equation:
-
-\begin{equation} \label{eq:standardization}
-    \vect{x}^{(i)}_{std} = \frac{\vect{x}^{(i)} - \mu_x}{\sigma_x}
-\end{equation}
-
-\textit{Here,  is a vector consisting of the jth feature values of all training samples n, and this standardization technique is applied to each feature j in our dataset.}
-
-\textit{we fit the StandardScaler and MinMaxScaler classes only once—on the training data—and use those parameters to transform the test set or any new data point.}
+All these preprocessing techniques were tested with classification algorithms for prediction accuracy and fit times;
+results will be presented in chapter~\ref{ch:model_evaluation}.
+It is important to note that the parameters for the previously mentioned procedures, such as feature scaling and dimensionality reduction, are solely obtained from the training dataset, and the same parameters are later reapplied to transform the test dataset and the full Teranet dataset for the final classification of land use;
+this way, an unbiased estimate of model generalization can be obtained.
 
 \section{Model selection} \label{sec:model_selection}
 
-\textit{A popular class of procedures for solving classification tasks are based on linear models. What this means is that they aim at dividing the feature space into a collection of regions labelled according to the values the target can take, where the decision boundaries between those regions are linear: they are lines in 2D, planes in 3D and hyperplanes with more features.}
-
-\textit{Trying to understand how the biological brain works, in order to design AI, Warren McCulloch and Walter Pitts published the first concept of a simplified brain cell, the so-called McCulloch-Pitts (MCP) neuron, in 1943 (A Logical Calculus of the Ideas Immanent in Nervous Activity, W. S. McCulloch and W. Pitts, Bulletin of Mathematical Biophysics, 5(4): 115-133, 1943).}
-
-\textit{Only a few years later, Frank Rosenblatt published the first concept of the perceptron learning rule based on the MCP neuron model (The Perceptron: A Perceiving and Recognizing Automaton, F. Rosenblatt, Cornell Aeronautical Laboratory, 1957). With his perceptron rule, Rosenblatt proposed an algorithm that would automatically learn the optimal weight coefficients that are then multiplied with the input features in order to make the decision of whether a neuron fires or not. In the context of supervised learning and classification, such an algorithm could then be used to predict if a sample belongs to one class or the other.}
-
-\textit{The Perceptron is another simple classification algorithm suitable for large scale learning. By default: It does not require a learning rate. It is not regularized (penalized). It updates its model only on mistakes.}
-
-\textit{Logistic regression models the probabilities of an observation belonging to each of the K classes via linear functions, ensuring these probabilities sum up to one and stay in the (0, 1) range. Logistic regression models are typically estimated by maximum likelihood. Although logistic regression is mostly used as an inference tool in tasks where the goal is to understand the role of input variables in explaining the outcome (it produces easily interpretable coefficients, just like linear regression does), it can also prove to be of significant predictive power.}
-
-\textit{Linear Discriminant Analysis (LDA) assumes that the joint densities of all features given target’s classes are multivariate Gaussians with the same covariance for each class. Quadratic Discriminant Analysis (QDA) relaxes the common covariance assumption of LDA through estimating a separate covariance matrix for each class.}
-
-\textit{A Naive Bayes Classifier determines the probability that an example belongs to some class, calculating the probability that an event will occur given that some input event has occurred.}
-
-\textit{let's consider two common ways we'll train a model: tree-based logical rules developed according to some splitting criterion, and parameterized models updated by gradient descent.}
-
-\textit{Machine learning algorithms can be grouped into parametric and nonparametric models. Using parametric models, we estimate parameters from the training dataset to learn a function that can classify new data points without requiring the original training dataset anymore. Typical examples of parametric models are the perceptron, logistic regression, and the linear SVM. In contrast, nonparametric models can't be characterized by a fixed set of parameters, and the number of parameters grows with the training data. KNN belongs to a subcategory of nonparametric models that is described as instance-based learning. Models based on instance-based learning are characterized by memorizing the training dataset, and lazy learning is a special case of instance-based learning that is associated with no (zero) cost during the learning process.}
-
-\textit{Machine learning algorithms can be grouped into parametric and nonparametric models. Using parametric models, we estimate parameters from the training dataset to learn a function that can classify new data points without requiring the original training dataset anymore. Typical examples of parametric models are the perceptron, logistic regression, and the linear SVM. In contrast, nonparametric models can't be characterized by a fixed set of parameters, and the number of parameters grows with the training data. Two examples of non-parametric models that we have seen so far are the decision tree classifier/random forest and the kernel SVM.}
-
 An important point to be summarized from the famous No Free Lunch Theorems (NFL)\cite{Wolpert1996,Wolpert1997} by David H. Wolpert is that no single classifier works best across all possible scenarios, as there is a lack of a priori distinctions between learning algorithms.
+In practice, it is essential to compare the performance of at least a handful of different classification algorithms, since each of them has its inherent biases, in order to select the best performing model.
+No single classification model enjoys superiority if we don't make any assumptions about the form of the function that maps input features to target variables and how this function can be learned\cite{RaschkaMirjalili2017}.
 
-\textit{For example, each classification algorithm has its inherent biases, and no single classification model enjoys superiority if we don't make any assumptions about the task. In practice, it is therefore essential to compare at least a handful of different algorithms in order to train and select the best performing model. But before we can compare different models, we first have to decide upon a metric to measure performance. One commonly used metric is classification accuracy, which is defined as the proportion of correctly classified instances.}
+There are several possible ways of categorizing machine learning algorithms;
+one of them is to separate algorithms into parametric and non-parametric models.
+In parametric models, such as logistic regression, perceptron or linear Support Vector Machine (SVM), model parameters are estimated from the training set to learn a function that allows classifying new data without the need for the original training set, once the model has been fit.
+In addition, the number of model parameters is fixed and does not change with the size of the training data.
+In contrast, non-parametric models, such as instance-based learning models like $k$-Nearest Neighbors, can't be characterized by a fixed set of parameters, and the number of parameters grows with the amount of training data.
 
-\textit{In practice, it is always recommended that you compare the performance of at least a handful of different learning algorithms to select the best model for the particular problem; these may differ in the number of features or samples, the amount of noise in a dataset, and whether the classes are linearly separable or not.}
+Another way of categorizing the algorithms that were used in this master's thesis is into linear, tree-based, and nearest neighbors model classes.
+Models from the following three main classes of classification algorithms have been tested with the augmented Teranet dataset:
+
+\begin{itemize}
+    \item Linear models
+
+    Linear models are used by a popular and broad class of procedures for solving classification tasks.
+    These models aim at dividing the feature space into a collection of regions labelled according to the values that the target can take, where the decision boundaries between those regions are linear hyperplanes.
+
+    \begin{itemize}
+        \item Perceptron learning algorithm
+
+        Perceptron is a simple classification algorithm suitable for large-scale learning that was introduced by Frank Rosenblatt\cite{Rosenblatt1957a} in 1957 based on the McCulloch-Pitts (MCP) artificial neuron model\cite{McCulloch1990a} that was introduced in 1943.
+        It is a parametric non-regularized model that only updates its weights on wrong predictions that it makes.
+
+        \item Logistic Regression (L2, L1 regularization)
+
+        Another simple yet more powerful parametric algorithm for linear and binary classification problems is logistic regression;
+        it can also be expanded to multi-class problems through such techniques as One-versus-All (OvA).
+        Logistic regression models the probabilities of an observation belonging to each of the $K$ classes via linear functions and is typically estimated by maximum likelihood.
+        It is often used as an inference tool to understand the role of input variables in explaining the target, since it produces easily interpretable coefficients;
+        in addition, it can also have significant predictive power in the cases when target classes are linearly separable\cite{RaschkaMirjalili2017}.
+
+        \item Linear Discriminant Analysis
+
+        Linear Discriminant Analysis (LDA) is most commonly used as a dimensionality reduction technique, but it can also have some practical uses as a classifier by itself.
+        LDA assumes that the joint densities of all features given target's classes are multivariate Gaussians with the same covariance for each class.
+
+        \item Quadratic Discriminant Analysis
+
+        Quadratic Discriminant Analysis (QDA) is a classifier with a quadratic decision boundary;
+        it relaxes the common covariance assumption of LDA through estimating a separate covariance matrix for each class.
+
+        \item Linear Support Vector Classification (L2, L1 regularization)
+
+        Support Vector Machines (SVM) represent another family of powerful and widely used algorithms used for maximum margin classification: optimization objectives for SVMs is to maximize the margin instead of minimizing the classification error.
+        The margin is defined as the distance between the separating hyperplane (decision boundary) and the training samples that are closest to this hyperplane, which are the so-called support vectors\cite{RaschkaMirjalili2017}.
+
+        \item Naive Bayes Classifier
+
+        A Naive Bayes Classifier is a probabilistic classification technique based on Bayes Theorem with an assumption of independence among input features.
+        It determines the probability that an example belongs to some class, calculating the probability that an event will occur given that some input event has occurred.
+        These algorithms are computationally efficient and suitable for large datasets, but have the disadvantage of the assumption about the independence of input features.
+
+    \end{itemize}
+
+    \item Tree-based models
+
+    Decision tree classifiers are attractive models due to their predictive power, computational efficiency and interpretability.
+    In addition, these models are scale-invariant and require less data preprocessing.
+    These models construct a flow-chart-like decision tree by learning simple decision rules similar to asking a series of questions.
+
+    \begin{itemize}
+
+        \item Decision Tree Classifier
+
+        Decision trees can build complex decision boundaries by dividing the feature space into rectangles by learning a series of questions to infer the class labels of the samples;
+        questions are selected to maximize Information Gain (IG) on each split of the tree, defined as the difference in selected impurity measure (Gini, entropy, or classification error) between parent and child nodes.
+        Splitting procedure is repeated until all the leaves are pure (consist of samples belonging to the same target class), or until selected maximum depth of the tree is reached.
+
+        \item Random Forest Classifier
+
+        Since decision trees can be unstable due to small variations in the data, a more robust approach is to combine multiple trees into an ensemble model.
+        Random forest is a hugely popular classification algorithm due to its good classification performance, scalability, and ease of use\cite{RaschkaMirjalili2017}.
+        Random forest averages multiple (deep) decision trees each of which individually suffers from high variance, to build a model with better generalization performance and less susceptible to overfitting.
+        Prediction of the class label is aggregated by a majority vote from the selected number of trees, each of which was trained on a bootstrapped sample using a randomly selected subset of features.
+
+    \end{itemize}
+
+    \item Nearest Neighbors
 
 
-\textit{Another simple yet more powerful algorithm for linear and binary classification problems: logistic regression. Note that, in spite of its name, logistic regression is a model for classification, not regression.}
+    Neighbors-based classification presents a type of instance-based non-parametric learning: it does not attempt to construct a discriminative function to classify the target variable;
+    instead, it simply stores instances of the training data.
+    The principle behind nearest neighbors is to find a predefined number of training samples closest in distance to the new point, and predict the target label of a new sample using the majority vote of its neighbors.
+    The number of samples can either be a user-defined constant ($k$-nearest neighbor learning), or vary based on the local density of points (radius-based neighbor learning).
+    Commonly used distance metrics include Manhattan and Euclidean distance.
 
-\texiit{Logistic regression is a classification model that is very easy to implement but performs very well on linearly separable classes. It is one of the most widely used algorithms for classification in industry. Similar to the perceptron and Adaline, the logistic regression model in this chapter is also a linear model for binary classification that can be extended to multiclass classification, for example, via the OvR technique.}
+    \begin{itemize}
 
-\textit{Decision trees can build complex decision boundaries by dividing the feature space into rectangles. Decision tree classifiers are attractive models if we care about interpretability. As the name decision tree suggests, we can think of this model as breaking down our data by making a decision based on asking a series of questions. Based on the features in our training set, the decision tree model learns a series of questions to infer the class labels of the samples. Using the decision algorithm, we start at the tree root and split the data on the feature that results in the largest Information Gain (IG). In an iterative process, we can then repeat this splitting procedure at each child node until the leaves are pure. This means that the samples at each node all belong to the same class. In practice, this can result in a very deep tree with many nodes, which can easily lead to overfitting. Thus, we typically want to prune the tree by setting a limit for the maximal depth of the tree. As we can see, the information gain is simply the difference between the impurity of the parent node and the sum of the child node impurities — the lower the impurity of the child nodes, the larger the information gain. Now, the three impurity measures or splitting criteria that are commonly used in binary decision trees are Gini impurity ($I_G$), entropy ($I_H$), and the classification error ($I_E$).}
+        \item $k$-Nearest Neighbors Classifier
 
-\textit{Random forests have gained huge popularity in applications of machine learning during the last decade due to their good classification performance, scalability, and ease of use. Intuitively, a random forest can be considered as an ensemble of decision trees. The idea behind a random forest is to average multiple (deep) decision trees that individually suffer from high variance, to build a more robust model that has a better generalization performance and is less susceptible to overfitting.}
+        $k$-Nearest Neighbors classifier is a distance-based classification algorithm that uses a predefined number of samples considered as neighbors to each new point according to the selected distance metrics (Manhattan, Euclidean distances are a common choice).
+        Class label of each new point is assigned by the majority vote of its neighbors.
+        Number of neighbors $k$ and distance metric are the hyperparameters of a $k$-NN model.
 
-1. Draw a random bootstrap sample of size n (randomly choose n samples from the training set with replacement).
+    \end{itemize}
 
-2. Grow a decision tree from the bootstrap sample. At each node:
+\end{itemize}
 
-a. Randomly select d features without replacement.
-
-b. Split the node using the feature that provides the best split according to the objective function, for instance, maximizing the information gain.
-
-3. Repeat the steps 1-2 k times.
-
-4. Aggregate the prediction by each tree to assign the class label by majority vote.
-
-\textit{In most implementations, including the RandomForestClassifier implementation in scikit-learn, the size of the bootstrap sample is chosen to be equal to the number of samples in the original training set, which usually provides a good bias-variance tradeoff. For the number of features d at each split, we want to choose a value that is smaller than the total number of features in the training set. A reasonable default that is used in scikit-learn and other implementations is $d=\sqrt{m}$, where m is the number of features in the training set.}
-
-\textit{Although we are growing a very small random forest from a very small training dataset, we used the n\_jobs parameter for demonstration purposes, which allows us to parallelize the model training using multiple cores of our computer (here two cores).}
-
-\textit{k-nearest neighbor (KNN) classifier is particularly interesting because it is fundamentally different from the learning algorithms that we have discussed so far.  KNN is a typical example of a lazy learner. It is called lazy not because of its apparent simplicity, but because it doesn't learn a discriminative function from the training data, but memorizes the training dataset instead. KNN belongs to a subcategory of nonparametric models that is described as instance-based learning. Models based on instance-based learning are characterized by memorizing the training dataset, and lazy learning is a special case of instance-based learning that is associated with no (zero) cost during the learning process.}
-
-The KNN algorithm itself is fairly straightforward and can be summarized by the following steps:
-
-1. Choose the number of k and a distance metric.
-
-2. Find the k-nearest neighbors of the sample that we want to classify.
-
-3. Assign the class label by majority vote.
-
-\textit{The principle behind nearest neighbor methods is to find a predefined number of training samples closest in distance to the new point, and predict the label from these. The number of samples can be a user-defined constant (k-nearest neighbor learning), or vary based on the local density of points (radius-based neighbor learning). The distance can, in general, be any metric measure: standard Euclidean distance is the most common choice. Neighbors-based methods are known as non-generalizing machine learning methods, since they simply “remember” all of its training data (possibly transformed into a fast indexing structure such as a Ball Tree or KD Tree). Being a non-parametric method, it is often successful in classification situations where the decision boundary is very irregular.}\cite{Scikit-learndevelopers2019c}
-
-\textit{Neighbors-based classification is a type of instance-based learning or non-generalizing learning: it does not attempt to construct a general internal model, but simply stores instances of the training data. Classification is computed from a simple majority vote of the nearest neighbors of each point: a query point is assigned the data class which has the most representatives within the nearest neighbors of the point.}
+In order to compare different models, metrics to measure performance needed to be established, which will be discussed in section~\ref{sec:model_metrics}.
+Results of model evaluation are presented in chapter~\ref{ch:model_evaluation}.
 
 \section{Chapter summary} \label{sec:ml_workflow_summary}
-asd
+
+One of the major features missing from Teranet's dataset is land use information covering a period of time starting from 1985.
+This chapter introduced a prototype of machine learning workflow to classify land use at Teranet transaction level from housing market dynamics as reflected by augmented Teranet variables.
+Such topics as methodology for feature selection, filling of the missing values, feature scaling, model hyperparameter tuning, unbiased assessment of model performance via such techniques as train-test split and $k$-fold cross-validation and selection of learning algorithms to be tested have been discussed in this chapter.
+Chapter~\ref{ch:model_evaluation} presents the evaluation of model performance.
