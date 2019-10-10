@@ -236,7 +236,7 @@ L1 regularization was attempted with Logistic Regression and Linear Support Vect
 
 One of the critical aspects of evaluating the performance of a machine learning model is the assessment of algorithm's ability to not only perform well on the data that was used to train it, but also to generalize well to unseen, or test, data;
 comparing predictions made by the algorithm to true labels in the test subset can be understood as the unbiased performance evaluation of the model\cite{RaschkaMirjalili2017}.
-To facilitate this, all GTHA Teranet records from 2011 to 2014 have been randomly split into two subsets: 70\% of the data was used to train models and tune their hyperparameters, while 30\% of the data has been used as a test subset for unbiased performance evaluation of the classifier.
+To facilitate this, all GTHA Teranet records from 2011 to 2014 have been randomly split into two subsets: 70\% of the data was used to train models and tune their hyperparameters, while 30\% of the data has been used as a test subset for the unbiased performance evaluation of the classifier.
 Train and test subsets have been stratified across the target classes:
 in this context, stratification means that training and test subsets will have the same proportions of class labels as the input dataset.
 
@@ -248,8 +248,10 @@ in this context, stratification means that training and test subsets will have t
 \end{figure}
 
 There are two types of parameters in machine learning: those that are learned by parametric models from training data (i.e., wights in logistic regression), and the parameters that tune the performance of a learning algorithm, or its hyperparameters (i.e., regularization parameter in logistic regression or maximum depth of a decision tree).
-If a model is too simple, it can suffer from underfitting and show poor performance on both the training and the test data (have high bias);
-on the other hand, if it is too complex, it can overfit the training data and have poor generalization on test data (have high variance).
+If a model is too simple, it can suffer from underfitting and show poor performance on both the training and the test data (have high bias;
+the bias of a learning algorithm is the persistent error that it is expected to make when trained on a given sample size\cite{Dietterich1995}).
+On the other hand, if a model is too complex, it can overfit the training data and have poor generalization on test data (have high variance;
+the variance captures the random variation in the algorithm from one training set to another\cite{Dietterich1995}).
 An acceptable bias-variance trade-off can be found by tuning the hyperparameters of a learning model, but care must be taken to ensure unbiased assessment of its generalization performance.
 
 When evaluating different hyperparameters for estimators, there is a risk of overfitting on the test set because knowledge about the test set can ''leak'' into the model;
@@ -383,11 +385,12 @@ Models from the following three main classes of classification algorithms have b
 
         \item Random Forest Classifier
 
-        Since decision trees can be unstable due to small variations in the data, a more robust approach is to combine multiple trees into an ensemble model.
+        High variance plays a more important role in poor performance of decision trees rather than high bias;
+        thus, ensemble methods based on voting can improve their performance since voting methods are capable of reducing variance of a learning algorithm\cite{Dietterich1995}.
+        Decision trees can be unstable due to small variations in the data, and a more robust approach is to combine multiple trees into an ensemble model.
         Random forest is a hugely popular classification algorithm due to its good classification performance, scalability, and ease of use\cite{RaschkaMirjalili2017}.
         Random forest averages multiple (deep) decision trees each of which individually suffers from high variance, to build a model with better generalization performance and less susceptible to overfitting.
         Prediction of the class label is aggregated by a majority vote from the selected number of trees, each of which is trained on a bootstrapped sample of records using a randomly selected subset of features.
-        Random forest can reduce the overfitting of individual decision trees, since methods based on voting can reduce variance of a learning algorithm\cite{Dietterich1995}.
 
     \end{itemize}
 
