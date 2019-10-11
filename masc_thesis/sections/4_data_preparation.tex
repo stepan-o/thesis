@@ -111,7 +111,9 @@ New spatial identifiers were introduced to each Teranet record via a series of s
 \begin{figure}[hbt!]
     \centering
     \includegraphics[width=1\linewidth,trim=0 0 0 0,clip]{data_relations.png}
-    \caption{Relationships between datasets introduced during data preparation were then used to set up referential integrity constraints of the new PostgreSQL database for GTHA housing market data.}
+    \caption{Relationships between datasets introduced during data preparation were then used to set up referential integrity constraints of the new PostgreSQL database for GTHA housing market data.
+    Entity Relationship (ER) diagram for the database created as a part of this master's thesis can be found in Appendix~\ref{ch:appendix_rdbms};
+    its referential integrity constraints were implemented based on the spatial and temporal relationships between data sources that were introduced in chapter~\ref{ch:spatial_and_temporal_relationships}.}
     \label{fig:data_relations}
 \end{figure}
 
@@ -137,7 +139,8 @@ To address this, a new surrogate key (artificial unique identifier for RDBMS) wa
 With this new attribute, Teranet's dataset can be fit into a normalized database using the new attribute 'transaction\_id' as its primary key.
 As was discussed in section~\ref{sec:db_norm_tidy_data}, the ''melted'' Census and TTS tables have composite primary keys consisting of a unique spatial identifier ('DAUID' or 'TAZ\_O', respectively) and the year of the survey.
 Thus, semantic interoperability can be ensured when joining variables from these sources at the Teranet transaction level.
-Relationships introduced via the operations described in this section formulate referential integrity constraints that have been used to set up a PostgreSQL database of GTHA housing market data.
+Relationships introduced via the operations described in this section formulate referential integrity constraints that have been used to set up a PostgreSQL database of GTHA housing market data;
+its Entity Relationship (ER) diagram can be found in Appendix~\ref{ch:appendix_rdbms}.
 
 \section{Outliers} \label{sec:outliers}
 

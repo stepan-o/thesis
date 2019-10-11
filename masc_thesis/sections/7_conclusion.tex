@@ -1,0 +1,34 @@
+\chapter{Conculsion} \label{ch:conclusion}
+
+Microsimulation models present the latest generation of integrated land use and transportation models and are well suited to analyze the complex interaction of transportation and land use.
+New data sources that appear with the increased digitization of human activity present opportunities to look at urban processes at unprecedented spatial and temporal scale, and thus present a lot of value for design and validation of integrated urban models and for longitudinal studies concerned with evolution of urban form.
+Introduction of POLARIS electronic land registration system by the Province of Ontario in 1985 lead to the creation of an extensive dataset of real estate transactions by Teranet Enterprises Inc.
+However, despite having very high spatial and temporal resolution, available version of Teranet's dataset suffered from severe lack of features describing each individual transaction.
+
+One of the major attributes missing from Teranet data is the type of property being transacted, or land use information for the parcel where a transaction is recorded.
+Along with selected Census and TTS variables, detailed parcel-level land use from the Department of Geography and DMTI land use data have been spatially joined to each Teranet record.
+However, since both of these data sources have their limitations, detailed land use data from Department of Geography has been used to train an algorithm capable of classifying land use based on the housing market dynamics;
+this way, land use information can be made available for each Teranet record for the full timespan covered by the Longitudinal Housing Market Research conducted by UTTRI .
+
+To augment Teranet's dataset, new variables were engineered from its native attributes to capture the housing market dynamics at the parcel level:
+for example, 'xy\_total\_sales' was computed as the total count of Teranet records coming from a particular coordinate pair;
+'med\_price\_xy' represents the median price of all records coming from a coordinate pair, etc.
+To augment Teranet data with demographic and transport information, the new Teranet features were spatially and temporally joined with Census and TTS variables recorded at the level of a Dissemination Area and TAZ zone, respectively.
+Finally, the augmented Teranet dataset has been tested with machine learning algorithms, attempting to classify land use for each Teranet record within the span of Census / TTS variables, thus recognizing land use changes with time.
+
+A range of preprocessing techniques has been tested with several linear, tree-based and nearest neighbors classification algorithms;
+tree-based models and $k$-Nearest Neighbors significantly outperformed linear models.
+The new features engineered from native Teranet attributes have shown to have strong predictive power when classifying land use.
+When joined with Census variables at the level of Dissemination Areas, new features engineered from Teranet's dataset allowed the classification of land use with a high level of accuracy.
+Random Forest model was trained using random 70\% sample of all Teranet records with new features from 2011 to 2014 stratified by target classes (''condo'', ''house'', or ''other'');
+the model achieved 97\% of accuracy on the test subset composed of the remaining 30\% of records from 2011 and 2014.
+Tree-based models did show some degree of overfitting and could benefit from further increase in the size of training data, as indicated by their learning and validation curves.
+
+Features engineered from native Teranet attributes that capture price ratios to median and frequency of transactions from a coordinate pair have strong predictive power for land use classes, as indicated by feature selection techniques and model coefficients.
+This workflow could be further improved by joining more Census / TTS variables to engineer new features;
+target classes also could be redefined to allow more meaningful classification.
+In addition, results of the classification preformed by this workflow need to be investigated.
+A map produced with counts of misclassified Teranet records per DA shows that errors seem to be highly concentrated and correspond to high-frequency transactions, such as condos and mixed use properties.
+To facilitate further investigation of classification results, augmented Teranet dataset with new feature 'lucr\_predict' along with related Census and TTS tables has been transformed into PostgreSQL relational database to facilitate ease of access by a broader group of specialists.
+Entity Relationship (ER) diagram for the database created as a part of this master's thesis can be found in Appendix~\ref{ch:appendix_rdbms};
+its referential integrity constraints were implemented based on the spatial and temporal relationships between data sources that were introduced in chapter~\ref{ch:spatial_and_temporal_relationships}.
