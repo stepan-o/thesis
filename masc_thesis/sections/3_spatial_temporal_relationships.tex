@@ -1,6 +1,6 @@
 \chapter{Spatial and temporal relationships between data sources} \label{ch:spatial_and_temporal_relationships}
 
-The second phase of CRISP-DM process model for data mining projects is data understanding;
+The second phase of the CRISP-DM process model for data mining projects is data understanding;
 this chapter discusses the nature of spatial and temporal relationships of different data sources that are used in this master's thesis.
 As was discussed in section~\ref{sec:teranet_challenges_solution}, one of the main challenges of working with Teranet's data is the lack of available features.
 At the same time, Teranet records have timestamps (dates) and location information (x and y coordinates) and thus can be joined to a variety of other urban data sources, such as Census demographics, Transportation Tomorrow Survey (TTS) and parcel-level land use information.
@@ -8,7 +8,7 @@ However, as will be discussed in this chapter, these data sources use different 
 therefore, special consideration must be taken when joining data from these sources with respect to their temporal and spatial relationships to ensure semantic interoperability.
 
 Different data sources joined to Teranet's dataset are described in this chapter, the implementation of the spatial and temporal relationships via the standardized data preparation workflow in Python and a PostgreSQL relational database are described in chapter~\ref{ch:data_preparation}.
-Entity Relationship (ER) diagram for the database created as a part of this master's thesis can be found in Appendix~\ref{ch:appendix_rdbms};
+An Entity Relationship (ER) diagram for the database created as a part of this master's thesis can be found in Appendix~\ref{ch:appendix_rdbms};
 its referential integrity constraints were implemented based on the spatial and temporal relationships between data sources that will be introduced in this chapter.
 
 \section{Description of data sources used} \label{sec:description_of_data_sources}
@@ -86,7 +86,7 @@ Teranet records have attributes representing x and y coordinates matching parcel
 
 \vspace{5mm}
 
-Below is the summary of spatial units used by the data sources that were combined into the GTHA housing market database, designed and implemented as a part of this master's thesis:
+Below is the summary of spatial units used by the data sources that were combined into the GTHA housing market database, designed and implemented as a part of this thesis:
 
 \begin{itemize}
     \item Point data

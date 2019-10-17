@@ -1,6 +1,6 @@
 \chapter[Background information]{Background information} \label{ch:background}
 
-The first phase of CRISP-DM process model for data mining projects is business understanding;
+The first phase of the CRISP-DM process model for data mining projects is business understanding;
 this chapter discusses the complex interaction of land use and transportation, provides a brief overview of the history of development of land use and transportation (LUT) models, presents some legal and historical background for Teranet's dataset of land registration records, and finishes with a discussion of challenges of working with Teranet's data and the proposed solution.
 
 \section{Complexity of urban systems and "wicked" problems} \label{sec:complexity_and_wicked_problems}
@@ -50,10 +50,10 @@ The reverse is also true, and thus integrated models incorporate feedback relati
 
 \section{Evolution of LUT models} \label{sec:evolution_of_lut_models}
 
-The history of treating cities as systems via simulation models of transportation and land use dates back to 1950s when General System Theory and Cybernetics came to be applied in the softer social sciences\cite{Batty2008}.
+The history of treating cities as systems via simulation models of transportation and land use dates back to the 1950s when General System Theory and Cybernetics came to be applied in the softer social sciences\cite{Batty2008}.
 The first operational simulation model that truly integrated land use and transportation is considered to be A Model of Metropolis built in 1964 by Ira S. Lowry for the Pittsburgh region based on economic base theory\cite{Lowry1964}.
 It was a highly aggregate model based on theories of spatial interaction, such as the gravity model that was popular in quantitative geography and transportation planning at the time\cite{Bouchard1965}.
-Models based on spatial interaction framework continued to be developed through mid-1980s, until developments in random utility theory allowed researchers to describe choices among discrete alternatives, such as the choice of travel mode, and generate models based on the study of disaggregate behaviour\cite{Iacono2008}.
+Models based on a spatial interaction framework continued to be developed through mid-1980s, until developments in random utility theory allowed researchers to describe choices among discrete alternatives, such as the choice of travel mode, and generate models based on the study of disaggregate behaviour\cite{Iacono2008}.
 
 Figure~\ref{fig:lut_model_evolution} provides the general overview of chronological development of LUT models as summarized by Iacono\cite{Iacono2008}.
 
@@ -64,10 +64,10 @@ Figure~\ref{fig:lut_model_evolution} provides the general overview of chronologi
     \label{fig:lut_model_evolution}
 \end{figure}
 
-The modeling paradigm has changed fundamentally in the early 1990s along with the advances in computing power and efficiency of data storage.
+The modeling paradigm changed fundamentally in the early 1990s along with the advances in computing power and efficiency of data storage.
 Urban systems used to be viewed as hierarchical and centrally organized equilibrium structures, or "top-down".
 Instead, now they were considered to be structured from the "bottom-up", dynamically retaining their integrity through interactions of numerous microelements\cite{Batty2008}.
-A new broad class of LUT models that could fall under the title of "microsimulation" began to be developed: it included such classes of models as activity-based travel, cell-based models, multi-agent models, and more recently comprehensive urban microsimulation models that reflect the dynamics of changes in the population and the urban environment\cite{Iacono2008}.
+A new broad class of LUT models that could fall under the title of "microsimulation" began to be developed: these included such classes of models as activity-based travel, cell-based models, multi-agent models, and more recently comprehensive urban microsimulation models that reflect the dynamics of changes in the population and the urban environment\cite{Iacono2008}.
 "Micro" in the microsimulation implies that the model must be highly disaggregated spatially, socio-economically and in its representation of processes.
 "Simulation" implies that the model must be numerical, stochastic, have an explicit time dimension, and "evolve" into the end state rather than "solve for it"\cite{Miller2018c}.
 An example of such a model has been developed by the University of Toronto ILUTE team;
@@ -101,7 +101,7 @@ The aim is to understand the spatial-temporal effects of changes in socio-econom
 Data from various sources (e.g., Census, Transportation Tomorrow Survey, etc.) is required to be merged at the land parcel level to enhance datasets with additional attributes, while maintaining the ease of data storage and retrieval for analysis as needed.
 In addition to that, accurate land use information needs to be added to Teranet records to allow separating sales data by major property types.
 
-Brief legal and historical background of Teranet's dataset, main challenges of working with it and the proposed solution are discussed in the remainder of this chapter.
+A brief legal and historical background of Teranet's dataset, main challenges of working with it and the proposed solution are discussed in the remainder of this chapter.
 
 \section{POLARIS: electronic system of land registration in Ontario} \label{sec:polaris}
 
@@ -125,16 +125,16 @@ The project involved taking a 200-year-old paper-based system and creating a dat
 Teranet converted all qualified Registry properties in Ontario to the Land Titles system and automated existing paper Land Titles parcels.
 As a result, 99.9\% of property in Ontario was parcelized and administered under the Land Titles system.
 Teranet fully automated the conversion of millions of paper-based documents and records into the Ontario Electronic Land Registration System (ELRS)\cite{TeranetEnterprisesInc.2019}.
-Figure~\ref{fig:teranet_dmti_lu} presents an example of Teranet data: records from 2014 that fall within 1'000m of an arbitrarily selected target point, colored by land use spatially joined from DMTI datasets.
+Figure~\ref{fig:teranet_dmti_lu} presents an example of Teranet data: records from 2014 that fall within 1,000m of an arbitrarily selected target point, colored by land use spatially joined from DMTI datasets.
 
 \begin{figure}[hbt!]
     \centering
     \includegraphics[width=0.8\linewidth,trim=0 0 0 0,clip]{teranet_dmti_lu.png}
-    \caption{A sample map from Teranet dataset: records from 2014 within 1'000m of an arbitrarily selected target point, colored by land use spatially joined from DMTI datasets.}
+    \caption{A sample map from Teranet dataset: records from 2014 within 1,000m of an arbitrarily selected target point, colored by land use spatially joined from DMTI datasets.}
     \label{fig:teranet_dmti_lu}
 \end{figure}
 
-Teranet's dataset presents an extensive historical record of real estate transactions recorded in the Province of Ontario since the beginning of XIX century.
+Teranet's dataset presents an extensive historical record of real estate transactions recorded in the Province of Ontario since the beginning of the nineteenth century.
 However, its available version also suffers from severe lack of features describing each transaction, which makes meaningful analysis or modeling difficult.
 At the same time, each Teranet transaction has a timestamp (date) and location information (x and y coordinates) and thus can be joined to variety of other geocoded urban data sources, such as Census demographics, Transportation Tomorrow Survey (TTS) and parcel-level land use information.
 However, joining these data sources together requires additional considerations, as they use different spatial units and are available at different temporal spans, as will be discussed in chapter~\ref{ch:spatial_and_temporal_relationships}.
@@ -148,7 +148,7 @@ Detailed parcel-level land use information could offer some degree of filtering 
 However, these sources of land use information also have their limitations:
 \begin{itemize}
     \item DMTI's land use data does not offer any split between subcategories of residential properties and only covers the period of 2001--2014
-    \item land use from the Department of Geography is a lot more detailed and accurate, but has been collected at a single point in time over the summer of 2012 and 2013
+    \item land use from the Department of Geography is much more detailed and accurate, but has been collected at a single point in time over the summer of 2012 and 2013
     \item neither of the available land use sources covers the full span of the Longitudinal Housing Market Research conducted by UTTRI (1986-2016)
 \end{itemize}
 
@@ -158,7 +158,7 @@ Combining these new features with spatially-joined variables from Census and TTS
 
 \vspace{5mm}
 
-The primary focus of this master's thesis consists of:
+The primary focus of this thesis consists of:
 
 \begin{itemize}
     \item augmenting Teranet's dataset with TTS, Census and land use variables, while maintaining the integrity of the spatial and temporal relationships between different data sources and ensuring the ease of storage and retrieval as needed for the Longitudinal Housing Market Research conducted by UTTRI

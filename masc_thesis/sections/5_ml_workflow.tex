@@ -1,6 +1,6 @@
 \chapter{A prototype of a machine learning workflow to classify land use} \label{ch:ml_workflow}
 
-The fourth phase of CRISP-DM process model for data mining projects is modeling;
+The fourth phase of the CRISP-DM process model for data mining projects is modeling;
 this chapter introduces a prototype of a machine learning workflow to classify land use from the housing market dynamics using the augmented Teranet dataset, production of which was described in chapter~\ref{ch:data_preparation}.
 As was previously mentioned in section~\ref{sec:teranet_challenges_solution}, one of the major features missing from the available version of Teranet's dataset is the information about the type of property being transacted, which introduces a major limitation on how Teranet's data can be used.
 As was described in chapter~\ref{ch:data_preparation}, parcel-level land use information from DMTI and the Department of Geography has been spatially joined to Teranet records, but these sources of land use information also have their limitations:
@@ -15,20 +15,20 @@ To address this issue, detailed land use from the Department of Geography can be
 For example, the proposed model would be able to differentiate a detached house from a condo through such features as high / low volume of transactions, ratio of price to median price for that year, etc.
 Chapter~\ref{ch:data_preparation} described the production of a dataset that combines the new features engineered from Teranet data with Census and TTS variables based on spatial and temporal relationships that were discussed in chapter~\ref{ch:spatial_and_temporal_relationships}.
 In this chapter, this dataset is used to investigate the opportunity to implement a classification algorithm to determine the parcel land use at Teranet transaction level based on the housing market dynamics (land use is determined for each Teranet record, recognizing the changes of land use on the same parcel with time).
-This way, a machine learning algorithm could provide a scalable solution to automate a labour-intensive task of collecting parcel-level detailed land use and expand the temporal span for which the land use data collected by Department of Geography can be used with accuracy.
+This way, a machine learning algorithm could provide a scalable solution to automate a labour-intensive task of collecting parcel-level detailed land use and expand the temporal span for which the land use data collected by the Department of Geography can be used with accuracy.
 
 \section{Selecting and encoding the target variable} \label{sec:select_encode_target}
 
-According to the results of Exploratory Data Analysis (EDA), different property types have characteristically different behaviour on the housing market.
-Figure~\ref{fig:xy_total_sales_dist_by_lu} shows the distributions of total count of Teranet records per coordinate pair by 10 most frequently encountered land use categories used in the Department of Geography's dataset.
+According to the results of an Exploratory Data Analysis (EDA), different property types have characteristically different behaviour on the housing market.
+Figure~\ref{fig:xy_total_sales_dist_by_lu} shows the distributions of total count of Teranet records per coordinate pair by the 10 most frequently encountered land use categories used in the Department of Geography's dataset.
 
 \begin{figure}[hbt!]
     \centering
     \includegraphics[width=0.98\linewidth,trim=0 0 0 0,clip]{xy_total_sales_dist_by_lu.png}
     \caption{Distributions of total count of Teranet records per coordinate pair by the top 10 land use categories.
-    It can be seen that detached houses, duplexes, and townhouses ("collapsed" boxplots) have much lower number of records per coordinate pair.
+    It can be seen that detached houses, duplexes, and townhouses (``collapsed" boxplots) have much lower numbers of records per coordinate pair.
     It can also be seen that there are some outliers present on the category of detached houses (first boxplot from the left).
-    These outliers most likely represent mislabelled records, as it is very unlikely that a detached house can have almost 4'000 sales.}
+    These outliers most likely represent mislabelled records, as it is very unlikely that a detached house can have almost 4,000 sales.}
     \label{fig:xy_total_sales_dist_by_lu}
 \end{figure}
 
@@ -36,7 +36,7 @@ The target variable used for the purposes of investigating the possibility of la
 Department of Geography's land use categories that have the highest counts of Teranet records have been used to reduce all different property types to the three major land use classes.
 Many machine learning algorithms are subject to a frequency bias in which they place more emphasis on learning from data observations which occur more frequently;
 to address this, the three classes were selected to have a comparable number of Teranet records between themselves and thus produce a more balanced dataset.
-In addition, chosen groupings combine categories that have a similar distribution of price and count of sales per coordinate pair between land use categories that were grouped together to form a single class.
+In addition, the chosen groupings combine categories that have a similar distribution of price and count of sales per coordinate pair between land use categories that were grouped together to form a single class.
 For example, detached and semi-detached houses and townhouses would have a much smaller frequency of transaction and a higher median price per coordinate pair when compared to condos and strata townhouses.
 Figure~\ref{fig:class_2_price_dist} shows an example of such grouping: for target class 1, Duplex/Semi-Detached properties are grouped together with Townhouses;
 together with Single Detached Houses the three categories form a single target class ''house''.
@@ -46,9 +46,9 @@ together with Single Detached Houses the three categories form a single target c
 The three target classes that were introduced are:
 
 \begin{itemize}
-    \item Class 0: "condo", including Apartments/Condos/Residence and Strata Townhouses
-    \item Class 1: "house", including Single Detached Houses, Duplex/Semi-Detached and Townhouses
-    \item Class 2: "other", including Commercial/Shopping, Mix (Commercial Residential), Industrial/Employment Lands, and everything else
+    \item Class 0: ``condo'', including Apartments/Condos/Residence and Strata Townhouses
+    \item Class 1: ``house'', including Single Detached Houses, Duplex/Semi-Detached and Townhouses
+    \item Class 2: ``other'', including Commercial/Shopping, Mix (Commercial Residential), Industrial/Employment Lands, and everything else
 \end{itemize}
 
 \begin{figure}[ht]
@@ -66,15 +66,15 @@ The three target classes that were introduced are:
         \label{fig:townhouse_price_dist}
         \caption{Townhouse}
     \end{subfigure}
-    \caption{Distribution of price (in 2016 dollars) for two out of the three property types that are grouped together under Class 1: ''house''.
-    Both categories have similar distributions of price and records per coordinate pair between themselves and with Single Detached Houses, and thus all three categories are grouped together to form a single target class ''house''.}
+    \caption{Distribution of price (in 2016 dollars) for two out of the three property types that are grouped together under Class 1: ``house''.
+    Both categories have similar distributions of price and records per coordinate pair between themselves and with Single Detached Houses, and thus all three categories are grouped together to form a single target class ``house''.}
     \label{fig:class_2_price_dist}
 \end{figure}
 
 Classification algorithms, a subcategory of algorithms for supervised learning, predict the discrete unordered categorical class labels of new instances based on past observations.
 A trained algorithm is capable of using a set of rules that were learned from past observations to distinguish the new instances between the possible classes.
 Once the classes have been determined and assigned, the target variable must be encoded, as it is considered good practice to provide class labels as integer arrays to algorithms to avoid technical glitches and improve computational efficiency.
-Class labels are not ordinal and classification estimators in scikit-learn\cite{scikit-learn} machine learning library in Python treat them as categorical data that does not imply any order.
+Class labels are not ordinal and classification estimators in the scikit-learn\cite{scikit-learn} machine learning library in Python treat them as categorical data that does not imply any order.
 
 \section{Missing values} \label{sec:missing_values}
 
@@ -82,14 +82,14 @@ As was mentioned in section~\ref{sec:feature_engineering}, some of the new featu
 Since classification algorithms cannot handle inputs with missing values, during classification these values were replaced using the following logic:
 
 \begin{itemize}
-    \item For all the records with missing 'xy\_years\_since\_last\_sale' (first record from a coordinate pair), values were replaced with the median 'xy\_years\_to\_next\_sale' for this subset (median time interval in years between all future sales from this Teranet subset).
-    \item For all the records with missing 'xy\_years\_to\_next\_sale' (last record from a coordinate pair), values were replaced with the median 'xy\_years\_since\_last\_sale' for this subset (median time interval in years between all past sales from this Teranet subset).
+    \item For all the records with missing `xy\_years\_since\_last\_sale' (first record from a coordinate pair), values were replaced with the median `xy\_years\_to\_next\_sale' for this subset (median time interval in years between all future sales from this Teranet subset).
+    \item For all the records with missing `xy\_years\_to\_next\_sale' (last record from a coordinate pair), values were replaced with the median `xy\_years\_since\_last\_sale' for this subset (median time interval in years between all past sales from this Teranet subset).
 \end{itemize}
 
 This replacement affects a large number of Teranet records, as there are many coordinate pairs with a low count of transactions in the dataset.
 At the same time, it allows the classification algorithm to work on the majority of Teranet data, which improves the generalization of the algorithm and allows classifying land use of most Teranet records.
 As will be discussed in chapter~\ref{ch:model_evaluation}, features that have missing values also have strong predictive power for land use classes and thus are best kept in the input set with the missing values replaced.
-This replacement is done during the fitting of classification algorithm and is not recorded in the final version of Teranet's dataset with new features and keys, were the missing values are left as missing.
+This replacement is done during the fitting of classification algorithm and is not recorded in the final version of Teranet's dataset with new features and keys, where the missing values are left as missing.
 
 \section{Dimensionality reduction} \label{sec:dimensionality_reduction}
 
@@ -198,7 +198,7 @@ in some cases of model overfitting, SBS can even improve the predictive power of
 On each iteration, a feature is removed using the defined criterion function $J$ that we want to minimize;
 $J$ can simply be defined as the difference in performance of the classifier before and after the elimination of a particular feature.
 Figure~\ref{fig:sbs_teranet} presents plots produced by running SBS algorithm on augmented Teranet dataset with Perceptron and Random Forest;
-Sequential Backward Selection algorithm implemented as a Python class by Raschka and Mirjalili\cite{RaschkaMirjalili2017} has been used for this master's thesis.
+Sequential Backward Selection algorithm implemented as a Python class by Raschka and Mirjalili\cite{RaschkaMirjalili2017} has been used for this thesis.
 
 \begin{figure}[hbt!]
     \centering
@@ -209,7 +209,7 @@ Sequential Backward Selection algorithm implemented as a Python class by Raschka
 \end{figure}
 
 As can be seen from the plots produced by SBS, most features in the augmented Teranet dataset can be eliminated without a significant drop in performance of both linear and tree-based models.
-As such, final set of features to be used for land use classification was selected by combining the feature subsets selected by each of the FSS methods described above.
+As such, the final set of features to be used for land use classification was selected by combining the feature subsets selected by each of the FSS methods described above.
 Features that have been selected by at least four different methods were selected as the final feature subset that was tested with the classification algorithms and used for final classification of land use;
 figure~\ref{fig:top_feats} presents the 11 features that were selected using this logic: these are the 11 features that were selected by at least four different FSS techniques.
 
@@ -234,7 +234,7 @@ L1 regularization was attempted with Logistic Regression and Linear Support Vect
 
 \section{Tuning model hyperparameters} \label{sec:tuning_hyperparameters}
 
-One of the critical aspects of evaluating the performance of a machine learning model is the assessment of algorithm's ability to not only perform well on the data that was used to train it, but also to generalize well to unseen, or test, data.
+One of the critical aspects of evaluating the performance of a machine learning model is the assessment of the algorithm's ability to not only perform well on the data that was used to train it, but also to generalize well to unseen, or test, data.
 Evaluating the model on the same dataset that was used to train it will result in the optimistically biased estimate of the predictive power of a classifier;
 hence the need to split the dataset into separate training and test subsets.
 Comparing predictions made by the algorithm to true labels in the test subset can be understood as the unbiased performance evaluation of the model\cite{RaschkaMirjalili2017};
@@ -251,7 +251,7 @@ in this context, stratification means that training and test subsets will have t
     \label{fig:holdout_validation_workflow}
 \end{figure}
 
-There are two types of parameters in machine learning: those that are learned by parametric models from training data (i.e., wights in logistic regression), and the parameters that tune the performance of a learning algorithm, or its hyperparameters (i.e., regularization parameter in logistic regression or maximum depth of a decision tree).
+There are two types of parameters in machine learning: those that are learned by parametric models from training data (i.e., weights in logistic regression), and the parameters that tune the performance of a learning algorithm, or its hyperparameters (i.e., regularization parameter in logistic regression or maximum depth of a decision tree).
 If a model is too simple, it can suffer from underfitting and show poor performance on both the training and the test data (have high bias;
 the bias of a learning algorithm is the persistent error that it is expected to make when trained on a given sample size\cite{Dietterich1995}).
 On the other hand, if a model is too complex, it can overfit the training data and have poor generalization on test data (have high variance;
@@ -285,16 +285,16 @@ Figure~\ref{fig:kfold_validation_workflow} presents $k$-fold cross-validation wo
 
 This approach can be computationally expensive, but does not waste too much data, as is the case when fixing an arbitrary validation set.
 Empirical evidence shows that a good standard value for $k$ in $k$-fold cross-validation is 10, as seen in experiments conducted by Kohavi on various real-world datasets\cite{Kohavi1995}.
-A light further improvement in bias and variance estimates over the standard $k$-fold cross-validation can be achieved by using stratified $k$-fold cross-validation, as shown in the study conducted by Kohavi.
+A slight further improvement in bias and variance estimates over the standard $k$-fold cross-validation can be achieved by using stratified $k$-fold cross-validation, as shown in the study conducted by Kohavi.
 In stratified cross-validation, the class proportions are preserved in each fold to ensure that each fold is representative of the class proportions in the training dataset.
-For this master's thesis, stratified $k$-fold cross-validation workflow has been used to tune model hyperparameters via grid search before the final evaluation of model performance was done using the held-out test set;
+For this thesis, stratified $k$-fold cross-validation workflow has been used to tune model hyperparameters via grid search before the final evaluation of model performance was done using the held-out test set;
 model evaluation results will be discussed in chapter~\ref{ch:model_evaluation}, examples of validation curves for decision tree and random forest are presented on figure~\ref{fig:validation_curves}.
 
 \section{Feature scaling} \label{sec:feature_scaling}
 
 Many machine learning algorithms are designed with the assumption that each feature takes values close to zero or, more importantly, that all features vary on comparable scales\cite{Scikit-learndevelopers2019b}.
 Raw data rarely comes in the form and shape that is necessary for the optimal performance of a learning algorithm, and thus data preprocessing via scaling is one of the most crucial steps in machine learning workflows\cite{RaschkaMirjalili2017}.
-Bringing different variables on the same scale can be accomplished by such techniques as standardization or normalization;
+Bringing different variables to the same scale can be accomplished by such techniques as standardization or normalization;
 in addition, outliers that are present in data can be addressed by using non-linear transformations, such as quantile or power transforms.
 
 \vspace{5mm}
@@ -329,7 +329,7 @@ In parametric models, such as logistic regression, perceptron or linear Support 
 In addition, the number of model parameters is fixed and does not change with the size of the training data.
 In contrast, non-parametric models, such as instance-based learning models like $k$-Nearest Neighbors, can't be characterized by a fixed set of parameters, and the number of parameters grows with the amount of training data.
 
-Another way of categorizing the algorithms that were used in this master's thesis is into linear, tree-based, and nearest neighbors model classes.
+Another way of categorizing the algorithms that were used in this thesis is into linear, tree-based, and nearest neighbors model classes.
 Models from the following three main classes of classification algorithms have been tested with the augmented Teranet dataset:
 
 \begin{itemize}
@@ -337,6 +337,7 @@ Models from the following three main classes of classification algorithms have b
 
     Linear models are used by a popular and broad class of procedures for solving classification tasks.
     These models aim at dividing the feature space into a collection of regions labelled according to the values that the target can take, where the decision boundaries between those regions are linear hyperplanes.
+    Examples include:
 
     \begin{itemize}
         \item Perceptron learning algorithm
@@ -380,6 +381,7 @@ Models from the following three main classes of classification algorithms have b
     Decision tree classifiers are attractive models due to their predictive power, computational efficiency and interpretability.
     In addition, these models are scale-invariant and require less data preprocessing.
     These models construct a flow-chart-like decision tree by learning simple decision rules similar to asking a series of questions, or in other words, introduce a set of boolean conjunctions.
+    Examples include:
 
     \begin{itemize}
 
