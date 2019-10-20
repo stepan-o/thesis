@@ -39,7 +39,7 @@ to address this, the three classes were selected to have a comparable number of 
 In addition, the chosen groupings combine categories that have a similar distribution of price and count of sales per coordinate pair between land use categories that were grouped together to form a single class.
 For example, detached and semi-detached houses and townhouses would have a much smaller frequency of transaction and a higher median price per coordinate pair when compared to condos and strata townhouses.
 Figure~\ref{fig:class_2_price_dist} shows an example of such grouping: for target class 1, Duplex/Semi-Detached properties are grouped together with Townhouses;
-together with Single Detached Houses the three categories form a single target class ''house''.
+together with Single Detached Houses the three categories form a single target class ``house''.
 
 \vspace{5mm}
 
@@ -78,7 +78,7 @@ Class labels are not ordinal and classification estimators in the scikit-learn\c
 
 \section{Missing values} \label{sec:missing_values}
 
-As was mentioned in section~\ref{sec:feature_engineering}, some of the new features engineered from Teranet attributes, such as 'xy\_years\_since\_last\_sale' and 'xy\_years\_to\_next\_sale' contain missing values in each case of the first or the last Teranet record coming from a coordinate pair.
+As was mentioned in section~\ref{sec:feature_engineering}, some of the new features engineered from Teranet attributes, such as `xy\_years\_since\_last\_sale' and `xy\_years\_to\_next\_sale' contain missing values in each case of the first or the last Teranet record coming from a coordinate pair.
 Since classification algorithms cannot handle inputs with missing values, during classification these values were replaced using the following logic:
 
 \begin{itemize}

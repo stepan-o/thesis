@@ -5,7 +5,7 @@ this chapter discusses the steps taken to implement the spatial and temporal rel
 the nature of these relationships was discussed in chapter~\ref{ch:spatial_and_temporal_relationships}.
 In addition, this chapter introduces new features derived from native Teranet attributes for land use classification, which will be described in chapters~\ref{ch:ml_workflow} and~\ref{ch:model_evaluation}.
 
-The "wicked" nature of transportation and land use interaction introduced in chapter~\ref{ch:background} dictates the need to iteratively "re-solve" transportation and land use planning problems instead of focusing on finding some single "optimal solution".
+The ``wicked'' nature of transportation and land use interaction introduced in chapter~\ref{ch:background} dictates the need to iteratively ``re-solve'' transportation and land use planning problems instead of focusing on finding some single ``optimal solution''.
 This approach resembles the methodologies typically employed for data science projects, where the sequence of steps is iterated over, producing a more meaningful solution on each new iteration of the cycle, as defined by such process models as CRISP-DM\cite{Shearer2000}.
 Similarly, data preparation can be followed in a linear manner, but is very likely to be iterative in nature\cite{Brownlee2013}.
 
@@ -29,7 +29,7 @@ It accomplishes three main objectives:
     \item Engineer the new features that can be used by the machine learning algorithm along with the features from the joined datasets to classify land use, which will be discussed in chapters~\ref{ch:ml_workflow} and~\ref{ch:model_evaluation}.
 \end{itemize}
 
-This chapter introduces the concepts of ''Tidy Data'' and database normalization and outlines the standardized data preparation workflow that was designed to implement the spatio-temporal relationships discussed in chapter~\ref{ch:spatial_and_temporal_relationships} for all data sources that were combined into the GTHA housing market database that was implemented as a part of this master's thesis.
+This chapter introduces the concepts of ``Tidy Data'' and database normalization and outlines the standardized data preparation workflow that was designed to implement the spatio-temporal relationships discussed in chapter~\ref{ch:spatial_and_temporal_relationships} for all data sources that were combined into the GTHA housing market database that was implemented as a part of this master's thesis.
 
 \section{Tidy data and database normalization} \label{sec:db_norm_tidy_data}
 
@@ -229,7 +229,7 @@ To keep these records in the dataset while facilitating faster convergence, feat
 \section{Engineering new features for the classification algorithm} \label{sec:feature_engineering}
 
 In addition to producing new keys for joining datasets, a number of the new features was engineered from original Teranet attributes to be tested with classification algorithms (discussed in chapters~\ref{ch:ml_workflow} and~\ref{ch:model_evaluation}).
-These new features were intended to give each Teranet record spatial and temporal "context" of the housing market dynamics by grouping records using different criteria.
+These new features were intended to give each Teranet record spatial and temporal ``context'' of the housing market dynamics by grouping records using different criteria.
 For example, feature `xy\_prev\_sales' was computed as the rolling count of Teranet records coming from a particular coordinate pair;
 feature `price\_to\_med\_year' captures the ratio of consideration amount of a record to the median consideration amount of all Teranet records for the corresponding year, etc.
 
@@ -274,7 +274,7 @@ The recorded version of Teranet's dataset with the new features and keys would s
 \section{Chapter summary} \label{sec:data_preparation_summary}
 
 The principles of ``Tidy data'', closely related to Codd's principles of database normalization, formalize the way how a shape of the data can be described and what goal should be pursued when formatting data.
-The ``tidy data standard''  facilitates initial exploration and analysis of the data and simplifies the development of data analysis tools that work well together.
+The ``tidy data'' standard  facilitates initial exploration and analysis of the data and simplifies the development of data analysis tools that work well together.
 The structure of Teranet's dataset conforms with the ``Tidy data'' format.
 Contrary to Teranet, tables with select Census and TTS variables had variables for different Census and TTS years recorded as columns and thus needed to be unpivoted.
 A new attribute `year' was introduced to these tables to be used as a part of a composite foreign key when joining with Teranet records.
