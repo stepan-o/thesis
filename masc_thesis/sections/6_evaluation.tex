@@ -1,6 +1,6 @@
 \chapter{Model evaluation} \label{ch:model_evaluation}
 
-The fifth phase of CRISP-DM process model for data mining projects is evaluation;
+The fifth phase of the CRISP-DM process model for data mining projects is evaluation;
 this chapter presents the evaluation of results of the machine learning workflow to classify land use that was introduced in chapter~\ref{ch:ml_workflow};
 classification algorithms described in section~\ref{sec:model_selection} were tested on the augmented Teranet dataset, production of which was described in chapter~\ref{ch:data_preparation}.
 As was discussed in section~\ref{sec:model_selection}, no single classifier works better than others across all possible scenarios, and thus it is important to compare the performance of several classification algorithms on a given dataset;
@@ -109,18 +109,18 @@ Before different models can be compared, metrics to measure model performance an
 
 \end{itemize}
 
-As Raschka states in his article\cite{Raschka2018}, model evaluation presents is a complex topic by itself;
+As Raschka states in his article\cite{Raschka2018}, model evaluation is a complex topic by itself;
 when asking the question of which evaluation metric to select for assessing model performance, a more meaningful question to ask would be why does the assessment of these models matter at all.
 Under the current understanding of the problem of land use classification, the ideal model would be able to provide accurate classification of land use of the maximum possible number of properties across all classes, or in our case, land use for each Teranet record coming from a location;
 an ideal model would correctly classify every Teranet transaction by its land use.
-Under the current formulation of the problem, no special emphasis was put on the correct classification of any particular property type (as reflected by the three target classes ''house'', ''condo'', or ''other'') or on any particular kind of classification error.
-Therefore, the model that can classify the most records correctly would be considered the best performing model for the purposes of this master's thesis.
+Under the current formulation of the problem, no special emphasis was put on the correct classification of any particular property type (as reflected by the three target classes ``house'', ``condo'', or ``other'') or on any particular kind of classification error.
+Therefore, the model that can classify the most records correctly would be considered the best performing model for the purposes of this thesis.
 
 Since target classes introduced in section~\ref{sec:select_encode_target} are fairly balanced, classification accuracy ($ACC$) presents an acceptable metric to evaluate model performance;
 other classification metrics discussed in this section could be used for additional reference regarding the details of model performance.
 Classification errors made on particular target classes can be assessed by class-wise precision and accuracy metrics, as found on the classification report shown on figure~\ref{fig:classification_report_train_test};
 in addition, confusion matrices can provide additional information on class-wise errors made by the model (confusion matrices are presented on figure~\ref{fig:confusion_matrix_train_test}).
-In addition, it would be beneficial if the model can provide indication of relative importance of features in making accurate land use predictions through such outputs as feature importance coefficients.
+In addition, it would be beneficial if the model can provide indication of the relative importance of features in making accurate land use predictions through such outputs as feature importance coefficients.
 
 \section{Evaluating model performance} \label{sec:model_performance}
 
@@ -222,7 +222,7 @@ Four different subsets of data have been used to test the best performing models
 The train and test subsets represent Teranet records from 2011 to 2014 randomly sampled into 70\% train and 30\% test subsets;
 these are the primary subsets that were used for training and tuning the hyperparameters and then evaluating the performance of classifiers on unseen test data, as was described in section~\ref{sec:tuning_hyperparameters}.
 The two additional validation subsets were composed of Teranet records from 2010 and 2015.
-Since the land use information (target variable) from Department of Geography was collected in 2012 and 2013, it can be less accurate for these subsets;
+Since the Department of Geography land use information (target variable) was collected in 2012 and 2013, it can be less accurate for these subsets;
 thus, they have not been used for model selection, training or primary testing, but were utilized to test fitted models as an additional reference for the generalization of performance of classifiers.
 Figure~\ref{fig:model_performance} presents model performance on train, test, and two additional validation subsets.
 
@@ -234,11 +234,11 @@ Linear models do not seem to overfit the data, but instead suffer from high bias
 
 In comparison, tree-based models capable of drawing complex non-linear decision boundaries were able to achieve much higher classification accuracy, with both decision tree and random forest scoring above 95\% on the test set.
 These models have a much lower bias on this dataset compared to linear models, but do overfit the training data to some degree under the current size of the training subset.
-Validation curve produced during hyperparameter tuning described in section~\ref{sec:tuning_hyperparameters} for decision tree by variating its maximum depth (shown on figure~\ref{fig:validation_tree}) indicates that the model does need to be fairly complex to achieve better classification accuracy;
+Validation curves produced during hyperparameter tuning described in section~\ref{sec:tuning_hyperparameters} for decision tree by variating its maximum depth (shown on figure~\ref{fig:validation_tree}) indicate that the model does need to be fairly complex to achieve better classification accuracy;
 it suffers from high bias until maximum depth of the tree reaches at least 15.
 Then, the model starts to pick up higher variance;
 all increases of maximum depth past 23 result mostly in overfitting the training data through unnecessary model complexity and do not yield better generalization.
-At a maximum depth of 23, decision tree still has moderate variance, with predictions on the test set being 3\% less accurate then those made on the training data.
+At a maximum depth of 23, the decision tree still has moderate variance, with predictions on the test set being 3\% less accurate then those made on the training data.
 Overfitting of the tree also seems to be present on both extra validation subsets, with tree accuracy decreasing further on these subsets;
 however, it is challenging to understand whether this is due to the model overfitting training data or due to inaccuracies of target labelling in extra validation subsets.
 
@@ -284,7 +284,7 @@ however, it is challenging to understand whether this is due to the model overfi
     \label{fig:learning_curves}
 \end{figure}
 
-Validation curve produced for random forest by variating the number of estimators (presented on figure~\ref{fig:validation_forest}) shows that the model also suffers from some variance and overfits training data.
+Validation curves produced for random forest by varying the number of estimators (presented on figure~\ref{fig:validation_forest}) show that the model also suffers from some variance and overfits training data.
 However, random forest still shows slightly higher prediction accuracy when compared to a single decision tree, and performs better on extra validation subsets.
 Since the inaccurate target labelling in extra validation subsets would affect both decision tree and random forest equally, even if it provides a pessimistically biased estimate of algorithm generalization, it can still be used to compare the models between themselves\cite{Raschka2018}.
 This indicates that random forest should have better generalization than the decision tree.
@@ -320,7 +320,7 @@ Figure~\ref{fig:forest_feature_importance} presents feature importance for the b
 It can be seen that the final random forest model had a fairly balanced use of selected new Teranet and Census variables;
 new attributes engineered from native Teranet features that were introduced in section~\ref{sec:feature_engineering} have strong predictive power over land use classes.
 It can be seen that the new attributes that relate to the frequency of Teranet records coming from a coordinate pair and new attributes related to time interval between the records from a coordinate pair had the highest importance coefficients for the random forest model.
-Census variables that were used to augment Teranet dataset based on relationships that were discussed in chapter~\ref{ch:spatial_and_temporal_relationships} are also related to land use classes and improve the classification accuracy of the model.
+Census variables that were used to augment the Teranet dataset based on relationships that were discussed in chapter~\ref{ch:spatial_and_temporal_relationships} are also related to land use classes and improve the classification accuracy of the model.
 
 Confusion matrices that were introduced in the context of a binary classification problem in section~\ref{sec:model_metrics} can be extended to plot multi-class classification predictions.
 Figure~\ref{fig:confusion_matrix_train_test} presents confusion matrices with and without normalization for Random Forest on the test set.
@@ -329,23 +329,23 @@ Figure~\ref{fig:confusion_matrix_train_test} presents confusion matrices with an
     \centering
     \includegraphics[width=0.98\linewidth,trim=0 0 0 0,clip]{confusion_matrix_train_test.png}
     \caption{Best model performance on test set: confusion matrices with and without normalization for Random Forest with 50 estimators using Gini impurity criterion.
-    It can be seen that despite some imbalance in classes, model seems to perform consistently over all three land use categories.}
+    It can be seen that despite some imbalance in classes, the model seems to perform consistently over all three land use categories.}
     \label{fig:confusion_matrix_train_test}
 \end{figure}
 
-It can thus be concluded from the classification report (shown on figure~\ref{fig:classification_report_train_test}) and confusion matrices (shown on figure~\ref{fig:confusion_matrix_train_test}) that the model is accurate in its predictions for all three target classes;
+It can thus be concluded from the classification report (shown in figure~\ref{fig:classification_report_train_test}) and confusion matrices (shown in figure~\ref{fig:confusion_matrix_train_test}) that the model is accurate in its predictions for all three target classes;
 moderate class imbalance does not seem to affect accuracy of random forest in classifying the three reduced land use categories.
-Thus, this machine learning workflow is capable of producing classification of land use into three major categories (''house'', ''condo'', and ''other'') for each Teranet record starting from 1985;
+Thus, this machine learning workflow is capable of producing classification of land use into three major categories (``house'', ``condo'', and ``other'') for each Teranet record starting from 1985;
 unbiased performance estimate done on 30\% of held-out test data show 97\% of accuracy for random forest with 50 estimators and Gini impurity criterion.
 With further refinement of this workflow, land use can be classified for each Teranet record using newly engineered features and joined Census and TTS variables with a high degree of accuracy.
 
-To facilitate further evaluation of the results produced by this master's thesis and allow ease of access to spatially and temporally related dataset introduced in chapter~\ref{ch:spatial_and_temporal_relationships}, the augmented dataset that was produced as a part of this master's thesis has been saved into a PostgreSQL relational database;
-land use produced for each Teranet record by the classification algorithm has been added to augmented Teranet dataset in the database as new feature 'lucr\_predict'.
+To facilitate further evaluation of the results produced by this thesis and allow ease of access to spatially and temporally related dataset introduced in chapter~\ref{ch:spatial_and_temporal_relationships}, the augmented dataset that was produced has been saved into a PostgreSQL relational database;
+land use produced for each Teranet record by the classification algorithm has been added to augmented Teranet dataset in the database as new feature `lucr\_predict'.
 This way, ease of access and retrieval of this information can be facilitated, as required by the needs of the Longitudinal Analysis of Housing Sales in the GTHA which was introduced in section~\ref{sec:longitudinal_housing_market_research};
 in addition, results of this machine learning workflow could be further investigated by a broader and mixed team of specialists.
-Entity Relationship (ER) diagram for the database created as a part of this master's thesis is pressented in Appendix~\ref{ch:appendix_rdbms}.
+An Entity Relationship (ER) diagram for the database created as a part of this master's thesis is pressented in Appendix~\ref{ch:appendix_rdbms}.
 
-To provide initial EDA of classification errors, counts of Teranet records misclassified by the algorithm by DA have been produced and mapped for the second extra validation subset from 2015 which was showing higher error rates compared to other subsets.
+To provide initial EDA of classification errors, counts of Teranet records misclassified by the algorithm by DA have been produced and mapped for the second extra validation subset from 2015, which was showing higher error rates compared to other subsets.
 Choropleth (equal interval split of the distribution) map of counts of classification error can be seen on figure~\ref{fig:error_map}.
 It can be seen that classification errors are highly localized and likely represent high-frequency transactions corresponding to condo units and mixed use properties.
 
@@ -357,7 +357,7 @@ It can be seen that classification errors are highly localized and likely repres
     \label{fig:error_map}
 \end{figure}
 
-\section{Chapter summary} \label{evaluation_summary}
+\section{Chapter summary} \label{sec:evaluation_summary}
 
 This chapter discussed metrics commonly used to assess performance of classification algorithms, selected criteria for model assessment and acceptance and presented results of model evaluation.
 Tree-based models and $k$-Nearest Neighbors significantly outperformed linear models in accuracy;
@@ -365,9 +365,9 @@ tree-based models outperformed $k$-NN in fit times.
 Learning and validation curves were presented and discussed for tree-based models.
 Random forest with 50 estimators was the best performing model and achieved 97\% accuracy on the test set.
 Tree-based models have low bias, but do suffer from some overfitting and could benefit from further increase in the size of the training set.
-Overall, machine learning workflow introduced by this master's thesis seems to be able to classify land use of Teranet records based on selected features with a high degree of accuracy.
+Overall, the machine learning workflow introduced by this thesis seems to be able to classify land use of Teranet records based on selected features with a high degree of accuracy.
 The map of count of classification errors by DA produced from Teranet records from 2015 shows that these errors are highly localized and likely correspond to high-frequency transactions, such as condo units and mixed use properties.
 Further investigation of the results of land use classification is required and has been facilitated by transforming the augmented Teranet dataset and other related datasets produced for this master's thesis into a PostgreSQL relational database;
 land use predicted by the classification algorithm has been added as a new feature 'lucr\_predict' to each Teranet record within the time span of Census / TTS variables.
-Entity Relationship (ER) diagram for the database created as a part of this master's thesis can be found in Appendix~\ref{ch:appendix_rdbms};
+An Entity Relationship (ER) diagram for the database created as a part of this master's thesis can be found in Appendix~\ref{ch:appendix_rdbms};
 its referential integrity constraints were implemented based on the spatial and temporal relationships between data sources that were introduced in chapter~\ref{ch:spatial_and_temporal_relationships}.
